@@ -73,7 +73,7 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.FilePickerTheme)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_file_picker)
         // 获取权限
         val rxPermissions = RxPermissions(this)
         val dispose = rxPermissions
@@ -115,7 +115,7 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
         mBtnConfirm!!.setOnClickListener(this)
 
         // 空视图
-        mEmptyView = layoutInflater.inflate(R.layout.item_empty_view, mRvList!!.parent as ViewGroup, false)
+        mEmptyView = layoutInflater.inflate(R.layout.item_empty_view_file_picker, mRvList!!.parent as ViewGroup, false)
         // 列表适配器
         mListAdapter = produceListAdapter(fileListData)
         // 导航栏适配器
@@ -133,7 +133,7 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
      * @return 列表适配器
      */
     private fun produceListAdapter(dataSource: ArrayList<FileItemBean>): BaseQuickAdapter<FileItemBean, BaseViewHolder> {
-        val fileListAdapter = FileListAdapter(R.layout.item_list, dataSource)
+        val fileListAdapter = FileListAdapter(R.layout.item_list_file_picker, dataSource)
         // 避免频繁添加空视图导致 view 存在 parent 视图，所以需要先判断
         if (mEmptyView!!.parent != null) {
             val viewGroup = mEmptyView!!.parent as ViewGroup
@@ -151,7 +151,7 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
      * @return 导航栏适配器
      */
     private fun produceNavAdapter(dataSource: ArrayList<FileNavBean>): BaseQuickAdapter<FileNavBean, BaseViewHolder> {
-        val adapter = FileNavAdapter(R.layout.item_nav, dataSource)
+        val adapter = FileNavAdapter(R.layout.item_nav_file_picker, dataSource)
         adapter.onItemClickListener = this
         adapter.onItemChildClickListener = this
         return adapter
