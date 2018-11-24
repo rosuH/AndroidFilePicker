@@ -20,9 +20,7 @@
 
 *`sample`模块是使用示例*
 
-1. `clone` 本仓库，将`filepickerlib`模块复制到你的项目文件夹中
-
-2. 在你的项目中添加依赖
+1. 在你的项目中添加依赖
 
 ```xml
 allprojects {
@@ -39,7 +37,7 @@ dependencies {
 }
 ```
 
-3. 开始使用
+2. 开始使用
 
 *启动*：在你的`Activity`中启动文件选择器
 
