@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <android.support.v7.widget.AppCompatImageView
-        android:id="@+id/appCompatImageView3"
+        android:id="@+id/iv_empty_file_picker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/ic_empty"
@@ -16,11 +16,11 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/tv_empty"
+        android:id="@+id/tv_empty_file_picker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="空空如也？"
-        app:layout_constraintBottom_toTopOf="@+id/appCompatImageView3"
+        app:layout_constraintBottom_toTopOf="@+id/iv_empty_file_picker"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

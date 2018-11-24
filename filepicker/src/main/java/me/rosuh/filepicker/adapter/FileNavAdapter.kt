@@ -15,7 +15,7 @@ class FileNavAdapter(layoutResId: Int, data: MutableList<FileNavBean>?) :
 
     override fun convert(helper: BaseViewHolder?, item: FileNavBean?) {
         helper!!
-                .setText(R.id.btn_nav, item!!.dirName)
-                .addOnClickListener(R.id.btn_nav)
+                .setText(R.id.btn_nav_file_picker, item!!.dirName)
+                .addOnClickListener(R.id.btn_nav_file_picker)
     }
 }

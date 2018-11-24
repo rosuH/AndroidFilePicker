@@ -2,13 +2,13 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/item_list"
+    android:id="@+id/item_list_file_picker"
     android:background="?attr/selectableItemBackground"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <Space
-        android:id="@+id/space_top"
+        android:id="@+id/space_top_file_picker_file_picker"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Space
-        android:id="@+id/space_bottom"
+        android:id="@+id/space_bottom_file_picker"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -26,43 +26,43 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/tv_list"
+        android:id="@+id/tv_list_file_picker"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"
         android:scrollHorizontally="true"
         android:text="48sp"
-        app:layout_constraintBottom_toTopOf="@+id/space_bottom"
-        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintBottom_toTopOf="@+id/space_bottom_file_picker"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_file_picker"
         app:layout_constraintHorizontal_bias="0.0691"
-        app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toBottomOf="@+id/space_top"
+        app:layout_constraintStart_toStartOf="@+id/guideline2_file_picker"
+        app:layout_constraintTop_toBottomOf="@+id/space_top_file_picker_file_picker"
         tools:text="SD 存储卡SD 存储卡SD" />
 
     <ImageView
-        android:id="@+id/iv_icon_list"
+        android:id="@+id/iv_icon_list_file_picker"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/space_bottom"
+        app:layout_constraintBottom_toTopOf="@+id/space_bottom_file_picker"
         app:layout_constraintDimensionRatio="W, 1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0444"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/space_top"
+        app:layout_constraintTop_toBottomOf="@+id/space_top_file_picker_file_picker"
         app:layout_constraintWidth_percent="0.0667" />
 
     <CheckBox
-        android:id="@+id/cb_list"
+        android:id="@+id/cb_list_file_picker"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/space_bottom"
+        app:layout_constraintBottom_toTopOf="@+id/space_bottom_file_picker"
         app:layout_constraintDimensionRatio="W,1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.0667"
         app:layout_constraintHorizontal_bias="0.9556"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/space_top" />
+        app:layout_constraintTop_toBottomOf="@+id/space_top_file_picker_file_picker" />
 
     <View
         android:layout_width="match_parent"
@@ -73,14 +73,14 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <android.support.constraint.Guideline
-        android:id="@+id/guideline"
+        android:id="@+id/guideline_file_picker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.88" />
 
     <android.support.constraint.Guideline
-        android:id="@+id/guideline2"
+        android:id="@+id/guideline2_file_picker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"

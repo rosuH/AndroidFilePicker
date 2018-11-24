@@ -105,11 +105,11 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
     }
 
     fun initView(fileListData: ArrayList<FileItemBean>, fileNavData: ArrayList<FileNavBean>) {
-        mRvList = findViewById(R.id.rv_list)
-        mNavList = findViewById(R.id.rv_nav)
-        mBtnSelectedAll = findViewById(R.id.btn_selected_all)
-        mBtnConfirm = findViewById(R.id.btn_confirm)
-        mBtnGoBack = findViewById(R.id.btn_go_back)
+        mRvList = findViewById(R.id.rv_list_file_picker)
+        mNavList = findViewById(R.id.rv_nav_file_picker)
+        mBtnSelectedAll = findViewById(R.id.btn_selected_all_file_picker)
+        mBtnConfirm = findViewById(R.id.btn_confirm_file_picker)
+        mBtnGoBack = findViewById(R.id.btn_go_back_file_picker)
         mBtnGoBack!!.setOnClickListener(this)
         mBtnSelectedAll!!.setOnClickListener(this)
         mBtnConfirm!!.setOnClickListener(this)
@@ -165,7 +165,7 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
      */
     override fun onItemClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
         // 如果不是点击列表，则返回
-        if (view!!.id != R.id.item_list) return
+        if (view!!.id != R.id.item_list_file_picker) return
         val item = adapter!!.getItem(position) as FileItemBean
 
         val intent = Intent()
@@ -247,13 +247,13 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
 
     override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
         when (view!!.id) {
-            R.id.btn_nav -> {
+            R.id.btn_nav_file_picker -> {
                 val item = adapter!!.getItem(position) as FileNavBean
                 enterDirAndUpdateUI(item, position)
             }
-            R.id.cb_list -> {
+            R.id.cb_list_file_picker -> {
                 val item = adapter!!.getItem(position) as FileItemBean
-                val checkBox = view.findViewById<CheckBox>(R.id.cb_list)
+                val checkBox = view.findViewById<CheckBox>(R.id.cb_list_file_picker)
                 item.isChecked = checkBox.isChecked
                 Toast.makeText(this@FilePickerActivity, "选中", Toast.LENGTH_SHORT).show()
             }
@@ -268,7 +268,7 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
     override fun onClick(v: View?) {
         when (v!!.id) {
             // 全选
-            R.id.btn_selected_all -> {
+            R.id.btn_selected_all_file_picker -> {
                 if (mFilesIsChecked!!.get()) {
                     for (data in mListAdapter!!.data) {
                         if (FilePickerManager.isSkipDir && data.fileType == DIR) {
@@ -290,7 +290,7 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
                 mListAdapter!!.notifyDataSetChanged()
                 mFilesIsChecked.set(!(mFilesIsChecked.get()))
             }
-            R.id.btn_confirm -> {
+            R.id.btn_confirm_file_picker -> {
                 val list = ArrayList<String>()
                 val intent = Intent()
 
@@ -309,7 +309,7 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
                 this@FilePickerActivity.setResult(Activity.RESULT_OK, intent)
                 finish()
             }
-            R.id.btn_go_back -> {
+            R.id.btn_go_back_file_picker -> {
                 finish()
             }
         }
