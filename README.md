@@ -24,8 +24,19 @@
 
 2. 在你的项目中添加依赖
 
-```java
-    implementation project(':filepickerlib')
+```xml
+allprojects {
+    repositories {
+	    ...
+    	maven { url 'https://jitpack.io' }
+    }
+}
+```
+
+```xml
+dependencies {
+    implementation 'com.github.rosuH:AndroidFilePicker:latest_version'
+}
 ```
 
 3. 开始使用
