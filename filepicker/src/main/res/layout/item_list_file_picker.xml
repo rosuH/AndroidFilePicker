@@ -48,7 +48,7 @@
         app:layout_constraintBottom_toTopOf="@+id/space_bottom_file_picker"
         app:layout_constraintDimensionRatio="W, 1:1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="@dimen/layout_constraintHorizontal_bias"
+        app:layout_constraintHorizontal_bias="0.444"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/space_top_file_picker_file_picker"
         app:layout_constraintWidth_percent="0.0667" />
