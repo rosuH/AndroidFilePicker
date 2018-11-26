@@ -4,11 +4,14 @@ import android.Manifest
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.os.Environment.MEDIA_MOUNTED
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.AppCompatButton
 import android.support.v7.widget.AppCompatImageButton
 import android.support.v7.widget.LinearLayoutManager
@@ -19,7 +22,6 @@ import android.widget.CheckBox
 import android.widget.Toast
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
-import com.tbruyelle.rxpermissions2.RxPermissions
 import me.rosuh.filepicker.bean.FileTypeEnum.COMPRESSED
 import me.rosuh.filepicker.bean.FileTypeEnum.DIR
 import me.rosuh.filepicker.bean.FileTypeEnum.IMAGE
@@ -43,68 +45,105 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
     /**
      * 文件列表
      */
-    var mRvList: RecyclerView? = null
+    private var mRvList: RecyclerView? = null
     /**
      * 导航栏列表
      */
-    var mNavList: RecyclerView? = null
+    private var mNavList: RecyclerView? = null
     /**
      * 文件列表适配器
      */
-    var mListAdapter: BaseQuickAdapter<FileItemBean, BaseViewHolder>? = null
+    private var mListAdapter: BaseQuickAdapter<FileItemBean, BaseViewHolder>? = null
     /**
      * 导航栏列表适配器
      */
-    var mNavAdapter: BaseQuickAdapter<FileNavBean, BaseViewHolder>? = null
+    private var mNavAdapter: BaseQuickAdapter<FileNavBean, BaseViewHolder>? = null
     /**
      * 导航栏数据集
      */
-    var mNavDataSource = ArrayList<FileNavBean>()
+    private var mNavDataSource = ArrayList<FileNavBean>()
     /**
      * 文件夹为空时展示的空视图
      */
-    var mEmptyView: View? = null
+    private var mEmptyView: View? = null
 
-    var mBtnSelectedAll: AppCompatButton? = null
-    var mBtnConfirm: AppCompatButton? = null
-    var mBtnGoBack: AppCompatImageButton? = null
-    val mFilesIsChecked: AtomicBoolean? = AtomicBoolean(false)
+    private var mBtnSelectedAll: AppCompatButton? = null
+    private var mBtnConfirm: AppCompatButton? = null
+    private var mBtnGoBack: AppCompatImageButton? = null
+    private val mFilesIsChecked: AtomicBoolean? = AtomicBoolean(false)
+
+    private val FILE_PICKER_PERMISSION_REQUEST_CODE = 10201
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(FilePickerManager.themeId)
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_file_picker)
         // 获取权限
-        val rxPermissions = RxPermissions(this)
-        val dispose = rxPermissions
-            .request(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            .subscribe {
-                if (!it) {
-                    Toast.makeText(this@FilePickerActivity, "未授予存储权限", Toast.LENGTH_SHORT).show()
-                    finish()
-                } else {
-                    Toast.makeText(this@FilePickerActivity, "已授予存储权限", Toast.LENGTH_SHORT).show()
-                    if (Environment.getExternalStorageState() != MEDIA_MOUNTED) {
-                        throw Throwable(IllegalStateException("外部存储不可用"))
-                    }
-
-                    // 根目录文件对象
-                    val rootFile = File(Environment.getExternalStorageDirectory().absoluteFile.toURI())
-
-                    // 文件列表数据集
-                    val listData = FileUtils.produceListDataSource(rootFile)
-                    mNavDataSource =
-                            FileUtils.produceNavDataSource(
-                                mNavDataSource,
-                                Environment.getExternalStorageDirectory().absolutePath
-                            )
-
-                    initView(listData, mNavDataSource)
-                }
-            }
+        if (setupPermission()) {
+            prepareLauncher()
+        }
     }
 
-    fun initView(fileListData: ArrayList<FileItemBean>, fileNavData: ArrayList<FileNavBean>) {
+    private fun setupPermission(): Boolean {
+        val permissionStatus = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+        if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
+            requestPermission()
+            return false
+        }
+        return true
+    }
+
+    /**
+     * 申请权限
+     */
+    private fun requestPermission() {
+        ActivityCompat.requestPermissions(
+            this@FilePickerActivity,
+            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+            FILE_PICKER_PERMISSION_REQUEST_CODE
+        )
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when (requestCode) {
+            FILE_PICKER_PERMISSION_REQUEST_CODE -> {
+                if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this@FilePickerActivity, "未授予存储权限", Toast.LENGTH_SHORT).show()
+                } else {
+                    prepareLauncher()
+                }
+            }
+        }
+    }
+
+    /**
+     * 在做完权限申请之后开始的真正的工作
+     */
+    private fun prepareLauncher() {
+        if (Environment.getExternalStorageState() != MEDIA_MOUNTED) {
+            throw Throwable(IllegalStateException("外部存储不可用"))
+        }
+
+        // 根目录文件对象
+        val rootFile = FileUtils.getRootFile()
+
+        // 文件列表数据集
+        val listData = FileUtils.produceListDataSource(rootFile)
+        mNavDataSource =
+                FileUtils.produceNavDataSource(
+                    mNavDataSource,
+                    Environment.getExternalStorageDirectory().absolutePath
+                )
+
+        initView(listData, mNavDataSource)
+    }
+
+    private fun initView(fileListData: ArrayList<FileItemBean>, fileNavData: ArrayList<FileNavBean>) {
         mRvList = findViewById(R.id.rv_list_file_picker)
         mNavList = findViewById(R.id.rv_nav_file_picker)
         mBtnSelectedAll = findViewById(R.id.btn_selected_all_file_picker)
@@ -115,7 +154,8 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
         mBtnConfirm!!.setOnClickListener(this)
 
         // 空视图
-        mEmptyView = layoutInflater.inflate(R.layout.item_empty_view_file_picker, mRvList!!.parent as ViewGroup, false)
+        mEmptyView =
+                layoutInflater.inflate(R.layout.item_empty_view_file_picker, mRvList!!.parent as ViewGroup, false)
         // 列表适配器
         mListAdapter = produceListAdapter(fileListData)
         // 导航栏适配器
@@ -188,7 +228,7 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
                 }
                 COMPRESSED -> {
                     val sub = item.mFileName.substring(item.mFileName.lastIndexOf("."))
-                    intent.type = "application/" + sub
+                    intent.type = "application/$sub"
                     intent.data = Uri.parse(item.filePath)
                     startActivity(intent)
                 }
@@ -209,11 +249,11 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
      * 从列表中时，需要获取目标文件夹在 nav 列表中的位置，如果没有则传入 -1
      * TODO 进入下一个文件夹之前，需要先清空当前的选中状态？貌似不需要
      */
-    fun enterDirAndUpdateUI(iFileBean: IFileBean) {
+    private fun enterDirAndUpdateUI(iFileBean: IFileBean) {
         var pos = -1
 
         for (data in mNavAdapter!!.data) {
-            if (data.dirPath.equals(iFileBean.filePath)) {
+            if (data.dirPath == iFileBean.filePath) {
                 pos = mNavAdapter!!.data.indexOf(data)
             }
         }
@@ -224,7 +264,7 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
     /**
      * 从导航栏中调用本方法，需要传入 pos，以便生产新的 nav adapter
      */
-    fun enterDirAndUpdateUI(iFileBean: IFileBean, position: Int) {
+    private fun enterDirAndUpdateUI(iFileBean: IFileBean, position: Int) {
         // 获取文件夹文件
         val nextFiles = File(iFileBean.filePath)
         // 获取列表的数据集
@@ -262,7 +302,6 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
 
     override fun onBackPressed() {
         super.onBackPressed()
-
     }
 
     override fun onClick(v: View?) {

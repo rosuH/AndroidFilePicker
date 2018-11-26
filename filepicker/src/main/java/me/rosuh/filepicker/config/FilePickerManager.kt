@@ -38,5 +38,7 @@ object FilePickerManager {
 
     var selfFilter: FileFilter?= null
 
+    var isUseSelfTheme:Boolean = false
+
     var themeId:Int = R.style.FilePickerThemeRail
 }

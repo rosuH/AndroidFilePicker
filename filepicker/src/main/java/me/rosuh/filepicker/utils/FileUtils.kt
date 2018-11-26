@@ -1,10 +1,12 @@
 package me.rosuh.filepicker.utils
 
+import android.os.Environment
 import me.rosuh.filepicker.bean.FileItemBean
 import me.rosuh.filepicker.bean.FileNavBean
 import me.rosuh.filepicker.bean.FileTypeEnum
 import me.rosuh.filepicker.bean.FileTypeEnum.DIR
 import me.rosuh.filepicker.config.FilePickerManager
+import me.rosuh.filepicker.config.StorageMediaTypeEnum.EXTERNAL_STORAGE
 import java.io.File
 
 /**
@@ -15,6 +17,21 @@ import java.io.File
 class FileUtils {
 
     companion object {
+        /**
+         * 根据配置参数获取根目录文件
+         * @return File
+         */
+        fun getRootFile():File{
+            when(FilePickerManager.mediaStorageType){
+                EXTERNAL_STORAGE -> {
+                    return File(Environment.getExternalStorageDirectory().absoluteFile.toURI())
+                }
+                else -> {
+                    return File(Environment.getExternalStorageDirectory().absoluteFile.toURI())
+                }
+            }
+        }
+
         /**
          * 根据传入的文件名返回文件类型
          * 判断的方式是根据文件的后缀名
