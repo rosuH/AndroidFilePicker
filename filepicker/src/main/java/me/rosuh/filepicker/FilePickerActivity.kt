@@ -71,7 +71,7 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
     val mFilesIsChecked: AtomicBoolean? = AtomicBoolean(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.FilePickerTheme)
+        setTheme(FilePickerManager.themeId)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_file_picker)
         // 获取权限

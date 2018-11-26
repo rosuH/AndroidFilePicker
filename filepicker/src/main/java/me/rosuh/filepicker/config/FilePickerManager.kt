@@ -1,5 +1,6 @@
 package me.rosuh.filepicker.config
 
+import me.rosuh.filepicker.R
 import me.rosuh.filepicker.config.StorageMediaTypeEnum.EXTERNAL_STORAGE
 
 /**
@@ -36,4 +37,6 @@ object FilePickerManager {
     var mediaStorageType: StorageMediaTypeEnum = EXTERNAL_STORAGE
 
     var selfFilter: FileFilter?= null
+
+    var themeId:Int = R.style.FilePickerThemeRail
 }

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="rail_color_primary">#434150</color>
+    <color name="rail_color_primary_dark">#27262f</color>
+    <color name="rail_color_accent">#00c381</color>
+    <color name="rail_text_color">#fff</color>
+    <color name="rail_textColor_Primary">#fff</color>
+
+    <color name="reply_color_primary">#304956</color>
+    <color name="reply_color_primary_dark">#d1dbe1</color>
+    <color name="reply_color_accent">#ffa900</color>
+    <color name="reply_text_color">#fff</color>
+    <color name="reply_textColor_Primary">#fff</color>
+
+    <color name="crane_color_primary">#7d005c</color>
+    <color name="crane_color_primary_dark">#57003a</color>
+    <color name="crane_color_accent">#f60000</color>
+    <color name="crane_text_color">#fff</color>
+    <color name="crane_textColor_Primary">#fff</color>
+
+    <color name="shrine_color_primary">#ffd9cd</color>
+    <color name="shrine_color_primary_dark">#f3d5d4</color>
+    <color name="shrine_color_accent">#48282c</color>
+    <color name="shrine_text_color">#48282c</color>
+    <color name="shrine_textColor_Primary">#fff</color>
+</resources>

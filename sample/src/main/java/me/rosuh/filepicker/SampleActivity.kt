@@ -21,6 +21,8 @@ class SampleActivity : AppCompatActivity(), FileFilter {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.demo_activity_main)
 
+        // 主题设置
+        FilePickerManager.themeId = R.style.FilePickerThemeReply
         FilePickerManager.selfFilter = this
 
         val btn = findViewById<Button>(R.id.btn_jump)
