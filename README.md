@@ -1,5 +1,5 @@
 # AndroidFilePicker
-[![](https://jitpack.io/v/rosuH/AndroidFilePicker.svg)](https://jitpack.io/#rosuH/AndroidFilePicker)
+[![](https://jitpack.io/v/me.rosuh/AndroidFilePicker.svg)](https://jitpack.io/#me.rosuh/AndroidFilePicker)
 
 :bookmark: FilePicker 是一个小巧快速的文件选择器框架，以快速集成、高自定义化和可配置化为目标不断前进~
 
@@ -33,9 +33,11 @@ allprojects {
 
 ```xml
 dependencies {
-    implementation 'com.github.rosuH:AndroidFilePicker:latest_version'
+    implementation 'me.rosuh:AndroidFilePicker:latest_version'
 }
 ```
+
+`latest_version` 请自行替换成最新版本
 
 2. 开始使用
 
