@@ -7,7 +7,9 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import me.rosuh.filepicker.R
 import me.rosuh.filepicker.bean.FileItemBean
-import me.rosuh.filepicker.bean.FileTypeEnum.*
+import me.rosuh.filepicker.config.FilePickerConfig
+import me.rosuh.filepicker.config.FilePickerManager
+import java.io.File
 
 /**
  *
@@ -16,6 +18,7 @@ import me.rosuh.filepicker.bean.FileTypeEnum.*
  */
 class FileListAdapter(layoutResId: Int, var data: ArrayList<FileItemBean>) :
     BaseQuickAdapter<FileItemBean, BaseViewHolder>(layoutResId, data) {
+    private val isSkipDir:Boolean = FilePickerConfig.getInstance(FilePickerManager.instance).isSkipDir
 
     override fun convert(helper: BaseViewHolder?, item: FileItemBean?) {
         helper!!.setText(R.id.tv_list_file_picker, item!!.fileName)
@@ -23,27 +26,16 @@ class FileListAdapter(layoutResId: Int, var data: ArrayList<FileItemBean>) :
         val checkBox = helper.getView<CheckBox>(R.id.cb_list_file_picker)
         checkBox.isChecked = item.isChecked
         checkBox.visibility = View.VISIBLE
-        when(item.fileType){
-            IMAGE -> {
-                icon.setImageResource(R.drawable.ic_image)
-                helper.addOnClickListener(R.id.cb_list_file_picker)
-            }
-            DIR -> {
-                icon.setImageResource(R.drawable.ic_folder)
-                checkBox.visibility = View.INVISIBLE
-            }
-            VIDEO -> {
-                icon.setImageResource(R.drawable.ic_video)
-                helper.addOnClickListener(R.id.cb_list_file_picker)
-            }
-            COMPRESSED -> {
-                icon.setImageResource(R.drawable.ic_compressed)
-                helper.addOnClickListener(R.id.cb_list_file_picker)
-            }
-            else -> {
-                icon.setImageResource(R.drawable.ic_unknown)
-                helper.addOnClickListener(R.id.cb_list_file_picker)
-            }
+
+        val isDir = File(item.filePath).isDirectory
+
+        if (isDir) {
+            icon.setImageResource(R.drawable.ic_folder)
+            checkBox.visibility = if (isSkipDir)  View.INVISIBLE else View.VISIBLE
+            return
         }
+        helper.addOnClickListener(R.id.cb_list_file_picker)
+        val resId:Int = item.fileType?.fileIconResId ?: R.drawable.ic_unknown
+        icon.setImageResource(resId)
     }
 }

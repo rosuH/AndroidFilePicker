@@ -1,11 +1,10 @@
 package me.rosuh.filepicker
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
@@ -18,24 +17,20 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.CheckBox
 import android.widget.Toast
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
-import me.rosuh.filepicker.bean.FileTypeEnum.COMPRESSED
-import me.rosuh.filepicker.bean.FileTypeEnum.DIR
-import me.rosuh.filepicker.bean.FileTypeEnum.IMAGE
-import me.rosuh.filepicker.bean.FileTypeEnum.OCTET_STREAM
-import me.rosuh.filepicker.bean.FileTypeEnum.UNKNOWN
-import me.rosuh.filepicker.bean.FileTypeEnum.VIDEO
 import me.rosuh.filepicker.adapter.FileListAdapter
 import me.rosuh.filepicker.adapter.FileNavAdapter
 import me.rosuh.filepicker.bean.FileItemBean
 import me.rosuh.filepicker.bean.FileNavBean
 import me.rosuh.filepicker.bean.IFileBean
+import me.rosuh.filepicker.config.FilePickerConfig
 import me.rosuh.filepicker.config.FilePickerManager
-import me.rosuh.filepicker.config.FilePickerManager.RESULT_KEY
 import me.rosuh.filepicker.utils.FileUtils
+import me.rosuh.filepicker.utils.PercentTextView
 import java.io.File
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -71,11 +66,11 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
     private var mBtnConfirm: AppCompatButton? = null
     private var mBtnGoBack: AppCompatImageButton? = null
     private val mFilesIsChecked: AtomicBoolean? = AtomicBoolean(false)
-
-    private val FILE_PICKER_PERMISSION_REQUEST_CODE = 10201
+    private var mTvSelected: PercentTextView? = null
+    private val pickerConfig by lazy { FilePickerConfig.getInstance(FilePickerManager.instance) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(FilePickerManager.themeId)
+        setTheme(pickerConfig.themeId)
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_file_picker)
@@ -101,7 +96,7 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
         ActivityCompat.requestPermissions(
             this@FilePickerActivity,
             arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-            FILE_PICKER_PERMISSION_REQUEST_CODE
+            Companion.FILE_PICKER_PERMISSION_REQUEST_CODE
         )
     }
 
@@ -111,7 +106,7 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
         grantResults: IntArray
     ) {
         when (requestCode) {
-            FILE_PICKER_PERMISSION_REQUEST_CODE -> {
+            Companion.FILE_PICKER_PERMISSION_REQUEST_CODE -> {
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(this@FilePickerActivity, "未授予存储权限", Toast.LENGTH_SHORT).show()
                 } else {
@@ -126,7 +121,7 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
      */
     private fun prepareLauncher() {
         if (Environment.getExternalStorageState() != MEDIA_MOUNTED) {
-            throw Throwable(IllegalStateException("外部存储不可用"))
+            throw Throwable(cause = IllegalStateException("外部存储不可用"))
         }
 
         // 根目录文件对象
@@ -149,6 +144,7 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
         mBtnSelectedAll = findViewById(R.id.btn_selected_all_file_picker)
         mBtnConfirm = findViewById(R.id.btn_confirm_file_picker)
         mBtnGoBack = findViewById(R.id.btn_go_back_file_picker)
+        mTvSelected = findViewById(R.id.tv_toolbar_title_file_picker)
         mBtnGoBack!!.setOnClickListener(this)
         mBtnSelectedAll!!.setOnClickListener(this)
         mBtnConfirm!!.setOnClickListener(this)
@@ -198,7 +194,7 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
     }
 
     /**
-     * 根据被点击项的类型，触发不同的操作
+     * 传递条目点击事件给调用者
      * @param adapter BaseQuickAdapter<*, *>?
      * @param view View?
      * @param position Int
@@ -207,40 +203,13 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
         // 如果不是点击列表，则返回
         if (view!!.id != R.id.item_list_file_picker) return
         val item = adapter!!.getItem(position) as FileItemBean
+        val file = File(item.filePath)
 
-        val intent = Intent()
-        intent.action = Intent.ACTION_SEND
-        try {
-            when (item.fileType) {
-                DIR -> {
-                    // 文件夹则进入
-                    enterDirAndUpdateUI(item)
-                }
-                IMAGE -> {
-                    intent.type = "image/*"
-                    intent.data = Uri.parse(item.mFilePath)
-                    startActivity(intent)
-                }
-                VIDEO -> {
-                    intent.type = "video/*"
-                    intent.data = Uri.parse(item.filePath)
-                    startActivity(intent)
-                }
-                COMPRESSED -> {
-                    val sub = item.mFileName.substring(item.mFileName.lastIndexOf("."))
-                    intent.type = "application/$sub"
-                    intent.data = Uri.parse(item.filePath)
-                    startActivity(intent)
-                }
-                UNKNOWN -> {
-                    Toast.makeText(this@FilePickerActivity, "我们不知道如何打开该文件", Toast.LENGTH_SHORT).show()
-                }
-                OCTET_STREAM -> {
-                    Toast.makeText(this@FilePickerActivity, "我们不知道如何打开该文件", Toast.LENGTH_SHORT).show()
-                }
-            }
-        } catch (ae: ActivityNotFoundException) {
-            Toast.makeText(this@FilePickerActivity, "没有应用可以打开该文件", Toast.LENGTH_SHORT).show()
+        if (file.exists() && file.isDirectory) {
+            // 如果是文件夹，则进入
+            enterDirAndUpdateUI(item)
+        } else {
+            FilePickerConfig.getInstance(FilePickerManager.instance).fileIFileItemOnClickListener?.onItemClick(item, position)
         }
     }
 
@@ -263,6 +232,8 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
 
     /**
      * 从导航栏中调用本方法，需要传入 pos，以便生产新的 nav adapter
+     * @param iFileBean IFileBean
+     * @param position Int 用来定位导航栏的当前 item，如果是后退按钮，则传入倒数第二个 position
      */
     private fun enterDirAndUpdateUI(iFileBean: IFileBean, position: Int) {
         // 获取文件夹文件
@@ -301,7 +272,13 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
+        if (mNavDataSource.size <= 1) {
+            super.onBackPressed()
+        } else {
+            // 即将进入的 item 的索引
+            val willEnterItemPos = mNavDataSource.size - 2
+            enterDirAndUpdateUI(mNavDataSource[willEnterItemPos], willEnterItemPos)
+        }
     }
 
     override fun onClick(v: View?) {
@@ -310,20 +287,26 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
             R.id.btn_selected_all_file_picker -> {
                 if (mFilesIsChecked!!.get()) {
                     for (data in mListAdapter!!.data) {
-                        if (FilePickerManager.isSkipDir && data.fileType == DIR) {
+                        val file = File(data.filePath)
+                        if (pickerConfig.isSkipDir && file.exists() && file.isDirectory) {
                             continue
                         }
                         data.isChecked = false
                     }
-                    mBtnSelectedAll!!.text = "图片全选"
+                    mBtnSelectedAll!!.text = pickerConfig.selectAllText
+                    mTvSelected!!.text = pickerConfig.goBackText
                 } else {
+                    var checkedCount = 0
                     for (data in mListAdapter!!.data) {
-                        if (FilePickerManager.isSkipDir && data.fileType == DIR) {
+                        val file = File(data.filePath)
+                        if (pickerConfig.isSkipDir && file.exists() && file.isDirectory) {
                             continue
                         }
                         data.isChecked = true
+                        checkedCount++
                     }
-                    mBtnSelectedAll!!.text = "取消选中"
+                    mBtnSelectedAll!!.text = pickerConfig.unSelectAllText
+                    mTvSelected!!.text = pickerConfig.hadSelectedText + checkedCount
                 }
 
                 mListAdapter!!.notifyDataSetChanged()
@@ -344,7 +327,7 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
                     finish()
                 }
 
-                intent.putExtra(RESULT_KEY, list)
+                FilePickerManager.instance.saveData(list)
                 this@FilePickerActivity.setResult(Activity.RESULT_OK, intent)
                 finish()
             }
@@ -352,5 +335,9 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
                 finish()
             }
         }
+    }
+
+    companion object {
+        const val FILE_PICKER_PERMISSION_REQUEST_CODE = 10201
     }
 }

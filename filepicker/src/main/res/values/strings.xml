@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name_file_picker">filepicker</string>
+    <string name="file_picker_go_back">返回</string>
+    <string name="file_picker_selected_count">已选择·%1$d</string>
 </resources>

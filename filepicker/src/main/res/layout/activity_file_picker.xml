@@ -38,7 +38,7 @@
             android:id="@+id/tv_toolbar_title_file_picker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="返回"
+            android:text="@string/file_picker_go_back"
             android:textSize="34px"
             android:textColor="?android:attr/textColor"
             app:layout_constraintBottom_toBottomOf="parent"
