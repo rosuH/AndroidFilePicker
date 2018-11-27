@@ -151,7 +151,8 @@ override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) 
 # Special Thanks To:
 
 - [*1 @whichName](https://github.com/whichname)
-
 - [BRVAH](https://github.com/CymChad/BaseRecyclerViewAdapterHelper)
 - [Matisse](https://github.com/zhihu/Matisse)
+- [默认图标作者 Shulk](http://iconfont.cn/collections/detail?spm=a313x.7781069.1998910419.d9df05512&cid=11271)
+- [主题配色](https://material.io/design/material-studies/about-our-material-studies.html)
 
