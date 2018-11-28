@@ -11,15 +11,27 @@ import android.widget.Toast
 import me.rosuh.filepicker.bean.FileItemBean
 import me.rosuh.filepicker.config.AbstractFileFilter
 import me.rosuh.filepicker.config.FilePickerManager
+import me.rosuh.filepicker.filetype.RasterImageFileType
 
 class SampleActivity : AppCompatActivity() {
-    var rv: RecyclerView? = null
+    private var rv: RecyclerView? = null
 
     /**
      * 自定义文件过滤器
      */
     private val fileFilter = object : AbstractFileFilter(){
         override fun doFilter(listData: ArrayList<FileItemBean>): ArrayList<FileItemBean> {
+            val iterator = listData.iterator()
+            while (iterator.hasNext()){
+                val item = iterator.next()
+                // 如果是文件夹则略过
+                if (item.isDir) continue
+                // 判断文件类型是否是图片
+                if (item.fileType !is RasterImageFileType){
+                    iterator.remove()
+                }
+            }
+
             return listData
         }
     }

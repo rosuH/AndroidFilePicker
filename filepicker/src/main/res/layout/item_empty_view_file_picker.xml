@@ -15,11 +15,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <android.support.v7.widget.AppCompatTextView
+    <me.rosuh.filepicker.utils.PercentTextView
         android:id="@+id/tv_empty_file_picker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="空空如也？"
+        android:textSize="48px"
+        android:textColor="#757575"
         app:layout_constraintBottom_toTopOf="@+id/iv_empty_file_picker"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

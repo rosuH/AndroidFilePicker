@@ -14,8 +14,8 @@ interface IFileType {
     val fileIconResId:Int
     /**
      * 传入文件路径，判断是否为该类型
-     * @param filePath String
+     * @param fileName String
      * @return Boolean
      */
-    fun verify(filePath:String):Boolean
+    fun verify(fileName:String):Boolean
 }

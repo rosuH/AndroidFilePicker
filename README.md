@@ -30,11 +30,31 @@ dependencies {
 
 `latest_version` 请自行替换成最新版本
 
-2. 开始使用
+2. 开始使用(`Kotlin`)
 
 简单的链式调用示意：
 
 ```java
+/**
+* 自定义文件过滤器，此处使用库默认的文件类型
+*/
+private val fileFilter = object : AbstractFileFilter(){
+	override fun doFilter(listData: ArrayList<FileItemBean>): ArrayList<FileItemBean> {
+		val iterator = listData.iterator()
+        while (iterator.hasNext()){
+        	val item = iterator.next()
+            // 如果是文件夹则略过
+            if (item.isDir) continue
+            // 判断文件类型是否是图片
+            if (item.fileType !is RasterImageFileType){
+            	iterator.remove()
+			}
+		}
+		return listData
+	}
+}
+
+...
 FilePickerManager.instance
                 .from(this@SampleActivity)
                 // 主题设置
@@ -106,10 +126,9 @@ override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) 
      - `FileUtils`类包含了文件相关的大部分所需的函数
      - `PercentLayoutUtils`、`PercentTextView`是`TextView`的相对布局实现（*1）
 
-
 # Log
 
-## 2018-11-27
+## <0.2.0>_2018-11-27  
 
 :recycle: :art: :rocket: :memo:
 
