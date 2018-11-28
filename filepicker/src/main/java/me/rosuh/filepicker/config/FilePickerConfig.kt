@@ -16,44 +16,44 @@ class FilePickerConfig private constructor(private val pickerManager: FilePicker
      * 是否显示隐藏文件，默认隐藏
      * 以符号 . 开头的文件或文件夹视为隐藏
      */
-    var isShowHidingFiles = false
+    internal var isShowHidingFiles = false
     /**
      * 是否显示选中框，默认显示
      */
-    var isShowingCheckBox = true
+    internal var isShowingCheckBox = true
     /**
      * 在选中时是否忽略文件夹
      */
-    var isSkipDir = true
+    internal var isSkipDir = true
     /**
      * 存储类型
      */
-    var mediaStorageName = "SD 存储卡"
-    var mediaStorageType: StorageMediaTypeEnum = StorageMediaTypeEnum.EXTERNAL_STORAGE
+    internal var mediaStorageName = "SD 存储卡"
+    internal var mediaStorageType: StorageMediaTypeEnum = StorageMediaTypeEnum.EXTERNAL_STORAGE
     /**
      * 自定义过滤器
      */
-    var selfFilter: AbstractFileFilter? = null
+    internal var selfFilter: AbstractFileFilter? = null
     /**
      * 自定文件类型甄别器和默认类型甄别器
      */
-    var selfFileType: AbstractFileType? = null
-    val defaultFileType:DefaultFileType by lazy { DefaultFileType() }
+    internal var selfFileType: AbstractFileType? = null
+    internal val defaultFileType:DefaultFileType by lazy { DefaultFileType() }
     /**
      * 点击操作接口
      */
-    var fileIFileItemOnClickListener: IFileItemOnClickListener? = null
+    internal var fileIFileItemOnClickListener: IFileItemOnClickListener? = null
     /**
      * 主题
      */
-    var themeId: Int = R.style.FilePickerThemeRail
+    internal var themeId: Int = R.style.FilePickerThemeRail
     /**
      * 全选文字，取消全选文字，返回文字，已选择文字
      */
-    var selectAllText: String? = "图片全选"
-    var unSelectAllText: String? = "取消全选"
-    var goBackText: String? = "返回"
-    var hadSelectedText: String? = "已选择·"
+    internal var selectAllText: String? = "图片全选"
+    internal var unSelectAllText: String? = "取消全选"
+    internal var goBackText: String? = "返回"
+    internal var hadSelectedText: String? = "已选择·"
     fun showHiddenFiles(isShow: Boolean): FilePickerConfig {
         isShowHidingFiles = isShow
         return this
@@ -80,7 +80,7 @@ class FilePickerConfig private constructor(private val pickerManager: FilePicker
         return this
     }
 
-    fun fileTyper(fileType: AbstractFileType): FilePickerConfig {
+    fun fileType(fileType: AbstractFileType): FilePickerConfig {
         selfFileType = fileType
         return this
     }

@@ -2,8 +2,6 @@ package me.rosuh.filepicker.config
 
 import android.app.Activity
 import android.support.v4.app.Fragment
-import me.rosuh.filepicker.R
-import me.rosuh.filepicker.config.StorageMediaTypeEnum.EXTERNAL_STORAGE
 import java.lang.ref.WeakReference
 
 /**
@@ -26,8 +24,8 @@ class FilePickerManager private constructor(){
      */
     val RESULT_KEY = "FILE_PICKER_MANAGER"
 
-    var context:WeakReference<Activity> ?= null
-    var fragment:WeakReference<Fragment> ?= null
+    internal var context:WeakReference<Activity> ?= null
+    internal var fragment:WeakReference<Fragment> ?= null
 
     fun from(activity: Activity):FilePickerConfig{
         this.context = WeakReference(activity)

@@ -96,7 +96,7 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
         ActivityCompat.requestPermissions(
             this@FilePickerActivity,
             arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-            Companion.FILE_PICKER_PERMISSION_REQUEST_CODE
+            FILE_PICKER_PERMISSION_REQUEST_CODE
         )
     }
 
@@ -106,7 +106,7 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
         grantResults: IntArray
     ) {
         when (requestCode) {
-            Companion.FILE_PICKER_PERMISSION_REQUEST_CODE -> {
+            FILE_PICKER_PERMISSION_REQUEST_CODE -> {
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(this@FilePickerActivity, "未授予存储权限", Toast.LENGTH_SHORT).show()
                 } else {
@@ -338,6 +338,6 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
     }
 
     companion object {
-        const val FILE_PICKER_PERMISSION_REQUEST_CODE = 10201
+        private const val FILE_PICKER_PERMISSION_REQUEST_CODE = 10201
     }
 }
