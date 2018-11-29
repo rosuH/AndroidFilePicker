@@ -1,4 +1,7 @@
+![Banner](https://github.com/rosuH/AndroidFilePicker/blob/master/Android_FilePicker_Banner.png)
+
 # AndroidFilePicker
+
 [![](https://jitpack.io/v/me.rosuh/AndroidFilePicker.svg)](https://jitpack.io/#me.rosuh/AndroidFilePicker)
 
 # I 简介
@@ -7,7 +10,7 @@
 
 ## 展示
 
-展示图正在努力绘制中...不如 clone 后 build 出来看看？😝
+~~展示图正在努力绘制中...不如 clone 后 build 出来看看？😝
 
 # II 使用
 
