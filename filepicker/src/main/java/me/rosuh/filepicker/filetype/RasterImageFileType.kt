@@ -7,7 +7,7 @@ import me.rosuh.filepicker.R
  * @author rosu
  * @date 2018/11/27
  */
-class RasterImageFileType : IFileType {
+class RasterImageFileType : FileType {
 
     override val fileType: String
         get() = "Image"

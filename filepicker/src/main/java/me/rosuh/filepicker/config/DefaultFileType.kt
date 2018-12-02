@@ -1,7 +1,6 @@
 package me.rosuh.filepicker.config
 
-import me.rosuh.filepicker.R
-import me.rosuh.filepicker.bean.FileItemBean
+import me.rosuh.filepicker.bean.FileItemBeanImpl
 import me.rosuh.filepicker.filetype.*
 
 /**
@@ -11,8 +10,8 @@ import me.rosuh.filepicker.filetype.*
  */
 class DefaultFileType: AbstractFileType(){
 
-    private val allDefaultFileType:ArrayList<IFileType> by lazy {
-        val fileTypes = ArrayList<IFileType>()
+    private val allDefaultFileType:ArrayList<FileType> by lazy {
+        val fileTypes = ArrayList<FileType>()
         fileTypes.add(AudioFileType())
         fileTypes.add(RasterImageFileType())
         fileTypes.add(CompressedFileType())
@@ -26,13 +25,13 @@ class DefaultFileType: AbstractFileType(){
         fileTypes
     }
 
-    override fun fillFileType(itemBean: FileItemBean): FileItemBean {
+    override fun fillFileType(itemBeanImpl: FileItemBeanImpl): FileItemBeanImpl {
         for (type in allDefaultFileType){
-            if (type.verify(itemBean.fileName)){
-                itemBean.fileType = type
+            if (type.verify(itemBeanImpl.fileName)){
+                itemBeanImpl.fileType = type
                 break
             }
         }
-        return itemBean
+        return itemBeanImpl
     }
 }

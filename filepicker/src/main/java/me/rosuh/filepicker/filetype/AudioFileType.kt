@@ -8,7 +8,7 @@ import me.rosuh.filepicker.R
  * @author rosu
  * @date 2018/11/27
  */
-class AudioFileType : IFileType {
+class AudioFileType : FileType {
     override val fileType: String
         get() = "Audio"
     override val fileIconResId: Int

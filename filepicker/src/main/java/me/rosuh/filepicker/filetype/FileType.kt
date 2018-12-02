@@ -5,7 +5,7 @@ package me.rosuh.filepicker.filetype
  * @author rosu
  * @date 2018/11/27
  */
-interface IFileType {
+interface FileType {
     /**
      * 文件类型
      */

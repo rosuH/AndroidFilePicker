@@ -1,8 +1,8 @@
 package me.rosuh.filepicker.utils
 
 import android.os.Environment
-import me.rosuh.filepicker.bean.FileItemBean
-import me.rosuh.filepicker.bean.FileNavBean
+import me.rosuh.filepicker.bean.FileItemBeanImpl
+import me.rosuh.filepicker.bean.FileNavBeanImpl
 import me.rosuh.filepicker.config.FilePickerConfig
 import me.rosuh.filepicker.config.FilePickerManager
 import me.rosuh.filepicker.config.StorageMediaTypeEnum.EXTERNAL_STORAGE
@@ -35,19 +35,19 @@ class FileUtils {
         }
 
         /**
-         * 获取给定文件对象 @param rootFil 下的所有文件，生成列表项对象 @return ArrayList<FileItemBean>
+         * 获取给定文件对象 @param rootFil 下的所有文件，生成列表项对象 @return ArrayList<FileItemBeanImpl>
          */
-        fun produceListDataSource(rootFile: File): ArrayList<FileItemBean> {
-            var listData: ArrayList<FileItemBean>? = ArrayList()
+        fun produceListDataSource(rootFile: File): ArrayList<FileItemBeanImpl> {
+            var listData: ArrayList<FileItemBeanImpl>? = ArrayList()
 
             for (file in rootFile.listFiles()) {
                 //以符号 . 开头的视为隐藏文件或隐藏文件夹，后面进行过滤
                 val isHiddenFile = file.name.startsWith(".")
                 if (file.isDirectory) {
-                    listData?.add(FileItemBean(file.name, file.path, false, null, true, isHiddenFile))
+                    listData?.add(FileItemBeanImpl(file.name, file.path, false, null, true, isHiddenFile))
                     continue
                 }
-                val itemBean = FileItemBean(file.name, file.path, false, null, false, isHiddenFile)
+                val itemBean = FileItemBeanImpl(file.name, file.path, false, null, false, isHiddenFile)
                 // 如果调用者没有实现文件类型甄别器，则使用默认是的甄别器
                 pickerConfig.selfFileType?.fillFileType(itemBean) ?: pickerConfig.defaultFileType.fillFileType(itemBean)
                 listData?.add(itemBean)
@@ -64,9 +64,9 @@ class FileUtils {
 
         /**
          * 隐藏文件的过滤器，传入列表的数据集，然后将被视为隐藏文件的条目从中删除
-         * @param listData ArrayList<FileItemBean>
+         * @param listData ArrayList<FileItemBeanImpl>
          */
-        private fun filesHiderFilter(listData: ArrayList<FileItemBean>): ArrayList<FileItemBean> {
+        private fun filesHiderFilter(listData: ArrayList<FileItemBeanImpl>): ArrayList<FileItemBeanImpl> {
             return ArrayList(listData.filter { !it.isHide })
         }
 
@@ -75,14 +75,14 @@ class FileUtils {
          * 如果是退回到上层文件夹，则删除后续子目录元素
          */
         fun produceNavDataSource(
-            currentDataSource: ArrayList<FileNavBean>,
+            currentDataSource: ArrayList<FileNavBeanImpl>,
             nextPath: String
-        ): ArrayList<FileNavBean> {
+        ): ArrayList<FileNavBeanImpl> {
 
             if (currentDataSource.isEmpty()) {
                 // 如果为空，为根目录
                 currentDataSource.add(
-                    FileNavBean(
+                    FileNavBeanImpl(
                         pickerConfig.mediaStorageName,
                         nextPath
                     )
@@ -111,7 +111,7 @@ class FileUtils {
             }
             // 循环到此，意味着将是进入子目录
             currentDataSource.add(
-                FileNavBean(
+                FileNavBeanImpl(
                     nextPath.substring(nextPath.lastIndexOf("/") + 1),
                     nextPath
                 )

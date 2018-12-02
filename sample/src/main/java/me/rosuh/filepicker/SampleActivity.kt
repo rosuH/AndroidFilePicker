@@ -8,7 +8,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.widget.Button
 import android.widget.Toast
-import me.rosuh.filepicker.bean.FileItemBean
+import me.rosuh.filepicker.bean.FileItemBeanImpl
 import me.rosuh.filepicker.config.AbstractFileFilter
 import me.rosuh.filepicker.config.FilePickerManager
 import me.rosuh.filepicker.filetype.RasterImageFileType
@@ -20,7 +20,7 @@ class SampleActivity : AppCompatActivity() {
      * 自定义文件过滤器
      */
     private val fileFilter = object : AbstractFileFilter(){
-        override fun doFilter(listData: ArrayList<FileItemBean>): ArrayList<FileItemBean> {
+        override fun doFilter(listData: ArrayList<FileItemBeanImpl>): ArrayList<FileItemBeanImpl> {
             val iterator = listData.iterator()
             while (iterator.hasNext()){
                 val item = iterator.next()

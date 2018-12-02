@@ -8,7 +8,7 @@ import me.rosuh.filepicker.R
  * @author rosu
  * @date 2018/11/27
  */
-class WebFileType : IFileType {
+class WebFileType : FileType {
     override val fileType: String
         get() = "Web"
     override val fileIconResId: Int

@@ -8,7 +8,7 @@ import me.rosuh.filepicker.R
  * @author rosu
  * @date 2018/11/27
  */
-class ExecutableFileType : IFileType {
+class ExecutableFileType : FileType {
     override val fileType: String
         get() = "Executable"
     override val fileIconResId: Int

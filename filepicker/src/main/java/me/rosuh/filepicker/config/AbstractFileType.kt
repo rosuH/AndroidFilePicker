@@ -1,6 +1,6 @@
 package me.rosuh.filepicker.config
 
-import me.rosuh.filepicker.bean.FileItemBean
+import me.rosuh.filepicker.bean.FileItemBeanImpl
 
 /**
  *
@@ -9,8 +9,8 @@ import me.rosuh.filepicker.bean.FileItemBean
  */
 abstract class AbstractFileType {
     /**
-     * 自定义文件类型识别方法，传入 @param itemBean 条目数据对象，
+     * 自定义文件类型识别方法，传入 @param itemBeanImpl 条目数据对象，
      * 由实现者来实现文件类型的甄别，返回填充了 fileType 的方法
      */
-    abstract fun fillFileType(itemBean: FileItemBean): FileItemBean
+    abstract fun fillFileType(itemBeanImpl: FileItemBeanImpl): FileItemBeanImpl
 }

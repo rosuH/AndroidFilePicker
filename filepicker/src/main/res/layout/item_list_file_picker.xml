@@ -3,9 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_list_file_picker"
-    android:background="?attr/selectableItemBackground"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:foreground="?attr/selectableItemBackground"
+    android:background="?attr/selectableItemBackground"
+    android:focusable="true">
 
     <Space
         android:id="@+id/space_top_file_picker_file_picker"
@@ -33,7 +36,7 @@
         android:maxLines="1"
         android:scrollHorizontally="true"
         android:textColor="@color/shrine_text_color"
-        android:textSize="34px"
+        android:textSize="40px"
         app:layout_constraintBottom_toTopOf="@+id/space_bottom_file_picker"
         app:layout_constraintEnd_toStartOf="@+id/guideline_file_picker"
         app:layout_constraintHorizontal_bias="0.0691"

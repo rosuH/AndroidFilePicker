@@ -1,13 +1,11 @@
 package me.rosuh.filepicker.bean
 
-import me.rosuh.filepicker.bean.IFileBean
-
 /**
  *
  * @author rosu
  * @date 2018/11/21
  */
-class FileNavBean(val dirName:String, val dirPath:String): IFileBean {
+class FileNavBeanImpl(val dirName:String, val dirPath:String): FileBean {
     override var fileName: String
         get() = dirName
         set(value) {}

@@ -1,7 +1,6 @@
 package me.rosuh.filepicker
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -17,16 +16,14 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.CheckBox
 import android.widget.Toast
-import com.chad.library.adapter.base.BaseQuickAdapter
-import com.chad.library.adapter.base.BaseViewHolder
 import me.rosuh.filepicker.adapter.FileListAdapter
 import me.rosuh.filepicker.adapter.FileNavAdapter
-import me.rosuh.filepicker.bean.FileItemBean
-import me.rosuh.filepicker.bean.FileNavBean
-import me.rosuh.filepicker.bean.IFileBean
+import me.rosuh.filepicker.adapter.RecyclerViewListener
+import me.rosuh.filepicker.bean.FileItemBeanImpl
+import me.rosuh.filepicker.bean.FileNavBeanImpl
+import me.rosuh.filepicker.bean.FileBean
 import me.rosuh.filepicker.config.FilePickerConfig
 import me.rosuh.filepicker.config.FilePickerManager
 import me.rosuh.filepicker.utils.FileUtils
@@ -34,8 +31,7 @@ import me.rosuh.filepicker.utils.PercentTextView
 import java.io.File
 import java.util.concurrent.atomic.AtomicBoolean
 
-class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickListener, View.OnClickListener,
-    BaseQuickAdapter.OnItemChildClickListener {
+class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerViewListener.IOnItemClickListener{
 
     /**
      * 文件列表
@@ -48,15 +44,15 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
     /**
      * 文件列表适配器
      */
-    private var mListAdapter: BaseQuickAdapter<FileItemBean, BaseViewHolder>? = null
+    private var mListAdapter: FileListAdapter? = null
     /**
      * 导航栏列表适配器
      */
-    private var mNavAdapter: BaseQuickAdapter<FileNavBean, BaseViewHolder>? = null
+    private var mNavAdapter: FileNavAdapter? = null
     /**
      * 导航栏数据集
      */
-    private var mNavDataSource = ArrayList<FileNavBean>()
+    private var mNavDataSource = ArrayList<FileNavBeanImpl>()
     /**
      * 文件夹为空时展示的空视图
      */
@@ -68,6 +64,10 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
     private val mFilesIsChecked: AtomicBoolean? = AtomicBoolean(false)
     private var mTvSelected: PercentTextView? = null
     private val pickerConfig by lazy { FilePickerConfig.getInstance(FilePickerManager.instance) }
+    private val fileListListener:RecyclerViewListener by lazy { getListener(mRvList!!) }
+    private val navListener:RecyclerViewListener by lazy { getListener(mNavList!!) }
+    private val fileListener:RecyclerViewListener by lazy { getListener(mRvList!!) }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(pickerConfig.themeId)
@@ -138,10 +138,10 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
         initView(listData, mNavDataSource)
     }
 
-    private fun initView(fileListData: ArrayList<FileItemBean>, fileNavData: ArrayList<FileNavBean>) {
+    private fun initView(fileListDatumImpls: ArrayList<FileItemBeanImpl>, fileNavDatumImpls: ArrayList<FileNavBeanImpl>) {
         mRvList = findViewById(R.id.rv_list_file_picker)
         mNavList = findViewById(R.id.rv_nav_file_picker)
-        mBtnSelectedAll = findViewById(R.id.btn_selected_all_file_picker)
+        mBtnSelectedAll = this.findViewById(R.id.btn_selected_all_file_picker)
         mBtnConfirm = findViewById(R.id.btn_confirm_file_picker)
         mBtnGoBack = findViewById(R.id.btn_go_back_file_picker)
         mTvSelected = findViewById(R.id.tv_toolbar_title_file_picker)
@@ -153,14 +153,24 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
         mEmptyView =
                 layoutInflater.inflate(R.layout.item_empty_view_file_picker, mRvList!!.parent as ViewGroup, false)
         // 列表适配器
-        mListAdapter = produceListAdapter(fileListData)
+        mListAdapter = produceListAdapter(fileListDatumImpls)
         // 导航栏适配器
-        mNavAdapter = produceNavAdapter(fileNavData)
+        mNavAdapter = produceNavAdapter(fileNavDatumImpls)
         mRvList!!.adapter = mListAdapter
         mNavList!!.adapter = mNavAdapter
         mRvList!!.layoutManager = LinearLayoutManager(this@FilePickerActivity)
         val linearLayoutManager = LinearLayoutManager(this@FilePickerActivity, LinearLayoutManager.HORIZONTAL, false)
         mNavList!!.layoutManager = linearLayoutManager
+
+        mRvList!!.addOnItemTouchListener(fileListListener)
+        mNavList!!.addOnItemTouchListener(navListener)
+    }
+
+    /**
+     * 获取两个列表的监听器
+     */
+    private fun getListener(recyclerView: RecyclerView):RecyclerViewListener{
+        return RecyclerViewListener(this@FilePickerActivity, recyclerView, this@FilePickerActivity)
     }
 
     /**
@@ -168,16 +178,14 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
      * @param dataSource 列表数据集
      * @return 列表适配器
      */
-    private fun produceListAdapter(dataSource: ArrayList<FileItemBean>): BaseQuickAdapter<FileItemBean, BaseViewHolder> {
-        val fileListAdapter = FileListAdapter(R.layout.item_list_file_picker, dataSource)
+    private fun produceListAdapter(dataSource: ArrayList<FileItemBeanImpl>): FileListAdapter {
+        val fileListAdapter = FileListAdapter(this@FilePickerActivity, dataSource)
         // 避免频繁添加空视图导致 view 存在 parent 视图，所以需要先判断
         if (mEmptyView!!.parent != null) {
             val viewGroup = mEmptyView!!.parent as ViewGroup
             viewGroup.removeView(mEmptyView)
         }
-        fileListAdapter.emptyView = mEmptyView
-        fileListAdapter.onItemClickListener = this
-        fileListAdapter.onItemChildClickListener = this
+        fileListAdapter.recyclerViewListener = fileListener
         return fileListAdapter
     }
 
@@ -186,30 +194,76 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
      * @param dataSource 导航栏数据集
      * @return 导航栏适配器
      */
-    private fun produceNavAdapter(dataSource: ArrayList<FileNavBean>): BaseQuickAdapter<FileNavBean, BaseViewHolder> {
-        val adapter = FileNavAdapter(R.layout.item_nav_file_picker, dataSource)
-        adapter.onItemClickListener = this
-        adapter.onItemChildClickListener = this
+    private fun produceNavAdapter(dataSource: ArrayList<FileNavBeanImpl>): FileNavAdapter {
+        val adapter = FileNavAdapter(this@FilePickerActivity, dataSource)
+        adapter.recyclerViewListener = navListener
         return adapter
     }
 
     /**
      * 传递条目点击事件给调用者
-     * @param adapter BaseQuickAdapter<*, *>?
+     * @param recyclerAdapter RecyclerView.Adapter
      * @param view View?
      * @param position Int
      */
-    override fun onItemClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
-        // 如果不是点击列表，则返回
-        if (view!!.id != R.id.item_list_file_picker) return
-        val item = adapter!!.getItem(position) as FileItemBean
-        val file = File(item.filePath)
+    override fun onItemClick(
+        recyclerAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
+        view: View,
+        position: Int
+    ) {
+        when(view.id){
+            R.id.item_list_file_picker -> {
+                val item = (recyclerAdapter as FileListAdapter).getItem(position)
+                item?:return
+                val file = File(item.filePath)
+                if (file.exists() && file.isDirectory) {
+                    // 如果是文件夹，则进入
+                    enterDirAndUpdateUI(item)
+                } else {
+                    FilePickerConfig.getInstance(FilePickerManager.instance).fileFileItemOnClickListener.onItemClick(recyclerAdapter, view, position)
+                }
+            }
+        }
+    }
 
-        if (file.exists() && file.isDirectory) {
-            // 如果是文件夹，则进入
-            enterDirAndUpdateUI(item)
-        } else {
-            FilePickerConfig.getInstance(FilePickerManager.instance).fileIFileItemOnClickListener?.onItemClick(item, position)
+    /**
+     * 条目被长按
+     */
+    override fun onItemLongClick(
+        recyclerAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
+        view: View,
+        position: Int
+    ) {
+        if (view.id != R.id.item_list_file_picker) return
+        val item = (recyclerAdapter as FileListAdapter).getItem(position)
+        item?:return
+        val file = File(item.filePath)
+        val isSkipDir = FilePickerConfig.getInstance(FilePickerManager.instance).isSkipDir
+        // 如果是文件夹并且没有略过文件夹
+        if (file.exists() && file.isDirectory && isSkipDir) return
+        FilePickerConfig.getInstance(FilePickerManager.instance).fileFileItemOnClickListener.onItemLongClick(recyclerAdapter, view, position)
+    }
+
+    /**
+     * 子控件被点击
+     */
+    override fun onItemChildClick(
+        recyclerAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
+        view: View,
+        position: Int
+    ) {
+        when (view.id) {
+            R.id.btn_nav_file_picker -> {
+                val item = (recyclerAdapter as FileNavAdapter).getItem(position)
+                item?:return
+                enterDirAndUpdateUI(item, position)
+            }
+            R.id.cb_list_file_picker -> {
+                val item = (recyclerAdapter as FileListAdapter).getItem(position)
+                item?:return
+                val checkBox = view.findViewById<CheckBox>(R.id.cb_list_file_picker)
+                item.isChecked = checkBox.isChecked
+            }
         }
     }
 
@@ -218,30 +272,30 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
      * 从列表中时，需要获取目标文件夹在 nav 列表中的位置，如果没有则传入 -1
      * TODO 进入下一个文件夹之前，需要先清空当前的选中状态？貌似不需要
      */
-    private fun enterDirAndUpdateUI(iFileBean: IFileBean) {
+    private fun enterDirAndUpdateUI(fileBean: FileBean) {
         var pos = -1
 
         for (data in mNavAdapter!!.data) {
-            if (data.dirPath == iFileBean.filePath) {
+            if (data.dirPath == fileBean.filePath) {
                 pos = mNavAdapter!!.data.indexOf(data)
             }
         }
 
-        enterDirAndUpdateUI(iFileBean, pos)
+        enterDirAndUpdateUI(fileBean, pos)
     }
 
     /**
      * 从导航栏中调用本方法，需要传入 pos，以便生产新的 nav adapter
-     * @param iFileBean IFileBean
+     * @param fileBean FileBean
      * @param position Int 用来定位导航栏的当前 item，如果是后退按钮，则传入倒数第二个 position
      */
-    private fun enterDirAndUpdateUI(iFileBean: IFileBean, position: Int) {
+    private fun enterDirAndUpdateUI(fileBean: FileBean, position: Int) {
         // 获取文件夹文件
-        val nextFiles = File(iFileBean.filePath)
+        val nextFiles = File(fileBean.filePath)
         // 获取列表的数据集
         val listDataSource = FileUtils.produceListDataSource(nextFiles)
         // 获取导航栏的数据集
-        mNavDataSource = FileUtils.produceNavDataSource(ArrayList(mNavAdapter!!.data), iFileBean.filePath)
+        mNavDataSource = FileUtils.produceNavDataSource(ArrayList(mNavAdapter!!.data), fileBean.filePath)
 
         mListAdapter = produceListAdapter(listDataSource)
         mNavAdapter = produceNavAdapter(mNavDataSource)
@@ -254,21 +308,6 @@ class FilePickerActivity : AppCompatActivity(), BaseQuickAdapter.OnItemClickList
         if (position == -1) return
 
         mNavList!!.scrollToPosition(position)
-    }
-
-    override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
-        when (view!!.id) {
-            R.id.btn_nav_file_picker -> {
-                val item = adapter!!.getItem(position) as FileNavBean
-                enterDirAndUpdateUI(item, position)
-            }
-            R.id.cb_list_file_picker -> {
-                val item = adapter!!.getItem(position) as FileItemBean
-                val checkBox = view.findViewById<CheckBox>(R.id.cb_list_file_picker)
-                item.isChecked = checkBox.isChecked
-                Toast.makeText(this@FilePickerActivity, "选中", Toast.LENGTH_SHORT).show()
-            }
-        }
     }
 
     override fun onBackPressed() {

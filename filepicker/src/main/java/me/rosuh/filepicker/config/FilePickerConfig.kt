@@ -40,9 +40,9 @@ class FilePickerConfig private constructor(private val pickerManager: FilePicker
     internal var selfFileType: AbstractFileType? = null
     internal val defaultFileType:DefaultFileType by lazy { DefaultFileType() }
     /**
-     * 点击操作接口
+     * 点击操作接口，采用默认实现
      */
-    internal var fileIFileItemOnClickListener: IFileItemOnClickListener? = null
+    internal var fileFileItemOnClickListener: FileItemOnClickListener = FileItemOnClickListenerImpl()
     /**
      * 主题
      */
@@ -85,8 +85,8 @@ class FilePickerConfig private constructor(private val pickerManager: FilePicker
         return this
     }
 
-    fun setItemClickListener(iFileItemOnClickListener: IFileItemOnClickListener): FilePickerConfig {
-        fileIFileItemOnClickListener = iFileItemOnClickListener
+    fun setItemClickListener(fileItemOnClickListener: FileItemOnClickListener): FilePickerConfig {
+        fileFileItemOnClickListener = fileItemOnClickListener
         return this
     }
 

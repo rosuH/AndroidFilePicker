@@ -1,6 +1,6 @@
 package me.rosuh.filepicker.bean
 
-import me.rosuh.filepicker.filetype.IFileType
+import me.rosuh.filepicker.filetype.FileType
 
 /**
  *
@@ -12,16 +12,16 @@ import me.rosuh.filepicker.filetype.IFileType
  * @property fileType 文件类型
  * @property isHide 是否为隐藏文件，以符号 . 开头的视为隐藏文件
  *
- * IFileBean 接口属性
+ * FileBean 接口属性
  * @property fileName  接口文件名
  * @property filePath 接口文件路径
  * @constructor
  */
-class FileItemBean(
+class FileItemBeanImpl(
     override var fileName:String,
     override var filePath:String,
     var isChecked:Boolean,
-    var fileType: IFileType?,
+    var fileType: FileType?,
     var isDir:Boolean,
     var isHide:Boolean
-): IFileBean
+): FileBean

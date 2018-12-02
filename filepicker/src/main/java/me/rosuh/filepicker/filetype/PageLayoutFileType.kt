@@ -8,7 +8,7 @@ import me.rosuh.filepicker.R
  * @author rosu
  * @date 2018/11/27
  */
-class PageLayoutFileType : IFileType {
+class PageLayoutFileType : FileType {
 
     override val fileType: String
         get() = "PageLayout"
