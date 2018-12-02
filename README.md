@@ -35,6 +35,15 @@ dependencies {
 简单的链式调用示意：
 
 ```java
+FilePickerManager.instance
+                .from(this@SampleActivity)
+                // 主题设置
+                .setTheme(R.style.FilePickerThemeReply)
+                // 自定义过滤器(可选)
+                .filter(fileFilter)
+                .forResult(FilePickerManager.instance.REQUEST_CODE)
+...
+
 /**
 * 自定义文件过滤器，此处使用库默认的文件类型
 */
@@ -55,13 +64,7 @@ private val fileFilter = object : AbstractFileFilter(){
 }
 
 ...
-FilePickerManager.instance
-                .from(this@SampleActivity)
-                // 主题设置
-                .setTheme(R.style.FilePickerThemeReply)
-                // 自定义过滤器(可选)
-                .filter(fileFilter)
-                .forResult(FilePickerManager.instance.REQUEST_CODE)
+
 ```
 
 *获取结果*：`onActivityResult`接受消息，然后调用`FilePickerManager.obtainData()`获取保存的数据，结果是所选取文件的路径列表(`ArrayList<String>()`)
@@ -87,18 +90,22 @@ override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) 
 ## 功能 & 特点
 
 1. 链式调用
-2. 内置四种主题配色 + 可自定义配色
+2. 默认选中实现
+   - 点击条目(`item`)无默认实现
+   - 点击`CheckBox`为选中
+   - 长按条目为更改选中状态：选中/取消选中
+3. 内置四种主题配色 + 可自定义配色
    - 查看主题颜色示意图，然后调用`setTheme()`传入自定义主题
-3. 默认实现多种文件类型
+4. 默认实现多种文件类型
    - 实现`IFileType`接口来实现你的文件类型
    - 实现`AbstractFileType`抽象类来实现你的文件类型甄别器
-4. 公开文件过滤接口
+5. 公开文件过滤接口
    - 实现`AbstractFileFilter`抽象类来定制你自己的文件过滤器，这样可以控制文件列表的展示内容
-5. 多种可配置选项
+6. 多种可配置选项
    1. 选中时是否忽略文件夹
    2. 是否显示隐藏文件夹（以符号`.`开头的，视为隐藏文件或隐藏文件夹）
    3. 可配置导航栏的文本，默认显示、多选文本、取消选择文本以及根目录默认名称
-6. 公开条目(`item`)选择监听器，可自定义条目被点击的实现
+7. 公开条目(`item`)选择监听器，可自定义条目被点击的实现
 
 ### 部分源码说明
 
