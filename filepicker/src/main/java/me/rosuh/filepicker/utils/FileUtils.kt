@@ -57,7 +57,7 @@ class FileUtils {
                 listData = filesHiderFilter(listData!!)
             }
 
-            listData = pickerConfig.selfFilter?.doFilter(listData!!)
+            pickerConfig.selfFilter?.doFilter(listData!!)
 
             return listData!!
         }
