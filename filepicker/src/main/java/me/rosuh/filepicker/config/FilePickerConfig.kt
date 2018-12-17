@@ -42,7 +42,7 @@ class FilePickerConfig private constructor(private val pickerManager: FilePicker
     /**
      * 点击操作接口，采用默认实现
      */
-    internal var fileFileItemOnClickListener: FileItemOnClickListener = FileItemOnClickListenerImpl()
+    internal var fileItemOnClickListener: FileItemOnClickListener = FileItemOnClickListenerImpl()
     /**
      * 主题
      */
@@ -86,7 +86,7 @@ class FilePickerConfig private constructor(private val pickerManager: FilePicker
     }
 
     fun setItemClickListener(fileItemOnClickListener: FileItemOnClickListener): FilePickerConfig {
-        fileFileItemOnClickListener = fileItemOnClickListener
+        this.fileItemOnClickListener = fileItemOnClickListener
         return this
     }
 

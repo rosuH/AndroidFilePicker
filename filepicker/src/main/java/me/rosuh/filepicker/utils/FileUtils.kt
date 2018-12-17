@@ -48,7 +48,7 @@ class FileUtils {
                     continue
                 }
                 val itemBean = FileItemBeanImpl(file.name, file.path, false, null, false, isHiddenFile)
-                // 如果调用者没有实现文件类型甄别器，则使用默认是的甄别器
+                // 如果调用者没有实现文件类型甄别器，则使用的默认甄别器
                 pickerConfig.selfFileType?.fillFileType(itemBean) ?: pickerConfig.defaultFileType.fillFileType(itemBean)
                 listData?.add(itemBean)
             }
@@ -57,6 +57,7 @@ class FileUtils {
                 listData = filesHiderFilter(listData!!)
             }
 
+            // 将当前列表数据暴露，以供调用者自己处理数据
             pickerConfig.selfFilter?.doFilter(listData!!)
 
             return listData!!

@@ -14,6 +14,7 @@ import android.support.v7.widget.AppCompatButton
 import android.support.v7.widget.AppCompatImageButton
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
@@ -67,6 +68,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerVi
     private val fileListListener:RecyclerViewListener by lazy { getListener(mRvList!!) }
     private val navListener:RecyclerViewListener by lazy { getListener(mNavList!!) }
     private val fileListener:RecyclerViewListener by lazy { getListener(mRvList!!) }
+    private val TAG = "FilePickerActivity"
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -121,7 +123,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerVi
      */
     private fun prepareLauncher() {
         if (Environment.getExternalStorageState() != MEDIA_MOUNTED) {
-            throw Throwable(cause = IllegalStateException("外部存储不可用"))
+            throw Throwable(cause = IllegalStateException("外部存储不可用 ====>>> Environment.getExternalStorageState() != MEDIA_MOUNTED"))
         }
 
         // 根目录文件对象
@@ -129,6 +131,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerVi
 
         // 文件列表数据集
         val listData = FileUtils.produceListDataSource(rootFile)
+        // 导航栏数据集
         mNavDataSource =
                 FileUtils.produceNavDataSource(
                     mNavDataSource,
@@ -161,7 +164,6 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerVi
         mRvList!!.layoutManager = LinearLayoutManager(this@FilePickerActivity)
         val linearLayoutManager = LinearLayoutManager(this@FilePickerActivity, LinearLayoutManager.HORIZONTAL, false)
         mNavList!!.layoutManager = linearLayoutManager
-
         mRvList!!.addOnItemTouchListener(fileListListener)
         mNavList!!.addOnItemTouchListener(navListener)
     }
@@ -220,7 +222,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerVi
                     // 如果是文件夹，则进入
                     enterDirAndUpdateUI(item)
                 } else {
-                    FilePickerConfig.getInstance(FilePickerManager.instance).fileFileItemOnClickListener.onItemClick(recyclerAdapter, view, position)
+                    FilePickerConfig.getInstance(FilePickerManager.instance).fileItemOnClickListener.onItemClick(recyclerAdapter, view, position)
                 }
             }
         }
@@ -241,7 +243,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerVi
         val isSkipDir = FilePickerConfig.getInstance(FilePickerManager.instance).isSkipDir
         // 如果是文件夹并且没有略过文件夹
         if (file.exists() && file.isDirectory && isSkipDir) return
-        FilePickerConfig.getInstance(FilePickerManager.instance).fileFileItemOnClickListener.onItemLongClick(recyclerAdapter, view, position)
+        FilePickerConfig.getInstance(FilePickerManager.instance).fileItemOnClickListener.onItemLongClick(recyclerAdapter, view, position)
     }
 
     /**
@@ -351,6 +353,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerVi
                 mListAdapter!!.notifyDataSetChanged()
                 mFilesIsChecked.set(!(mFilesIsChecked.get()))
             }
+            // 确认按钮
             R.id.btn_confirm_file_picker -> {
                 val list = ArrayList<String>()
                 val intent = Intent()

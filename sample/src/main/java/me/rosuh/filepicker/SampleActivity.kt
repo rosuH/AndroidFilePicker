@@ -19,15 +19,15 @@ class SampleActivity : AppCompatActivity() {
     /**
      * 自定义文件过滤器
      */
-    private val fileFilter = object : AbstractFileFilter(){
+    private val fileFilter = object : AbstractFileFilter() {
         override fun doFilter(listData: ArrayList<FileItemBeanImpl>): ArrayList<FileItemBeanImpl> {
             val iterator = listData.iterator()
-            while (iterator.hasNext()){
+            while (iterator.hasNext()) {
                 val item = iterator.next()
                 // 如果是文件夹则略过
                 if (item.isDir) continue
                 // 判断文件类型是否是图片
-                if (item.fileType !is RasterImageFileType){
+                if (item.fileType !is RasterImageFileType) {
                     iterator.remove()
                 }
             }
@@ -45,12 +45,13 @@ class SampleActivity : AppCompatActivity() {
 
         btn.setOnClickListener {
             FilePickerManager.instance
-                .from(this@SampleActivity)
-                // 主题设置
-                .setTheme(R.style.FilePickerThemeReply)
-                // 自定义过滤器
-                .filter(fileFilter)
-                .forResult(FilePickerManager.instance.REQUEST_CODE)
+                    .from(this@SampleActivity)
+                    // 主题设置
+                    .setTheme(R.style.FilePickerThemeRail)
+                    // 自定义过滤器
+                    .filter(fileFilter)
+                    .skipDirWhenSelect(false)
+                    .forResult(FilePickerManager.instance.REQUEST_CODE)
         }
     }
 
@@ -59,7 +60,7 @@ class SampleActivity : AppCompatActivity() {
             FilePickerManager.instance.REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
                     val list = FilePickerManager.instance.obtainData()
-                    rv!!.adapter = SampleAdapter(R.layout.demo_item, ArrayList(list))
+                    rv!!.adapter = SampleAdapter(layoutInflater, ArrayList(list))
                     rv!!.layoutManager = LinearLayoutManager(this@SampleActivity)
                 } else {
                     Toast.makeText(this@SampleActivity, "没有选择图片", Toast.LENGTH_SHORT).show()

@@ -18,6 +18,7 @@ import java.io.File
  *
  * @author rosu
  * @date 2018/11/21
+ * 文件列表适配器类
  */
 class FileListAdapter(private val activity: FilePickerActivity, var data: ArrayList<FileItemBeanImpl>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>(){
@@ -44,7 +45,7 @@ class FileListAdapter(private val activity: FilePickerActivity, var data: ArrayL
     }
 
     inner class FileListItemHolder(itemView: View) :
-        RecyclerView.ViewHolder(itemView), View.OnClickListener{
+        RecyclerView.ViewHolder(itemView){
 
         private val isSkipDir: Boolean = FilePickerConfig.getInstance(FilePickerManager.instance).isSkipDir
         private val mTvFileName = itemView.findViewById<TextView>(R.id.tv_list_file_picker)!!
@@ -72,16 +73,7 @@ class FileListAdapter(private val activity: FilePickerActivity, var data: ArrayL
 
             val resId: Int = itemImpl.fileType?.fileIconResId ?: R.drawable.ic_unknown
             mIcon.setImageResource(resId)
-
-            mCbItem.setOnClickListener(this)
         }
 
-        override fun onClick(v: View?) {
-            recyclerViewListener?.itemClickListener?.onItemChildClick(
-                this@FileListAdapter,
-                mCbItem,
-                mPosition!!
-            )
-        }
     }
 }
