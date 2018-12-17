@@ -49,7 +49,7 @@ class FileListAdapter(private val activity: FilePickerActivity, var data: ArrayL
 
         private val isSkipDir: Boolean = FilePickerConfig.getInstance(FilePickerManager.instance).isSkipDir
         private val mTvFileName = itemView.findViewById<TextView>(R.id.tv_list_file_picker)!!
-        val mCbItem = itemView.findViewById<CheckBox>(R.id.cb_list_file_picker)!!
+        private val mCbItem = itemView.findViewById<CheckBox>(R.id.cb_list_file_picker)!!
         private val mIcon = itemView.findViewById<ImageView>(R.id.iv_icon_list_file_picker)!!
         private var mItemBeanImpl:FileItemBeanImpl ?= null
         private var mPosition:Int? = null

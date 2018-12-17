@@ -1,4 +1,4 @@
-![Banner](https://github.com/rosuH/AndroidFilePicker/blob/master/Android_FilePicker_Banner.png)
+![Banner](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/dev/Android_FilePicker_Banner.png)
 
 # AndroidFilePicker
 

@@ -49,6 +49,7 @@ class SampleActivity : AppCompatActivity() {
                     // 主题设置
                     .setTheme(R.style.FilePickerThemeRail)
                     // 自定义过滤器
+                    .maxSelectable(1)
                     .filter(fileFilter)
                     .skipDirWhenSelect(false)
                     .forResult(FilePickerManager.instance.REQUEST_CODE)

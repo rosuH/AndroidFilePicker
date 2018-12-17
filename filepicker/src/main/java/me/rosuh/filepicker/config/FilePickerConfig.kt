@@ -26,6 +26,10 @@ class FilePickerConfig private constructor(private val pickerManager: FilePicker
      */
     internal var isSkipDir = true
     /**
+     * 最大可被选中数量
+     */
+    internal var maxSelectable = Int.MAX_VALUE
+    /**
      * 存储类型
      */
     internal var mediaStorageName = "SD 存储卡"
@@ -66,6 +70,11 @@ class FilePickerConfig private constructor(private val pickerManager: FilePicker
 
     fun skipDirWhenSelect(isSkip: Boolean): FilePickerConfig {
         isSkipDir = isSkip
+        return this
+    }
+
+    fun maxSelectable(max:Int):FilePickerConfig{
+        maxSelectable = if (max == -1) Int.MAX_VALUE else max
         return this
     }
 
