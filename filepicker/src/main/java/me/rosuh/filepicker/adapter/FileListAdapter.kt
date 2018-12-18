@@ -18,6 +18,7 @@ import java.io.File
  *
  * @author rosu
  * @date 2018/11/21
+ * 文件列表适配器类
  */
 class FileListAdapter(private val activity: FilePickerActivity, var data: ArrayList<FileItemBeanImpl>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>(){
@@ -44,11 +45,11 @@ class FileListAdapter(private val activity: FilePickerActivity, var data: ArrayL
     }
 
     inner class FileListItemHolder(itemView: View) :
-        RecyclerView.ViewHolder(itemView), View.OnClickListener{
+        RecyclerView.ViewHolder(itemView){
 
-        private val isSkipDir: Boolean = FilePickerConfig.getInstance(FilePickerManager.instance).isSkipDir
+        private val isSkipDir: Boolean = FilePickerManager.config.isSkipDir
         private val mTvFileName = itemView.findViewById<TextView>(R.id.tv_list_file_picker)!!
-        val mCbItem = itemView.findViewById<CheckBox>(R.id.cb_list_file_picker)!!
+        private val mCbItem = itemView.findViewById<CheckBox>(R.id.cb_list_file_picker)!!
         private val mIcon = itemView.findViewById<ImageView>(R.id.iv_icon_list_file_picker)!!
         private var mItemBeanImpl:FileItemBeanImpl ?= null
         private var mPosition:Int? = null
@@ -59,7 +60,7 @@ class FileListAdapter(private val activity: FilePickerActivity, var data: ArrayL
             mPosition = position
 
             mTvFileName.text = itemImpl.fileName
-            mCbItem.isChecked = itemImpl.isChecked
+            mCbItem.isChecked = itemImpl.isChecked()
             mCbItem.visibility = View.VISIBLE
 
             val isDir = File(itemImpl.filePath).isDirectory
@@ -72,16 +73,7 @@ class FileListAdapter(private val activity: FilePickerActivity, var data: ArrayL
 
             val resId: Int = itemImpl.fileType?.fileIconResId ?: R.drawable.ic_unknown
             mIcon.setImageResource(resId)
-
-            mCbItem.setOnClickListener(this)
         }
 
-        override fun onClick(v: View?) {
-            recyclerViewListener?.itemClickListener?.onItemChildClick(
-                this@FileListAdapter,
-                mCbItem,
-                mPosition!!
-            )
-        }
     }
 }

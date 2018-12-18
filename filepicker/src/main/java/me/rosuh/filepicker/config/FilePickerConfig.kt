@@ -9,14 +9,14 @@ import me.rosuh.filepicker.R
  * @author rosu
  * @date 2018/11/27
  */
-class FilePickerConfig private constructor(private val pickerManager: FilePickerManager) {
+class FilePickerConfig (private val pickerManager: FilePickerManager) {
 
 
     /**
      * 是否显示隐藏文件，默认隐藏
      * 以符号 . 开头的文件或文件夹视为隐藏
      */
-    internal var isShowHidingFiles = false
+    internal var isShowHiddenFiles = false
     /**
      * 是否显示选中框，默认显示
      */
@@ -25,6 +25,10 @@ class FilePickerConfig private constructor(private val pickerManager: FilePicker
      * 在选中时是否忽略文件夹
      */
     internal var isSkipDir = true
+    /**
+     * 最大可被选中数量
+     */
+    internal var maxSelectable = Int.MAX_VALUE
     /**
      * 存储类型
      */
@@ -42,7 +46,7 @@ class FilePickerConfig private constructor(private val pickerManager: FilePicker
     /**
      * 点击操作接口，采用默认实现
      */
-    internal var fileFileItemOnClickListener: FileItemOnClickListener = FileItemOnClickListenerImpl()
+    internal var fileItemOnClickListener: FileItemOnClickListener = FileItemOnClickListenerImpl()
     /**
      * 主题
      */
@@ -50,12 +54,31 @@ class FilePickerConfig private constructor(private val pickerManager: FilePicker
     /**
      * 全选文字，取消全选文字，返回文字，已选择文字
      */
-    internal var selectAllText: String? = "图片全选"
+    internal var selectAllText: String? = "全选"
     internal var unSelectAllText: String? = "取消全选"
     internal var goBackText: String? = "返回"
     internal var hadSelectedText: String? = "已选择·"
+
+    private fun reset():FilePickerConfig{
+        isShowHiddenFiles = false
+        isShowingCheckBox = true
+        isSkipDir = true
+        maxSelectable = Int.MAX_VALUE
+        mediaStorageName = "SD 存储卡"
+        mediaStorageType = StorageMediaTypeEnum.EXTERNAL_STORAGE
+        selfFilter = null
+        selfFileType = null
+        fileItemOnClickListener = FileItemOnClickListenerImpl()
+        themeId  = R.style.FilePickerThemeRail
+        selectAllText = "全选"
+        unSelectAllText = "取消全选"
+        goBackText = "返回"
+        hadSelectedText = "已选择·"
+        return this
+    }
+
     fun showHiddenFiles(isShow: Boolean): FilePickerConfig {
-        isShowHidingFiles = isShow
+        isShowHiddenFiles = isShow
         return this
     }
 
@@ -66,6 +89,11 @@ class FilePickerConfig private constructor(private val pickerManager: FilePicker
 
     fun skipDirWhenSelect(isSkip: Boolean): FilePickerConfig {
         isSkipDir = isSkip
+        return this
+    }
+
+    fun maxSelectable(max:Int):FilePickerConfig{
+        maxSelectable = if (max == -1) Int.MAX_VALUE else max
         return this
     }
 
@@ -86,7 +114,7 @@ class FilePickerConfig private constructor(private val pickerManager: FilePicker
     }
 
     fun setItemClickListener(fileItemOnClickListener: FileItemOnClickListener): FilePickerConfig {
-        fileFileItemOnClickListener = fileItemOnClickListener
+        this.fileItemOnClickListener = fileItemOnClickListener
         return this
     }
 
@@ -118,15 +146,5 @@ class FilePickerConfig private constructor(private val pickerManager: FilePicker
         } else {
             fragment.startActivityForResult(intent, requestCode)
         }
-    }
-
-    companion object {
-        @Volatile
-        private var instance: FilePickerConfig? = null
-
-        fun getInstance(pickerManager: FilePickerManager) =
-            instance ?: synchronized(this) {
-                instance ?: FilePickerConfig(pickerManager).also { instance = it }
-            }
     }
 }

@@ -37,7 +37,7 @@ class FileItemOnClickListenerImpl : FileItemOnClickListener {
         val item = (itemAdapter as FileListAdapter).getItem(position)
         item ?: return
         val file = File(item.filePath)
-        val isSkipDir = FilePickerConfig.getInstance(FilePickerManager.instance).isSkipDir
+        val isSkipDir = FilePickerManager.config.isSkipDir
         // 如果是文件夹并且没有略过文件夹
         if (file.exists() && file.isDirectory && isSkipDir) return
         val cb = itemView.findViewById<CheckBox>(R.id.cb_list_file_picker)
@@ -45,10 +45,10 @@ class FileItemOnClickListenerImpl : FileItemOnClickListener {
         cb.visibility = View.VISIBLE
         if (isChecked) {
             cb.isChecked = false
-            item.isChecked = cb.isChecked
+            item.setCheck(cb.isChecked)
         } else {
             cb.isChecked = true
-            item.isChecked = cb.isChecked
+            item.setCheck(cb.isChecked)
         }
     }
 }

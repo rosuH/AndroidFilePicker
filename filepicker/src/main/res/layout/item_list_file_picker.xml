@@ -6,9 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clickable="true"
+    android:focusable="true"
     android:foreground="?attr/selectableItemBackground"
-    android:background="?attr/selectableItemBackground"
-    android:focusable="true">
+    android:background="?attr/selectableItemBackground">
 
     <Space
         android:id="@+id/space_top_file_picker_file_picker"
@@ -60,6 +60,8 @@
         android:id="@+id/cb_list_file_picker"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:clickable="false"
+        android:focusable="false"
         app:layout_constraintBottom_toTopOf="@+id/space_bottom_file_picker"
         app:layout_constraintDimensionRatio="W,1:1"
         app:layout_constraintEnd_toEndOf="parent"

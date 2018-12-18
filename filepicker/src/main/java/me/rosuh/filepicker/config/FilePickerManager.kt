@@ -9,16 +9,13 @@ import java.lang.ref.WeakReference
  * @author rosu
  * @date 2018/11/22
  */
-class FilePickerManager private constructor(){
+object FilePickerManager{
 
-    companion object {
-        val instance: FilePickerManager by lazy { FilePickerManager() }
-    }
 
     /**
      * 启动 Launcher Activity 所需的 request code
      */
-    val REQUEST_CODE = 10401
+    const val REQUEST_CODE = 10401
     /**
      * 获取 context 返回结果时，所需的 intent.extra key
      */
@@ -26,10 +23,12 @@ class FilePickerManager private constructor(){
 
     internal var context:WeakReference<Activity> ?= null
     internal var fragment:WeakReference<Fragment> ?= null
+    internal lateinit var config:FilePickerConfig
 
     fun from(activity: Activity):FilePickerConfig{
         this.context = WeakReference(activity)
-        return FilePickerConfig.getInstance(this)
+        this.config = FilePickerConfig(this)
+        return this.config
     }
 
     /**
@@ -38,7 +37,8 @@ class FilePickerManager private constructor(){
     fun from(fragment: Fragment):FilePickerConfig{
         this.fragment = WeakReference(fragment)
         this.context = WeakReference(fragment.activity!!)
-        return FilePickerConfig.getInstance(this)
+        this.config = FilePickerConfig(this)
+        return this.config
     }
 
     private var dataList: List<String> = ArrayList()
