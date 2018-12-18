@@ -47,7 +47,7 @@ class FileListAdapter(private val activity: FilePickerActivity, var data: ArrayL
     inner class FileListItemHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView){
 
-        private val isSkipDir: Boolean = FilePickerConfig.getInstance(FilePickerManager.instance).isSkipDir
+        private val isSkipDir: Boolean = FilePickerManager.config.isSkipDir
         private val mTvFileName = itemView.findViewById<TextView>(R.id.tv_list_file_picker)!!
         private val mCbItem = itemView.findViewById<CheckBox>(R.id.cb_list_file_picker)!!
         private val mIcon = itemView.findViewById<ImageView>(R.id.iv_icon_list_file_picker)!!
@@ -60,7 +60,7 @@ class FileListAdapter(private val activity: FilePickerActivity, var data: ArrayL
             mPosition = position
 
             mTvFileName.text = itemImpl.fileName
-            mCbItem.isChecked = itemImpl.isChecked
+            mCbItem.isChecked = itemImpl.isChecked()
             mCbItem.visibility = View.VISIBLE
 
             val isDir = File(itemImpl.filePath).isDirectory

@@ -21,10 +21,10 @@ import android.widget.Toast
 import me.rosuh.filepicker.adapter.FileListAdapter
 import me.rosuh.filepicker.adapter.FileNavAdapter
 import me.rosuh.filepicker.adapter.RecyclerViewListener
+import me.rosuh.filepicker.bean.BeanSubscriber
 import me.rosuh.filepicker.bean.FileItemBeanImpl
 import me.rosuh.filepicker.bean.FileNavBeanImpl
 import me.rosuh.filepicker.bean.FileBean
-import me.rosuh.filepicker.config.FilePickerConfig
 import me.rosuh.filepicker.config.FilePickerManager
 import me.rosuh.filepicker.utils.FileUtils
 import me.rosuh.filepicker.utils.PercentTextView
@@ -32,7 +32,8 @@ import java.io.File
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 
-class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerViewListener.IOnItemClickListener {
+class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerViewListener.IOnItemClickListener,
+    BeanSubscriber {
 
     /**
      * 文件列表
@@ -59,16 +60,27 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerVi
      */
     private var mEmptyView: View? = null
     private var selectedCount: AtomicInteger = AtomicInteger(0)
-    private val maxSelectable = FilePickerConfig.getInstance(FilePickerManager.instance).maxSelectable
+    private val maxSelectable = FilePickerManager.config.maxSelectable
     private var mBtnSelectedAll: AppCompatButton? = null
     private var mBtnConfirm: AppCompatButton? = null
     private var mBtnGoBack: AppCompatImageButton? = null
-    private val mFilesIsChecked: AtomicBoolean? = AtomicBoolean(false)
+    private val mFilesIsChecked: AtomicBoolean by lazy { AtomicBoolean(false) }
     private var mTvSelected: PercentTextView? = null
-    private val pickerConfig by lazy { FilePickerConfig.getInstance(FilePickerManager.instance) }
+    private val pickerConfig by lazy { FilePickerManager.config }
     private val fileListListener: RecyclerViewListener by lazy { getListener(mRvList!!) }
     private val navListener: RecyclerViewListener by lazy { getListener(mNavList!!) }
     private val fileListener: RecyclerViewListener by lazy { getListener(mRvList!!) }
+    private val availableCount by lazy {
+        var count = 0
+        for (item in mListAdapter!!.data){
+            val file = File(item.filePath)
+            if (pickerConfig.isSkipDir && file.exists() && file.isDirectory) {
+                continue
+            }
+            count++
+        }
+        count
+    }
     private val TAG = "FilePickerActivity"
 
 
@@ -97,16 +109,16 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerVi
      */
     private fun requestPermission() {
         ActivityCompat.requestPermissions(
-                this@FilePickerActivity,
-                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                FILE_PICKER_PERMISSION_REQUEST_CODE
+            this@FilePickerActivity,
+            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+            FILE_PICKER_PERMISSION_REQUEST_CODE
         )
     }
 
     override fun onRequestPermissionsResult(
-            requestCode: Int,
-            permissions: Array<out String>,
-            grantResults: IntArray
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
     ) {
         when (requestCode) {
             FILE_PICKER_PERMISSION_REQUEST_CODE -> {
@@ -131,18 +143,21 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerVi
         val rootFile = FileUtils.getRootFile()
 
         // 文件列表数据集
-        val listData = FileUtils.produceListDataSource(rootFile)
+        val listData = FileUtils.produceListDataSource(rootFile, this@FilePickerActivity)
         // 导航栏数据集
         mNavDataSource =
                 FileUtils.produceNavDataSource(
-                        mNavDataSource,
-                        Environment.getExternalStorageDirectory().absolutePath
+                    mNavDataSource,
+                    Environment.getExternalStorageDirectory().absolutePath
                 )
 
         initView(listData, mNavDataSource)
     }
 
-    private fun initView(fileListDatumImpls: ArrayList<FileItemBeanImpl>, fileNavDatumImpls: ArrayList<FileNavBeanImpl>) {
+    private fun initView(
+        fileListDatumImpls: ArrayList<FileItemBeanImpl>,
+        fileNavDatumImpls: ArrayList<FileNavBeanImpl>
+    ) {
         mRvList = findViewById(R.id.rv_list_file_picker)
         mNavList = findViewById(R.id.rv_nav_file_picker)
         mBtnSelectedAll = this.findViewById(R.id.btn_selected_all_file_picker)
@@ -210,9 +225,9 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerVi
      * @param position Int
      */
     override fun onItemClick(
-            recyclerAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
-            view: View,
-            position: Int
+        recyclerAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
+        view: View,
+        position: Int
     ) {
         when (view.id) {
             R.id.item_list_file_picker -> {
@@ -223,7 +238,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerVi
                     // 如果是文件夹，则进入
                     enterDirAndUpdateUI(item)
                 } else {
-                    FilePickerConfig.getInstance(FilePickerManager.instance).fileItemOnClickListener.onItemClick(recyclerAdapter, view, position)
+                    FilePickerManager.config.fileItemOnClickListener.onItemClick(recyclerAdapter, view, position)
                 }
             }
         }
@@ -233,35 +248,35 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerVi
      * 条目被长按
      */
     override fun onItemLongClick(
-            recyclerAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
-            view: View,
-            position: Int
+        recyclerAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
+        view: View,
+        position: Int
     ) {
-//        if (view.id != R.id.item_list_file_picker) return
-//        val item = (recyclerAdapter as FileListAdapter).getItem(position)
-//        item ?: return
-//        val file = File(item.filePath)
-//        val isSkipDir = FilePickerConfig.getInstance(FilePickerManager.instance).isSkipDir
-//        // 如果是文件夹并且没有略过文件夹
-//        if (file.exists() && file.isDirectory && isSkipDir) return
-//        val cb = view.findViewById<CheckBox>(R.id.cb_list_file_picker)
-//
-//        when {
-//            cb.isChecked -> {
-//                // 当前被选中，现在取消选中
-//                FilePickerConfig.getInstance(FilePickerManager.instance).fileItemOnClickListener.onItemLongClick(recyclerAdapter, view, position)
-//                selectedCount.decrementAndGet()
-//            }
-//            isCanSelect() -> {
-//                // 新增选中项情况
-//                FilePickerConfig.getInstance(FilePickerManager.instance).fileItemOnClickListener.onItemLongClick(recyclerAdapter, view, position)
-//                selectedCount.incrementAndGet()
-//            }
-//            else -> {
-//                // 新增失败的情况
-//                Toast.makeText(this@FilePickerActivity, "最多只能选择 $maxSelectable 项", Toast.LENGTH_SHORT).show()
-//            }
-//        }
+        if (view.id != R.id.item_list_file_picker) return
+        val item = (recyclerAdapter as FileListAdapter).getItem(position)
+        item ?: return
+        val file = File(item.filePath)
+        val isSkipDir = FilePickerManager.config.isSkipDir
+        // 如果是文件夹并且没有略过文件夹
+        if (file.exists() && file.isDirectory && isSkipDir) return
+        val cb = view.findViewById<CheckBox>(R.id.cb_list_file_picker)
+
+        when {
+            cb.isChecked -> {
+                // 当前被选中，现在取消选中
+                FilePickerManager.config.fileItemOnClickListener.onItemLongClick(recyclerAdapter, view, position)
+                selectedCount.decrementAndGet()
+            }
+            isCanSelect() -> {
+                // 新增选中项情况
+                FilePickerManager.config.fileItemOnClickListener.onItemLongClick(recyclerAdapter, view, position)
+                selectedCount.incrementAndGet()
+            }
+            else -> {
+                // 新增失败的情况
+                Toast.makeText(this@FilePickerActivity, "最多只能选择 $maxSelectable 项", Toast.LENGTH_SHORT).show()
+            }
+        }
 
     }
 
@@ -269,9 +284,9 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerVi
      * 子控件被点击
      */
     override fun onItemChildClick(
-            recyclerAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
-            view: View,
-            position: Int
+        recyclerAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
+        view: View,
+        position: Int
     ) {
         when (view.id) {
             R.id.btn_nav_file_picker -> {
@@ -282,25 +297,28 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerVi
             else -> {
                 val item = (recyclerAdapter as FileListAdapter).getItem(position)
                 item ?: return
+                // 略过文件夹
+                if (item.isDir && pickerConfig.isSkipDir) return
+
                 val checkBox = view.findViewById<CheckBox>(R.id.cb_list_file_picker)
-                // 当点击事件被传递到此时，checkbox 已经被点击了，所以需要根据选中数量来更新它的选中状态
+                // checkBox 的点击事件被拦截下来到此，不会继续传递下去
                 when {
                     checkBox.isChecked -> {
                         // 当前被选中，说明即将取消选中
-                        item.isChecked = false
-                        checkBox.isChecked = false
                         selectedCount.decrementAndGet()
+                        item.setCheck(false)
+                        checkBox.isChecked = false
                     }
                     isCanSelect() -> {
-                        // 当前年未被选中，并且检查合格，则即将新增选中
-                        item.isChecked = true
-                        checkBox.isChecked = true
+                        // 当前未被选中，并且检查合格，则即将新增选中
                         selectedCount.incrementAndGet()
+                        item.setCheck(true)
+                        checkBox.isChecked = true
                     }
-                    else ->{
+                    else -> {
                         // 新增选中项失败的情况
                         checkBox.isChecked = false
-                        item.isChecked = false
+                        item.setCheck(false)
                         Toast.makeText(this@FilePickerActivity, "最多只能选择 $maxSelectable 项", Toast.LENGTH_SHORT).show()
                     }
                 }
@@ -310,12 +328,13 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerVi
 
 
     private fun isCanSelect(): Boolean {
-        var count = 0
+        // 可选的
+        var checkedCount = 0
         for (item in mListAdapter!!.data) {
-            if (item.isChecked) count++
+            if (item.isChecked()) checkedCount++
         }
 
-        return count < maxSelectable
+        return ((checkedCount < maxSelectable) && (checkedCount < availableCount))
     }
 
     /**
@@ -341,10 +360,14 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerVi
      * @param position Int 用来定位导航栏的当前 item，如果是后退按钮，则传入倒数第二个 position
      */
     private fun enterDirAndUpdateUI(fileBean: FileBean, position: Int) {
+
+        //清除当前选中状态
+        cleanStatus()
+
         // 获取文件夹文件
         val nextFiles = File(fileBean.filePath)
         // 获取列表的数据集
-        val listDataSource = FileUtils.produceListDataSource(nextFiles)
+        val listDataSource = FileUtils.produceListDataSource(nextFiles, this@FilePickerActivity)
         // 获取导航栏的数据集
         mNavDataSource = FileUtils.produceNavDataSource(ArrayList(mNavAdapter!!.data), fileBean.filePath)
 
@@ -361,6 +384,22 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerVi
         mNavList!!.scrollToPosition(position)
     }
 
+    private fun cleanStatus(){
+        selectedCount.set(0)
+        updateUI(false)
+    }
+
+    override fun updateUI(isCheck: Boolean) {
+        // 取消选中，并且选中数为 0
+        if (selectedCount.get() == 0){
+            mBtnSelectedAll!!.text = pickerConfig.selectAllText
+            mTvSelected!!.text = pickerConfig.goBackText
+            return
+        }
+        mBtnSelectedAll!!.text = pickerConfig.unSelectAllText
+        mTvSelected!!.text = pickerConfig.hadSelectedText + selectedCount.get()
+    }
+
     override fun onBackPressed() {
         if (mNavDataSource.size <= 1) {
             super.onBackPressed()
@@ -375,37 +414,32 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerVi
         when (v!!.id) {
             // 全选
             R.id.btn_selected_all_file_picker -> {
-                if (mFilesIsChecked!!.get()) {
-                    for (data in mListAdapter!!.data) {
-                        val file = File(data.filePath)
-                        if (pickerConfig.isSkipDir && file.exists() && file.isDirectory) {
-                            continue
-                        }
-                        data.isChecked = false
-                    }
+                // 只要当前选中项数量大于 0，那么本按钮则为取消全选按钮
+                if (selectedCount.get() > 0){
                     selectedCount.set(0)
-                    mBtnSelectedAll!!.text = pickerConfig.selectAllText
-                    mTvSelected!!.text = pickerConfig.goBackText
-                } else {
-                    var checkedCount = 0
                     for (data in mListAdapter!!.data) {
                         val file = File(data.filePath)
                         if (pickerConfig.isSkipDir && file.exists() && file.isDirectory) {
                             continue
                         }
-                        data.isChecked = true
-                        checkedCount++
-                        if (checkedCount >= maxSelectable) {
-                            selectedCount.set(checkedCount)
+                        data.setCheck(false)
+                    }
+                }else if (isCanSelect()){
+                    // 当前选中数少于最大选中数，则即将执行选中
+                    for (i in selectedCount.get()..(mListAdapter!!.data.size - 1)) {
+                        val data = mListAdapter!!.data[i]
+                        val file = File(data.filePath)
+                        if (pickerConfig.isSkipDir && file.exists() && file.isDirectory) {
+                            continue
+                        }
+                        selectedCount.incrementAndGet()
+                        data.setCheck(true)
+                        if (selectedCount.get() >= maxSelectable) {
                             break
                         }
                     }
-                    mBtnSelectedAll!!.text = pickerConfig.unSelectAllText
-                    mTvSelected!!.text = pickerConfig.hadSelectedText + checkedCount
                 }
-
                 mListAdapter!!.notifyDataSetChanged()
-                mFilesIsChecked.set(!(mFilesIsChecked.get()))
             }
             // 确认按钮
             R.id.btn_confirm_file_picker -> {
@@ -413,7 +447,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerVi
                 val intent = Intent()
 
                 for (data in mListAdapter!!.data) {
-                    if (data.isChecked) {
+                    if (data.isChecked()) {
                         list.add(data.filePath)
                     }
                 }
@@ -423,7 +457,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerVi
                     finish()
                 }
 
-                FilePickerManager.instance.saveData(list)
+                FilePickerManager.saveData(list)
                 this@FilePickerActivity.setResult(Activity.RESULT_OK, intent)
                 finish()
             }

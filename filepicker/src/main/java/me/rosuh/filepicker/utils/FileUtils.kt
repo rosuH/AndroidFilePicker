@@ -1,9 +1,9 @@
 package me.rosuh.filepicker.utils
 
 import android.os.Environment
+import me.rosuh.filepicker.bean.BeanSubscriber
 import me.rosuh.filepicker.bean.FileItemBeanImpl
 import me.rosuh.filepicker.bean.FileNavBeanImpl
-import me.rosuh.filepicker.config.FilePickerConfig
 import me.rosuh.filepicker.config.FilePickerManager
 import me.rosuh.filepicker.config.StorageMediaTypeEnum.EXTERNAL_STORAGE
 import java.io.File
@@ -17,14 +17,12 @@ class FileUtils {
 
     companion object {
 
-        private val pickerConfig by lazy { FilePickerConfig.getInstance(FilePickerManager.instance) }
-
         /**
          * 根据配置参数获取根目录文件
          * @return File
          */
         fun getRootFile(): File {
-            return when (pickerConfig.mediaStorageType) {
+            return when (FilePickerManager.config.mediaStorageType) {
                 EXTERNAL_STORAGE -> {
                     File(Environment.getExternalStorageDirectory().absoluteFile.toURI())
                 }
@@ -37,28 +35,28 @@ class FileUtils {
         /**
          * 获取给定文件对象 @param rootFil 下的所有文件，生成列表项对象 @return ArrayList<FileItemBeanImpl>
          */
-        fun produceListDataSource(rootFile: File): ArrayList<FileItemBeanImpl> {
+        fun produceListDataSource(rootFile: File, beanSubscriber: BeanSubscriber): ArrayList<FileItemBeanImpl> {
             var listData: ArrayList<FileItemBeanImpl>? = ArrayList()
 
             for (file in rootFile.listFiles()) {
                 //以符号 . 开头的视为隐藏文件或隐藏文件夹，后面进行过滤
                 val isHiddenFile = file.name.startsWith(".")
                 if (file.isDirectory) {
-                    listData?.add(FileItemBeanImpl(file.name, file.path, false, null, true, isHiddenFile))
+                    listData?.add(FileItemBeanImpl(file.name, file.path, false, null, true, isHiddenFile, beanSubscriber))
                     continue
                 }
-                val itemBean = FileItemBeanImpl(file.name, file.path, false, null, false, isHiddenFile)
+                val itemBean = FileItemBeanImpl(file.name, file.path, false, null, false, isHiddenFile, beanSubscriber)
                 // 如果调用者没有实现文件类型甄别器，则使用的默认甄别器
-                pickerConfig.selfFileType?.fillFileType(itemBean) ?: pickerConfig.defaultFileType.fillFileType(itemBean)
+                FilePickerManager.config.selfFileType?.fillFileType(itemBean) ?: FilePickerManager.config.defaultFileType.fillFileType(itemBean)
                 listData?.add(itemBean)
             }
             // 隐藏文件过滤器
-            if (!pickerConfig.isShowHidingFiles) {
+            if (!FilePickerManager.config.isShowHiddenFiles) {
                 listData = filesHiderFilter(listData!!)
             }
 
             // 将当前列表数据暴露，以供调用者自己处理数据
-            pickerConfig.selfFilter?.doFilter(listData!!)
+            listData = FilePickerManager.config.selfFilter?.doFilter(listData!!)?:listData
 
             return listData!!
         }
@@ -84,7 +82,7 @@ class FileUtils {
                 // 如果为空，为根目录
                 currentDataSource.add(
                     FileNavBeanImpl(
-                        pickerConfig.mediaStorageName,
+                        FilePickerManager.config.mediaStorageName,
                         nextPath
                     )
                 )

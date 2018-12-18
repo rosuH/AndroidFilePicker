@@ -8,7 +8,6 @@
 
 🔖 FilePicker 是一个小巧快速的文件选择器框架，以快速集成、高自定义化和可配置化为目标不断前进~🚩
 
-
 # II 使用
 
 1. 在你的项目中添加依赖
@@ -35,57 +34,35 @@ dependencies {
 简单的链式调用示意：
 
 ```java
-FilePickerManager.instance
-                .from(this@SampleActivity)
-                // 主题设置
-                .setTheme(R.style.FilePickerThemeReply)
-                // 自定义过滤器(可选)
-                .filter(fileFilter)
-                .forResult(FilePickerManager.instance.REQUEST_CODE)
-...
-
-/**
-* 自定义文件过滤器，此处使用库默认的文件类型
-*/
-private val fileFilter = object : AbstractFileFilter(){
-	override fun doFilter(listData: ArrayList<FileItemBean>): ArrayList<FileItemBean> {
-		val iterator = listData.iterator()
-        while (iterator.hasNext()){
-        	val item = iterator.next()
-            // 如果是文件夹则略过
-            if (item.isDir) continue
-            // 判断文件类型是否是图片
-            if (item.fileType !is RasterImageFileType){
-            	iterator.remove()
-			}
-		}
-		return listData
-	}
-}
-
-...
-
+FilePickerManager
+        .from(this@SampleActivity)
+        .forResult(FilePickerManager.REQUEST_CODE)
 ```
 
-*获取结果*：`onActivityResult`接受消息，然后调用`FilePickerManager.obtainData()`获取保存的数据，结果是所选取文件的路径列表(`ArrayList<String>()`)
+现在你已经起飞了🛩️...（真的只有两行）
+
+*获取结果*：`onActivityResult`接受消息，然后调用`FilePickerManager.obtainData()`获取保存的数据，**结果是所选取文件的路径列表(`ArrayList<String>()`)**
 
 ```java
 override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (requestCode) {
-            FilePickerManager.instance.REQUEST_CODE -> {
-                if (resultCode == Activity.RESULT_OK) {
-                    val list = FilePickerManager.instance.obtainData()
-                    rv!!.adapter = SampleAdapter(R.layout.demo_item, ArrayList(list))
-                    rv!!.layoutManager = LinearLayoutManager(this@SampleActivity)
-                } else {
-                    Toast.makeText(this@SampleActivity, "没有选择图片", Toast.LENGTH_SHORT).show()
-                }
+    when (requestCode) {
+        FilePickerManager.instance.REQUEST_CODE -> {
+            if (resultCode == Activity.RESULT_OK) {
+                val list = FilePickerManager.instance.obtainData()
+                // do your work
+            } else {
+                Toast.makeText(this@SampleActivity, "没有选择任何东西~", Toast.LENGTH_SHORT).show()
             }
         }
     }
+}
 ```
 
+### 更多示例
 
+来翻翻我写的[飞行手册](https://github.com/rosuH/AndroidFilePicker/wiki)吧？
+
+或者想看看[主题配色](https://github.com/rosuH/AndroidFilePicker/wiki/3.-%E9%85%8D%E7%BD%AE%E9%80%89%E9%A1%B9#2-%E4%B8%BB%E9%A2%98%E5%B1%95%E7%A4%BA)？
 
 ## 功能 & 特点
 
@@ -109,66 +86,15 @@ override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) 
 
 ### 部分源码说明
 
-1. 包和文件夹
-
-   - `adapter`包：两个列表（导航栏和文件列表）的数据适配器类
-
-   - `bean`包：所有用到的`Model`类
-
-     - `IFileBean`是文件对象所需要实现的接口
-
-   - `config`：管理类、配置类所在
-
-     - `AbstractFileFilter`：文件过滤器抽象类，用于给调用者自实现文件过滤器
-     - `AbstractFileType`：文件类型抽象类，用于给调用者自实现自己的文件类型
-       - 其中的抽象函数`fillFileType`为文件甄别器，如果你实现了自己的文件类型，那么最好也要实现自己的文件甄别器
-     - `DefaultFileType`：默认文件类型，文件类型类的默认实现，里面实现了默认的文件甄别器
-
-   - `filetype`：一些默认实现的文件类型
-
-     - 实现接口`IFileType`以实现自己的文件类型
-
-   - `utils`：一些工具类
-
-     - `FileUtils`类包含了文件相关的大部分所需的函数
-     - `PercentLayoutUtils`、`PercentTextView`是`TextView`的相对布局实现（*1）
+[看这里](https://github.com/rosuH/AndroidFilePicker/wiki/%E9%83%A8%E5%88%86%E6%BA%90%E7%A0%81%E8%AF%B4%E6%98%8E)。
 
 # Log
 
-## <0.2.0>_2018-11-27  
-
-:recycle: :art: :rocket: :memo:
-
-### Add
-
-- 链式调用
-- 添加文件类型抽象类
-    - 公开文件类型接口
-- 添加文件过滤抽象类
-    - 公开文件过滤器接口
-- 公开条目点击接口，可以自实现条目点击效果
-- 添加界面字符串自定义功能
-- 返回键返回上层目录功能
-- 添加 FilePickerConfig 类保存配置
-- 新增四种主题配色
-
-### Update
-
-- 文件类型可由调用者自己实现，也可以使用默认实现
-- FileItemBean 添加图标资源变量，支持自定义类型图标
-- 调用 FilePickerManager.obtainData() 获取数据，Intent 仅作消息发送功能
-- 更新部分文件类型默认 icon
-- README
-
+[Update Log](https://github.com/rosuH/AndroidFilePicker/wiki/%E6%9B%B4%E6%96%B0%E6%97%A5%E5%BF%97)
 
 # TODO
 
-- [x] 列表项可打开，可配置打开方式 
-- [x] 更优雅的方式获取返回结果，`onActivityResult()`只发送通知消息，从另一容器拿到结果
-- [x] 默认视图美观度提升
-- [x] 链式调用 
-- [ ] 记住父文件夹浏览位置
-- [ ] 解耦视图和控制逻辑，为后续自定义布局铺路
+[TODO](https://github.com/rosuH/AndroidFilePicker/wiki/TODO)
 
 
 
