@@ -97,7 +97,7 @@ The result is a path list of the selected file (`ArrayList<String>()`).
 
 ## More examples
 
-[Look here](https://github.com/rosuH/AndroidFilePicker/wiki/%E9%83%A8%E5%88%86%E6%BA%90%E7%A0%81%E8%AF%B4%E6%98%8E).
+[Look here](https://github.com/rosuH/AndroidFilePicker/wiki/4.-%E7%A4%BA%E4%BE%8B%E5%8F%8A%E8%A7%A3%E9%87%8A).
 
 # Log
 
