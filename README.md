@@ -1,16 +1,34 @@
 ![Banner](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/Android_FilePicker_Banner.png)
 
-# AndroidFilePicker
+# Android File Picker🛩️
 
 [![](https://jitpack.io/v/me.rosuh/AndroidFilePicker.svg)](https://jitpack.io/#me.rosuh/AndroidFilePicker)
 
-# I 简介
+[中文简体]()
 
-🔖 FilePicker 是一个小巧快速的文件选择器框架，以快速集成、高自定义化和可配置化为目标不断前进~🚩
+Well, it doesn't have a name like Rocky, Cosmos or Fish. Android File Picker, like its name, is a local file selector framework. Some of his characteristics are described below:
 
-# II 使用
+- Launcher in Activity or Fragment
+  - Start with a single line of code
+- Browse and select all files in local storage
+  - Built-in default file type and file discriminator
+  - Or you can implement the file type yourself
+- Custom list filter
+  - Just want to show pictures(Or videos, audio...)?  No problem!
+  - Of course, you can just display the folder
+- Custom item click event: only need to implement the listener
+- Apply different themes, including four built-in themes and custom themes
+- More to find out yourself
 
-1. 在你的项目中添加依赖
+|                    Rail Style（default）                     |                         Reply Style                          |                         Crane Style                          |                         Shrine Style                         |
+| :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+| ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/default_theme.png) | ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/reply_theme.png) | ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/crane_theme.png) | ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/shrine_theme.png) |
+
+# Download
+
+Gradle:
+
+In your project `build.gradle`:
 
 ```xml
 allprojects {
@@ -21,17 +39,28 @@ allprojects {
 }
 ```
 
+In your module `build.gradle`:
+
 ```xml
 dependencies {
-    implementation 'me.rosuh:AndroidFilePicker:latest_version'
+    implementation 'me.rosuh:AndroidFilePicker:$latest_version'
 }
 ```
 
-`latest_version` 请自行替换成最新版本
+Check out [releases page](https://github.com/rosuH/AndroidFilePicker/releases) to see more versions.
 
-2. 开始使用(`Kotlin`)
+# Usage 📑 
 
-简单的链式调用示意：
+## Permission
+
+The library requires two permissions:
+
+- `android.permission.READ_EXTERNAL_STORAGE`
+- `android.permission.WRITE_EXTERNAL_STORAGE`
+
+If you do not have permission to apply, this framework will check and apply at startup.
+
+## Launch 🚀 (Kotlin)
 
 ```java
 FilePickerManager
@@ -39,11 +68,15 @@ FilePickerManager
         .forResult(FilePickerManager.REQUEST_CODE)
 ```
 
-现在你已经起飞了🛩️...（真的只有两行）
+Now that you have taken off 🛩️ ... ( there are really only two lines )
 
-*获取结果*：`onActivityResult`接受消息，然后调用`FilePickerManager.obtainData()`获取保存的数据，**结果是所选取文件的路径列表(`ArrayList<String>()`)**
 
-```java
+
+## Receive Result
+
+In `onActivityResult()` callback of the starting `Activity` or `Fragment`:
+
+```kotlin
 override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     when (requestCode) {
         FilePickerManager.instance.REQUEST_CODE -> {
@@ -51,42 +84,20 @@ override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) 
                 val list = FilePickerManager.instance.obtainData()
                 // do your work
             } else {
-                Toast.makeText(this@SampleActivity, "没有选择任何东西~", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@SampleActivity, "You didn't choose anything~", Toast.LENGTH_SHORT).show()
             }
         }
     }
 }
 ```
 
-### 更多示例
+The result is a path list of the selected file (`ArrayList<String>()`).
 
-来翻翻我写的[飞行手册](https://github.com/rosuH/AndroidFilePicker/wiki)吧？
 
-或者想看看[主题配色](https://github.com/rosuH/AndroidFilePicker/wiki/3.-%E9%85%8D%E7%BD%AE%E9%80%89%E9%A1%B9#2-%E4%B8%BB%E9%A2%98%E5%B1%95%E7%A4%BA)？
 
-## 功能 & 特点
+## More examples
 
-1. 链式调用
-2. 默认选中实现
-   - 点击条目(`item`)无默认实现
-   - 点击`CheckBox`为选中
-   - 长按条目为更改选中状态：选中/取消选中
-3. 内置四种主题配色 + 可自定义配色
-   - 查看主题颜色示意图，然后调用`setTheme()`传入自定义主题
-4. 默认实现多种文件类型
-   - 实现`IFileType`接口来实现你的文件类型
-   - 实现`AbstractFileType`抽象类来实现你的文件类型甄别器
-5. 公开文件过滤接口
-   - 实现`AbstractFileFilter`抽象类来定制你自己的文件过滤器，这样可以控制文件列表的展示内容
-6. 多种可配置选项
-   1. 选中时是否忽略文件夹
-   2. 是否显示隐藏文件夹（以符号`.`开头的，视为隐藏文件或隐藏文件夹）
-   3. 可配置导航栏的文本，默认显示、多选文本、取消选择文本以及根目录默认名称
-7. 公开条目(`item`)选择监听器，可自定义条目被点击的实现
-
-### 部分源码说明
-
-[看这里](https://github.com/rosuH/AndroidFilePicker/wiki/%E9%83%A8%E5%88%86%E6%BA%90%E7%A0%81%E8%AF%B4%E6%98%8E)。
+[Look here]((https://github.com/rosuH/AndroidFilePicker/wiki)).
 
 # Log
 
@@ -105,6 +116,5 @@ override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) 
 - [*1 @whichName](https://github.com/whichname)
 - [BRVAH](https://github.com/CymChad/BaseRecyclerViewAdapterHelper)
 - [Matisse](https://github.com/zhihu/Matisse)
-- [默认图标作者 Shulk](http://iconfont.cn/collections/detail?spm=a313x.7781069.1998910419.d9df05512&cid=11271)
-- [主题配色](https://material.io/design/material-studies/about-our-material-studies.html)
-
+- [Default Icon Author Shulk](http://iconfont.cn/collections/detail?spm=a313x.7781069.1998910419.d9df05512&cid=11271)
+- [Theme Color](https://material.io/design/material-studies/about-our-material-studies.html)
