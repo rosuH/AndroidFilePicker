@@ -4,7 +4,7 @@
 
 [![](https://jitpack.io/v/me.rosuh/AndroidFilePicker.svg)](https://jitpack.io/#me.rosuh/AndroidFilePicker)
 
-[中文简体]()
+[中文简体](https://github.com/rosuH/AndroidFilePicker/blob/master/README_CN.md)
 
 Well, it doesn't have a name like Rocky, Cosmos or Fish. Android File Picker, like its name, is a local file selector framework. Some of his characteristics are described below:
 
