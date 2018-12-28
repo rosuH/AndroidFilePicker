@@ -15,15 +15,19 @@
         android:id="@+id/tv_list_file_picker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:layout_marginLeft="72dp"
+        android:ellipsize="middle"
         android:layout_centerVertical="true"
         android:scrollHorizontally="true"
         android:textColor="@color/shrine_text_color"
         android:textSize="16sp"
         tools:text="SD 存储卡SD 存储卡SD"
-        />
+        android:layout_marginStart="16dp"
+        android:layout_toEndOf="@id/iv_icon_list_file_picker"
+        android:layout_toStartOf="@id/cb_list_file_picker"
+        android:layout_toLeftOf="@id/cb_list_file_picker"
+        android:layout_toRightOf="@id/iv_icon_list_file_picker"
+        android:layout_marginLeft="16dp"
+        android:singleLine="true" />
 
     <ImageView
         android:id="@+id/iv_icon_list_file_picker"
