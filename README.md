@@ -1,10 +1,10 @@
-![Banner](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/Android_FilePicker_Banner.png)
+![Banner](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/AndroidFilePicker_Banner_Dr_Sugiyama.png)
 
 # Android File Picker🛩️
 
 [![](https://jitpack.io/v/me.rosuh/AndroidFilePicker.svg)](https://jitpack.io/#me.rosuh/AndroidFilePicker)
 
-[中文简体]()
+[中文简体](https://github.com/rosuH/AndroidFilePicker/blob/master/README_CN.md)
 
 Well, it doesn't have a name like Rocky, Cosmos or Fish. Android File Picker, like its name, is a local file selector framework. Some of his characteristics are described below:
 
@@ -97,7 +97,7 @@ The result is a path list of the selected file (`ArrayList<String>()`).
 
 ## More examples
 
-[Look here]((https://github.com/rosuH/AndroidFilePicker/wiki)).
+[Look here](https://github.com/rosuH/AndroidFilePicker/wiki/4.-%E7%A4%BA%E4%BE%8B%E5%8F%8A%E8%A7%A3%E9%87%8A).
 
 # Log
 

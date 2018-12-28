@@ -1,4 +1,4 @@
-![Banner](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/Android_FilePicker_Banner.png)
+![Banner](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/AndroidFilePicker_Banner_Dr_Sugiyama.png)
 
 # AndroidFilePicker
 
