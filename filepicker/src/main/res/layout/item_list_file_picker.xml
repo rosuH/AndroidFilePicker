@@ -1,96 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_list_file_picker"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="72dp"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?attr/selectableItemBackground"
-    android:background="?attr/selectableItemBackground">
+    android:background="?attr/selectableItemBackground"
+    android:paddingTop="8dp"
+    >
 
-    <Space
-        android:id="@+id/space_top_file_picker_file_picker"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.2857"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Space
-        android:id="@+id/space_bottom_file_picker"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.2857"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <me.rosuh.filepicker.utils.PercentTextView
+    <TextView
         android:id="@+id/tv_list_file_picker"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"
+        android:layout_marginLeft="72dp"
+        android:layout_centerVertical="true"
         android:scrollHorizontally="true"
         android:textColor="@color/shrine_text_color"
-        android:textSize="40px"
-        app:layout_constraintBottom_toTopOf="@+id/space_bottom_file_picker"
-        app:layout_constraintEnd_toStartOf="@+id/guideline_file_picker"
-        app:layout_constraintHorizontal_bias="0.0691"
-        app:layout_constraintStart_toStartOf="@+id/guideline2_file_picker"
-        app:layout_constraintTop_toBottomOf="@+id/space_top_file_picker_file_picker"
-        tools:text="SD 存储卡SD 存储卡SD" />
+        android:textSize="16sp"
+        tools:text="SD 存储卡SD 存储卡SD"
+        />
 
     <ImageView
         android:id="@+id/iv_icon_list_file_picker"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/space_bottom_file_picker"
-        app:layout_constraintDimensionRatio="W, 1:1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0444"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/space_top_file_picker_file_picker"
-        app:layout_constraintWidth_percent="0.0667" />
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="16dp"
+        android:contentDescription="File Icon"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="16dp" />
 
     <CheckBox
         android:id="@+id/cb_list_file_picker"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="false"
         android:focusable="false"
-        app:layout_constraintBottom_toTopOf="@+id/space_bottom_file_picker"
-        app:layout_constraintDimensionRatio="W,1:1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.0667"
-        app:layout_constraintHorizontal_bias="0.9556"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/space_top_file_picker_file_picker" />
+        android:layout_marginEnd="16dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="16dp" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="#EEEEEE"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline_file_picker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.88" />
-
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline2_file_picker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.1556" />
-
-
-</android.support.constraint.ConstraintLayout>
+        android:layout_alignParentBottom="true"
+        />
+</RelativeLayout>
