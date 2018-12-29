@@ -1,5 +1,12 @@
 <resources>
     <string name="app_name_file_picker">filepicker</string>
-    <string name="file_picker_go_back">返回</string>
-    <string name="file_picker_selected_count">已选择·%1$d</string>
+    <string name="file_picker_go_back">Back</string>
+    <string name="file_picker_selected_count">Selected·%1$d</string>
+    <string name="file_picker_request_permission_failed">Storage permission not granted</string>
+    <string name="file_picker_tv_select_all">Select all</string>
+    <string name="file_picker_tv_unselect_all">Unselect all</string>
+    <string name="file_picker_tv_selected">Selected·</string>
+    <string name="file_picker_tv_select_done">Done</string>
+    <string name="file_picker_tv_sd_card">SD Card</string>
+
 </resources>

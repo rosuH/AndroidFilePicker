@@ -7,7 +7,7 @@
     <color name="rail_textColor_Primary">#fff</color>
 
     <color name="reply_color_primary">#304956</color>
-    <color name="reply_color_primary_dark">#d1dbe1</color>
+    <color name="reply_color_primary_dark">#446576</color>
     <color name="reply_color_accent">#ffa900</color>
     <color name="reply_text_color">#fff</color>
     <color name="reply_textColor_Primary">#fff</color>
@@ -19,7 +19,7 @@
     <color name="crane_textColor_Primary">#fff</color>
 
     <color name="shrine_color_primary">#ffd9cd</color>
-    <color name="shrine_color_primary_dark">#f3d5d4</color>
+    <color name="shrine_color_primary_dark">#dfc3c2</color>
     <color name="shrine_color_accent">#48282c</color>
     <color name="shrine_text_color">#48282c</color>
     <color name="shrine_textColor_Primary">#fff</color>

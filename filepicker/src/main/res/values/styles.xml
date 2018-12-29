@@ -5,7 +5,7 @@
         <item name="colorAccent">@color/rail_color_accent</item>
         <item name="android:textColor">@color/rail_text_color</item>
         <item name="android:textColorPrimary">@color/rail_textColor_Primary</item>
-        <item name="android:windowTranslucentStatus">true</item>
+        <!--<item name="android:windowTranslucentStatus">true</item>-->
         <item name="android:fitsSystemWindows">true</item>
 
     </style>
@@ -17,7 +17,7 @@
         <item name="colorAccent">@color/reply_color_accent</item>
         <item name="android:textColor">@color/reply_text_color</item>
         <item name="android:textColorPrimary">@color/reply_textColor_Primary</item>
-        <item name="android:windowTranslucentStatus">true</item>
+        <!--<item name="android:windowTranslucentStatus">true</item>-->
         <item name="android:fitsSystemWindows">true</item>
 
     </style>
@@ -29,7 +29,7 @@
         <item name="colorAccent">@color/crane_color_accent</item>
         <item name="android:textColor">@color/crane_text_color</item>
         <item name="android:textColorPrimary">@color/crane_textColor_Primary</item>
-        <item name="android:windowTranslucentStatus">true</item>
+        <!--<item name="android:windowTranslucentStatus">true</item>-->
         <item name="android:fitsSystemWindows">true</item>
 
     </style>
@@ -41,9 +41,7 @@
         <item name="colorAccent">@color/shrine_color_accent</item>
         <item name="android:textColor">@color/shrine_text_color</item>
         <item name="android:textColorPrimary">@color/shrine_textColor_Primary</item>
-        <item name="android:windowTranslucentStatus">true</item>
+        <!--<item name="android:windowTranslucentStatus">true</item>-->
         <item name="android:fitsSystemWindows">true</item>
-
     </style>
-
 </resources>

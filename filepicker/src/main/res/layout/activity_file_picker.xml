@@ -9,97 +9,88 @@
     app:layout_constraintWidth_default="percent"
     tools:context=".FilePickerActivity">
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/cl_tool_bar_file_picker"
+    <RelativeLayout
+        android:id="@+id/ll_tool_bar_file_picker"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:elevation="7dp"
+        android:layout_height="56dp"
         android:background="?attr/colorPrimary"
+        android:elevation="7dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.0875"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <android.support.v7.widget.AppCompatImageButton
+        <ImageButton
             android:id="@+id/btn_go_back_file_picker"
             style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:src="@drawable/ic_back"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="W, 1:1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0444"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_percent="0.0667" />
+            android:contentDescription="Back Button" />
 
-        <me.rosuh.filepicker.utils.PercentTextView
+        <TextView
             android:id="@+id/tv_toolbar_title_file_picker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+           android:layout_toEndOf="@id/btn_go_back_file_picker"
             android:text="@string/file_picker_go_back"
-            android:textSize="34px"
+            android:maxLines="1"
             android:textColor="?android:attr/textColor"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0571"
-            app:layout_constraintStart_toEndOf="@+id/btn_go_back_file_picker"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:textSize="16sp"
+            android:layout_toRightOf="@id/btn_go_back_file_picker" />
 
-        <android.support.v7.widget.AppCompatButton
+        <Button
             android:id="@+id/btn_selected_all_file_picker"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="全选"
+            android:layout_centerVertical="true"
+            android:textSize="16sp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_toLeftOf="@+id/btn_confirm_file_picker"
+            android:text="@string/file_picker_tv_select_all"
             android:textColor="?android:attr/textColor"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn_confirm_file_picker"
-            app:layout_constraintHeight_percent="0.381"
-            app:layout_constraintHorizontal_bias="0.8222"
-            app:layout_constraintStart_toEndOf="@+id/tv_toolbar_title_file_picker"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_percent="0.1778" />
+            android:layout_toStartOf="@+id/btn_confirm_file_picker" />
 
-        <android.support.v7.widget.AppCompatButton
+        <Button
             android:id="@+id/btn_confirm_file_picker"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="78dp"
+            android:layout_height="32dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
             android:background="@drawable/btn_style"
-            android:gravity="center"
             android:text="确认"
-            android:textColor="?android:attr/textColorPrimary"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_percent="0.5238"
-            app:layout_constraintHorizontal_bias="0.9459"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_percent="0.1778" />
-    </android.support.constraint.ConstraintLayout>
+            android:textColor="?android:attr/textColorPrimary" />
+    </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_nav_file_picker"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:elevation="14dp"
+        android:layout_marginLeft="16dp"
         app:layout_constraintHeight_percent="0.075"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cl_tool_bar_file_picker" />
+        app:layout_constraintTop_toBottomOf="@+id/ll_tool_bar_file_picker"
+        android:layout_marginStart="16dp" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_list_file_picker"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        android:scrollbars="vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rv_nav_file_picker" />
-
-
-
-
 </android.support.constraint.ConstraintLayout>

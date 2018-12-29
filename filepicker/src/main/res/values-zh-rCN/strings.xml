@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name_file_picker">filepicker</string>
+	<string name="file_picker_go_back">返回</string>
+	<string name="file_picker_selected_count">已选择·%1$d</string>
+	<string name="file_picker_request_permission_failed">未授予存储权限</string>
+    <string name="file_picker_tv_select_all">全选</string>
+    <string name="file_picker_tv_unselect_all">取消全选</string>
+    <string name="file_picker_tv_selected">已选中·</string>
+    <string name="file_picker_tv_select_done">确认</string>
+    <string name="file_picker_tv_sd_card">SD 存储卡</string>
+</resources>
