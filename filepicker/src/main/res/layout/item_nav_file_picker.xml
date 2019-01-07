@@ -4,44 +4,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_nav_file_picker"
     android:layout_width="wrap_content"
-    android:layout_height="56dp"
-    app:layout_constraintHeight_default="percent"
-    app:layout_constraintWidth_default="percent"
+    android:layout_gravity="center"
+    android:layout_height="wrap_content"
     >
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/btn_nav_file_picker"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_height="match_parent"
         android:ellipsize="middle"
+        android:gravity="center"
         android:singleLine="true"
         android:textAllCaps="false"
         android:textColor="@color/shrine_text_color"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHeight_percent="0.3681"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:gravity="start|center_vertical"
-        android:paddingLeft="0dp"
-        android:paddingRight="0dp"
-        tools:text="SD 存储卡"
-        android:paddingStart="0dp" />
+        tools:text="SD 存储卡" />
 
-    <!--这个 imageView 的宽高最好这样设置，不然会占据剩下的空间-->
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/iv_nav_file_picker"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
         android:background="@drawable/ic_arrow_right"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="W, 1:1"
         app:layout_constraintStart_toEndOf="@+id/btn_nav_file_picker"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.0667" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

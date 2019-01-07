@@ -8,5 +8,6 @@
     <string name="file_picker_tv_selected">Selected·</string>
     <string name="file_picker_tv_select_done">Done</string>
     <string name="file_picker_tv_sd_card">SD Card</string>
+    <string name="too_many_files_tips">Too many current files, loading...</string>
 
 </resources>

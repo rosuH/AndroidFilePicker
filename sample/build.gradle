@@ -20,6 +20,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    buildscript {
+        ext.kotlin_version = '1.3.11'
+    }
 }
 
 dependencies {

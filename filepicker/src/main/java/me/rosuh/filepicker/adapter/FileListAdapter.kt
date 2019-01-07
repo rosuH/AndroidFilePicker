@@ -1,5 +1,9 @@
 package me.rosuh.filepicker.adapter
 
+import android.animation.ArgbEvaluator
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
+import android.graphics.Color
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +14,6 @@ import android.widget.TextView
 import me.rosuh.filepicker.FilePickerActivity
 import me.rosuh.filepicker.R
 import me.rosuh.filepicker.bean.FileItemBeanImpl
-import me.rosuh.filepicker.config.FilePickerConfig
 import me.rosuh.filepicker.config.FilePickerManager
 import java.io.File
 
@@ -20,27 +23,51 @@ import java.io.File
  * @date 2018/11/21
  * 文件列表适配器类
  */
-class FileListAdapter(private val activity: FilePickerActivity, var data: ArrayList<FileItemBeanImpl>) :
+class FileListAdapter(private val activity: FilePickerActivity, var data: ArrayList<FileItemBeanImpl>?) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
     var recyclerViewListener: RecyclerViewListener? = null
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val itemView = LayoutInflater.from(activity).inflate(R.layout.item_list_file_picker, parent, false)
-        return FileListItemHolder(itemView)
+        return when (viewType){
+            EMPTY_LIST_FILE_TYPE -> {
+                EmptyListHolder(LayoutInflater.from(activity).inflate(R.layout.list_item_empty, parent, false))
+            }
+            else -> {
+                val itemView = LayoutInflater.from(activity).inflate(R.layout.item_list_file_picker, parent, false)
+                FileListItemHolder(itemView)
+            }
+        }
     }
 
     override fun getItemCount(): Int {
-        return data.size
+        return data?.size?:10
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        if (data == null){
+            return EMPTY_LIST_FILE_TYPE
+        }
+        return DEFAULT_FILE_TYPE
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as FileListItemHolder).bind(data[position], position)
+        when(getItemViewType(position)){
+            EMPTY_LIST_FILE_TYPE -> {
+                (holder as EmptyListHolder).bind()
+            }
+            else -> {
+                (holder as FileListItemHolder).bind(data!![position], position)
+            }
+        }
     }
 
     fun getItem(position: Int):FileItemBeanImpl?{
-        if (position >= 0 && position < data.size) return data[position]
+        if (position >= 0 &&
+            position < data!!.size &&
+            getItemViewType(position) == DEFAULT_FILE_TYPE
+        ) return data!![position]
         return null
     }
 
@@ -75,5 +102,31 @@ class FileListAdapter(private val activity: FilePickerActivity, var data: ArrayL
             mIcon.setImageResource(resId)
         }
 
+    }
+
+    inner class EmptyListHolder(itemView: View): RecyclerView.ViewHolder(itemView){
+
+        fun bind(){
+            val anim1 = ObjectAnimator.ofInt(itemView.findViewById<View>(R.id.view_empty_icon), "backgroundColor",
+                Color.parseColor("#CCCCCC"), Color.parseColor("#DDDDDD"))
+
+            val anim2 = ObjectAnimator.ofInt(itemView.findViewById<View>(R.id.view_empty_str), "backgroundColor",
+                Color.parseColor("#CCCCCC"), Color.parseColor("#DDDDDD"))
+            anim1.duration = 2000
+            anim2.duration = 2000
+            anim1.setEvaluator(ArgbEvaluator())
+            anim2.setEvaluator(ArgbEvaluator())
+            anim1.repeatMode = ValueAnimator.REVERSE
+            anim1.repeatCount = ValueAnimator.INFINITE
+            anim2.repeatMode = ValueAnimator.REVERSE
+            anim2.repeatCount = ValueAnimator.INFINITE
+            anim1.start()
+            anim2.start()
+        }
+    }
+
+    companion object {
+        const val EMPTY_LIST_FILE_TYPE = 1000
+        const val DEFAULT_FILE_TYPE = 10001
     }
 }

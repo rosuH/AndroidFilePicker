@@ -13,6 +13,7 @@ import me.rosuh.filepicker.config.AbstractFileFilter
 import me.rosuh.filepicker.config.FilePickerManager
 import me.rosuh.filepicker.filetype.RasterImageFileType
 
+
 class SampleActivity : AppCompatActivity() {
     private var rv: RecyclerView? = null
 

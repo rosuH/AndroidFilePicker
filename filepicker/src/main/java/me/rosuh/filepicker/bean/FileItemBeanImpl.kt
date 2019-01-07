@@ -33,6 +33,6 @@ class FileItemBeanImpl(
 
     fun setCheck(check:Boolean){
         isChecked = check
-        beanSubscriber.updateUI(check)
+        beanSubscriber.updateItemUI(check)
     }
 }

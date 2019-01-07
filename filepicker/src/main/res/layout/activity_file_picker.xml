@@ -67,7 +67,7 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
-            android:background="@drawable/btn_style"
+            android:background="@drawable/btn_selector"
             android:text="确认"
             android:textColor="?android:attr/textColorPrimary" />
     </RelativeLayout>
