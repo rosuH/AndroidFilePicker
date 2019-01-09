@@ -63,18 +63,7 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
     private val fileListListener: RecyclerViewListener by lazy { getListener(rv_list_file_picker!!) }
     private val navListener: RecyclerViewListener by lazy { getListener(rv_nav_file_picker!!) }
     private val fileListener: RecyclerViewListener by lazy { getListener(rv_list_file_picker!!) }
-    private val toast:Toast by lazy { Toast.makeText(this@FilePickerActivity, getString(string.too_many_files_tips), Toast.LENGTH_SHORT) }
-    private val availableCount by lazy {
-        var count = 0
-        for (item in mListAdapter!!.data!!) {
-            val file = File(item.filePath)
-            if (pickerConfig.isSkipDir && file.exists() && file.isDirectory) {
-                continue
-            }
-            count++
-        }
-        count
-    }
+    private val toast:Toast by lazy { Toast.makeText(this@FilePickerActivity.applicationContext, getString(string.too_many_files_tips), Toast.LENGTH_SHORT) }
     private val TAG = "FilePickerActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -116,7 +105,7 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
             FILE_PICKER_PERMISSION_REQUEST_CODE -> {
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(
-                        this@FilePickerActivity,
+                        this@FilePickerActivity.applicationContext,
                         getString(string.file_picker_request_permission_failed),
                         Toast.LENGTH_SHORT
                     ).show()
@@ -279,7 +268,7 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
             }
             else -> {
                 // 新增失败的情况
-                Toast.makeText(this@FilePickerActivity, "最多只能选择 $maxSelectable 项", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@FilePickerActivity.applicationContext, "最多只能选择 $maxSelectable 项", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -323,7 +312,7 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
                         // 新增选中项失败的情况
                         checkBox.isChecked = false
                         item.setCheck(false)
-                        Toast.makeText(this@FilePickerActivity, "最多只能选择 $maxSelectable 项", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@FilePickerActivity.applicationContext, "最多只能选择 $maxSelectable 项", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -337,7 +326,7 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
             if (item.isChecked()) checkedCount++
         }
 
-        return ((checkedCount < maxSelectable) && (checkedCount < availableCount))
+        return ((checkedCount < maxSelectable) && (checkedCount < getAvailableCount()))
     }
 
     /**
@@ -501,6 +490,21 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
                 finish()
             }
         }
+    }
+
+    /**
+     * TODO 使用挂起函数解决遍历操作带来的阻塞问题 ，同一文件夹要缓存结果
+     */
+    private fun getAvailableCount():Long {
+        var count:Long = 0
+        for (item in mListAdapter!!.data!!) {
+            val file = File(item.filePath)
+            if (pickerConfig.isSkipDir && file.exists() && file.isDirectory) {
+                continue
+            }
+            count++
+        }
+        return count
     }
 
     private fun showManyFilesToast(){
