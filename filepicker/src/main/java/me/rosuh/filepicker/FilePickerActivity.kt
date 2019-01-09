@@ -21,8 +21,6 @@ import kotlinx.android.synthetic.main.activity_file_picker.rv_list_file_picker
 import kotlinx.android.synthetic.main.activity_file_picker.rv_nav_file_picker
 import kotlinx.android.synthetic.main.activity_file_picker.tv_toolbar_title_file_picker
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.MainCoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import me.rosuh.filepicker.R.string

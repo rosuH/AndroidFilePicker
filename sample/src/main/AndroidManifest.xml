@@ -7,7 +7,9 @@
         android:label="@string/app_name_file_picker"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme"
+        android:name=".App"
+        >
         <activity android:name=".SampleActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,7 +1,6 @@
 package me.rosuh.filepicker.config
 
 import android.content.Intent
-import me.rosuh.filepicker.App
 import me.rosuh.filepicker.FilePickerActivity
 import me.rosuh.filepicker.R
 
@@ -11,6 +10,9 @@ import me.rosuh.filepicker.R
  * @date 2018/11/27
  */
 class FilePickerConfig (private val pickerManager: FilePickerManager) {
+
+    private val contextRes = pickerManager.context!!.get()!!.resources
+
     /**
      * 是否显示隐藏文件，默认隐藏
      * 以符号 . 开头的文件或文件夹视为隐藏
@@ -31,7 +33,7 @@ class FilePickerConfig (private val pickerManager: FilePickerManager) {
     /**
      * 存储类型
      */
-    internal var mediaStorageName = App.appResources.getString(R.string.file_picker_tv_sd_card)
+    internal var mediaStorageName = contextRes.getString(R.string.file_picker_tv_sd_card)
     internal var mediaStorageType: StorageMediaTypeEnum = StorageMediaTypeEnum.EXTERNAL_STORAGE
     /**
      * 自定义过滤器
@@ -53,26 +55,26 @@ class FilePickerConfig (private val pickerManager: FilePickerManager) {
     /**
      * 全选文字，取消全选文字，返回文字，已选择文字
      */
-    internal var selectAllText: String? = App.appResources.getString(R.string.file_picker_tv_select_all)
-    internal var unSelectAllText: String? = App.appResources.getString(R.string.file_picker_tv_unselect_all)
-    internal var goBackText: String? = App.appResources.getString(R.string.file_picker_go_back)
-    internal var hadSelectedText: String? = App.appResources.getString(R.string.file_picker_selected_count)
+    internal var selectAllText: String? = contextRes.getString(R.string.file_picker_tv_select_all)
+    internal var unSelectAllText: String? = contextRes.getString(R.string.file_picker_tv_unselect_all)
+    internal var goBackText: String? = contextRes.getString(R.string.file_picker_go_back)
+    internal var hadSelectedText: String? = contextRes.getString(R.string.file_picker_selected_count)
 
     private fun reset():FilePickerConfig{
         isShowHiddenFiles = false
         isShowingCheckBox = true
         isSkipDir = true
         maxSelectable = Int.MAX_VALUE
-        mediaStorageName = App.appResources.getString(R.string.file_picker_tv_sd_card)
+        mediaStorageName = contextRes.getString(R.string.file_picker_tv_sd_card)
         mediaStorageType = StorageMediaTypeEnum.EXTERNAL_STORAGE
         selfFilter = null
         selfFileType = null
         fileItemOnClickListener = FileItemOnClickListenerImpl()
         themeId  = R.style.FilePickerThemeRail
-        selectAllText = App.appResources.getString(R.string.file_picker_tv_select_all)
-        unSelectAllText =  App.appResources.getString(R.string.file_picker_tv_unselect_all)
-        goBackText = App.appResources.getString(R.string.file_picker_go_back)
-        hadSelectedText = App.appResources.getString(R.string.file_picker_tv_selected)
+        selectAllText = contextRes.getString(R.string.file_picker_tv_select_all)
+        unSelectAllText =  contextRes.getString(R.string.file_picker_tv_unselect_all)
+        goBackText = contextRes.getString(R.string.file_picker_go_back)
+        hadSelectedText = contextRes.getString(R.string.file_picker_tv_selected)
         return this
     }
 
