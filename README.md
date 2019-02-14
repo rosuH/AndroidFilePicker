@@ -70,6 +70,14 @@ FilePickerManager
 
 Now that you have taken off 🛩️ ... ( there are really only two lines )
 
+You only need to add `.INSTANCE` to use it:
+
+```java
+FilePickerManager.INSTANCE
+                .from(this)
+                .forResult(FilePickerManager.REQUEST_CODE);
+```
+
 
 
 ## Receive Result

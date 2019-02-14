@@ -4,13 +4,35 @@
 
 [![](https://jitpack.io/v/me.rosuh/AndroidFilePicker.svg)](https://jitpack.io/#me.rosuh/AndroidFilePicker)
 
-# I 简介
 
-🔖 FilePicker 是一个小巧快速的文件选择器框架，以快速集成、高自定义化和可配置化为目标不断前进~🚩
 
-# II 使用
+它没有像 Rocky，Cosmos 或是 Peppa 这样的名字。 Android File Picker 正如其名，是一个本地文件选择器框架。 他的一些特征如下所述：
+
+ - 在 `Activity` 或 `Fragment` 中启动
+    - 从一行代码开始
+ - 浏览本地存储中的所有文件
+    - 内置默认文件类型和文件鉴别器
+    - 或者您可以自己实现文件类型
+ - 自定义列表过滤器
+    - 只想显示图片（或视频，音频......）？ 没问题！
+    - 当然，您也可只显示文件夹
+ - 自定义`item`点击事件：只需要实现监听器
+ - 四个内置主题和自定义主题
+ - 还有更多待您自己探索的特性（？）
+
+
+
+|                    Rail Style（default）                     |                         Reply Style                          |                         Crane Style                          |                         Shrine Style                         |
+| :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+| ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/default_theme.png) | ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/reply_theme.png) | ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/crane_theme.png) | ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/shrine_theme.png) |
+
+
+
+# 下载使用
 
 1. 在你的项目中添加依赖
+
+现在项目 `build.gradle` 配置文件添加仓库：
 
 ```xml
 allprojects {
@@ -21,15 +43,30 @@ allprojects {
 }
 ```
 
+然后在子模块（`app`）的配置文件添加依赖：
+
 ```xml
 dependencies {
     implementation 'me.rosuh:AndroidFilePicker:latest_version'
 }
 ```
 
-`latest_version` 请自行替换成最新版本
+`latest_version` 请自行替换成 [最新版本](https://github.com/rosuH/AndroidFilePicker/releases) 
 
-2. 开始使用(`Kotlin`)
+
+
+# 使用
+
+## 权限
+
+此库需要两个权限：
+
+- `android.permission.READ_EXTERNAL_STORAGE`
+- `android.permission.WRITE_EXTERNAL_STORAGE`
+
+如果您没有提前授予，这个库会自动申请该权限的。
+
+## 开始使用(`Kotlin`)
 
 简单的链式调用示意：
 
@@ -40,6 +77,18 @@ FilePickerManager
 ```
 
 现在你已经起飞了🛩️...（真的只有两行）
+
+如果使用 Java，那么仅需要加入一个`.INSTANCE` 即可使用：
+
+```java
+FilePickerManager.INSTANCE
+                .from(this)
+                .forResult(FilePickerManager.REQUEST_CODE);
+```
+
+
+
+## 获取结果
 
 *获取结果*：`onActivityResult`接受消息，然后调用`FilePickerManager.obtainData()`获取保存的数据，**结果是所选取文件的路径列表(`ArrayList<String>()`)**
 
