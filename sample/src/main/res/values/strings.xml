@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">AndroidFilePicker</string>
+    <string name="default_btn">default</string>
+    <string name="single_choise">single select</string>
+    <string name="only_show_folder">only show folders</string>
+    <string name="only_show_imgs">only show images</string>
+    <string name="show_hidden_files">show hidden files</string>
+    <string name="single_select_file">single select files</string>
+    <string name="multi_select">multi select files</string>
+    <string name="single_folder">single select folder</string>
+    <string name="multi_folder">multi select folder</string>
 </resources>

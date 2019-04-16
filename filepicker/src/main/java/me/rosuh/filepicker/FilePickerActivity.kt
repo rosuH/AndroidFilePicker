@@ -268,7 +268,7 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
             }
             else -> {
                 // 新增失败的情况
-                Toast.makeText(this@FilePickerActivity.applicationContext, "最多只能选择 $maxSelectable 项", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@FilePickerActivity.applicationContext, resources.getString(R.string.max_select_count_tips, maxSelectable), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -417,7 +417,7 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
         // 取消选中，并且选中数为 0
         if (selectedCount.get() == 0) {
             btn_selected_all_file_picker!!.text = pickerConfig.selectAllText
-            tv_toolbar_title_file_picker!!.text = pickerConfig.goBackText
+            tv_toolbar_title_file_picker!!.text = ""
             return
         }
         btn_selected_all_file_picker!!.text = pickerConfig.unSelectAllText

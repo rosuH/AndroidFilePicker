@@ -59,7 +59,6 @@ class SampleActivity : AppCompatActivity() {
         defaultBtn.setOnClickListener {
             FilePickerManager
                 .from(this@SampleActivity)
-                .setTheme(R.style.FilePickerThemeShrine)
                 .forResult(FilePickerManager.REQUEST_CODE)
         }
         // 单选

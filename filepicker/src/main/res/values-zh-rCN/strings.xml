@@ -10,4 +10,6 @@
     <string name="file_picker_tv_select_done">确认</string>
     <string name="file_picker_tv_sd_card">SD 存储卡</string>
     <string name="too_many_files_tips">当前文件过多\n正在载入中&#8230;</string>
+    <string name="max_select_count_tips">最多只能选择 %d 项</string>
+
 </resources>

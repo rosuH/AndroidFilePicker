@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AndroidFilePicker</string>
+    <string name="default_btn">默认状态</string>
+    <string name="single_choise">单选</string>
+    <string name="only_show_folder">只展示文件夹</string>
+    <string name="only_show_imgs">只展示图片</string>
+    <string name="show_hidden_files">显示隐藏文件</string>
+    <string name="single_select_file">单选文件</string>
+    <string name="multi_select">多选文件</string>
+    <string name="single_folder">单选文件夹</string>
+    <string name="multi_folder">多选文件夹</string>
+</resources>
