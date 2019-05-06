@@ -14,12 +14,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.CheckBox
 import android.widget.Toast
-import kotlinx.android.synthetic.main.activity_file_picker.btn_confirm_file_picker
-import kotlinx.android.synthetic.main.activity_file_picker.btn_go_back_file_picker
-import kotlinx.android.synthetic.main.activity_file_picker.btn_selected_all_file_picker
-import kotlinx.android.synthetic.main.activity_file_picker.rv_list_file_picker
-import kotlinx.android.synthetic.main.activity_file_picker.rv_nav_file_picker
-import kotlinx.android.synthetic.main.activity_file_picker.tv_toolbar_title_file_picker
+import kotlinx.android.synthetic.main.activity_file_picker.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -28,14 +23,13 @@ import me.rosuh.filepicker.adapter.FileListAdapter
 import me.rosuh.filepicker.adapter.FileNavAdapter
 import me.rosuh.filepicker.adapter.RecyclerViewListener
 import me.rosuh.filepicker.bean.BeanSubscriber
+import me.rosuh.filepicker.bean.FileBean
 import me.rosuh.filepicker.bean.FileItemBeanImpl
 import me.rosuh.filepicker.bean.FileNavBeanImpl
-import me.rosuh.filepicker.bean.FileBean
 import me.rosuh.filepicker.config.FilePickerManager
 import me.rosuh.filepicker.utils.BaseActivity
 import me.rosuh.filepicker.utils.FileUtils
 import java.io.File
-import java.lang.Exception
 import java.util.concurrent.atomic.AtomicInteger
 
 class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewListener.IOnItemClickListener,
@@ -141,6 +135,7 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
                         updateListUI(tmpListData)
                     }
                 }
+                sortFiles(tmpListData)
                 tmpListData
             }
             if (!isLotsOfFiles(rootFile)) {
@@ -367,6 +362,7 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
                         updateListUI(listDataList)
                     }
                 }
+                sortFiles(listDataList)
                 listDataList
             }
 
@@ -391,6 +387,25 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
                 rv_nav_file_picker!!.scrollToPosition(position)
             }
         }
+    }
+
+    /**
+     * 对数据进行排序 方便阅读
+     */
+    private fun sortFiles(listDataList: ArrayList<FileItemBeanImpl>) {
+        listDataList.sortWith(Comparator { o1, o2 ->
+            if (o1?.isDir == o2?.isDir) {
+                // 排序暂时忽略大小写
+                o1.fileName.toUpperCase().compareTo(o2.fileName.toUpperCase())
+                //if ((o1.fileName.get(0)?.toUpperCase() == o2.fileName.get(0)?.toUpperCase())) {
+                //    o1.fileName.compareTo(o2.fileName)
+                //} else {
+                //    o1.fileName.toUpperCase().compareTo(o2.fileName.toUpperCase())
+                //}
+            } else {
+                o2.isDir.compareTo(o1.isDir)
+            }
+        })
     }
 
     /**
