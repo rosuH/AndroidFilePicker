@@ -1,4 +1,4 @@
-package me.rosuh.filepicker
+package me.rosuh.demo
 
 import android.app.Activity
 import android.content.Intent
@@ -8,11 +8,14 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.widget.Button
 import android.widget.Toast
+import me.rosuh.filepicker.R.id
+import me.rosuh.filepicker.R.layout
+import me.rosuh.filepicker.R.style
 import me.rosuh.filepicker.bean.FileItemBeanImpl
 import me.rosuh.filepicker.config.AbstractFileFilter
 import me.rosuh.filepicker.config.FilePickerManager
 import me.rosuh.filepicker.filetype.RasterImageFileType
-
+import me.rosuh.sample.R
 
 class SampleActivity : AppCompatActivity() {
     private var rv: RecyclerView? = null
@@ -65,7 +68,7 @@ class SampleActivity : AppCompatActivity() {
         singleBtn.setOnClickListener {
             FilePickerManager
                 .from(this@SampleActivity)
-                .setTheme(R.style.FilePickerThemeRail)
+                .setTheme(style.FilePickerThemeRail)
                 .maxSelectable(1)
                 .forResult(FilePickerManager.REQUEST_CODE)
         }
@@ -73,7 +76,7 @@ class SampleActivity : AppCompatActivity() {
         onlyDirBtn.setOnClickListener {
             FilePickerManager
                 .from(this@SampleActivity)
-                .setTheme(R.style.FilePickerThemeShrine)
+                .setTheme(style.FilePickerThemeShrine)
                 .filter(object : AbstractFileFilter() {
                     override fun doFilter(listData: ArrayList<FileItemBeanImpl>): ArrayList<FileItemBeanImpl> {
                         return ArrayList(listData.filter { item ->
@@ -125,14 +128,14 @@ class SampleActivity : AppCompatActivity() {
                     }
                 })
                 .skipDirWhenSelect(false)
-                .setTheme(R.style.FilePickerThemeReply)
+                .setTheme(style.FilePickerThemeReply)
                 .forResult(FilePickerManager.REQUEST_CODE)
         }
         // 多选文件
         multiFilesBtn.setOnClickListener {
             FilePickerManager
                 .from(this@SampleActivity)
-                .setTheme(R.style.FilePickerThemeCrane)
+                .setTheme(style.FilePickerThemeCrane)
                 .forResult(FilePickerManager.REQUEST_CODE)
         }
         // 多选文件夹
@@ -147,7 +150,7 @@ class SampleActivity : AppCompatActivity() {
                     }
                 })
                 .skipDirWhenSelect(false)
-                .setTheme(R.style.FilePickerThemeShrine)
+                .setTheme(style.FilePickerThemeShrine)
                 .forResult(FilePickerManager.REQUEST_CODE)
         }
     }
