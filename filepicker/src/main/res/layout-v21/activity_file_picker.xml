@@ -79,7 +79,7 @@
         android:id="@+id/rv_nav_file_picker"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        app:elevation="14dp"
+        android:elevation="14dp"
         app:layout_constraintHeight_percent="0.075"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ll_tool_bar_file_picker"

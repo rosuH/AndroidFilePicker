@@ -3,7 +3,7 @@
         <item name="colorPrimary">@color/rail_color_primary</item>
         <item name="colorPrimaryDark">@color/rail_color_primary_dark</item>
         <item name="colorAccent">@color/rail_color_accent</item>
-        <item name="colorButtonNormal">@color/rail_button_focus</item>
+        <item name="button_color_normal">@color/rail_button_focus</item>
         <item name="android:textColor">@color/rail_text_color</item>
         <item name="android:textColorPrimary">@color/rail_textColor_Primary</item>
         <!--<item name="android:windowTranslucentStatus">true</item>-->
@@ -16,7 +16,7 @@
         <item name="colorPrimary">@color/reply_color_primary</item>
         <item name="colorPrimaryDark">@color/reply_color_primary_dark</item>
         <item name="colorAccent">@color/reply_color_accent</item>
-        <item name="colorButtonNormal">@color/reply_button_focus</item>
+        <item name="button_color_normal">@color/reply_button_focus</item>
         <item name="android:textColor">@color/reply_text_color</item>
         <item name="android:textColorPrimary">@color/reply_textColor_Primary</item>
         <!--<item name="android:windowTranslucentStatus">true</item>-->
@@ -29,7 +29,7 @@
         <item name="colorPrimary">@color/crane_color_primary</item>
         <item name="colorPrimaryDark">@color/crane_color_primary_dark</item>
         <item name="colorAccent">@color/crane_color_accent</item>
-        <item name="colorButtonNormal">@color/crane_button_focus</item>
+        <item name="button_color_normal">@color/crane_button_focus</item>
         <item name="android:textColor">@color/crane_text_color</item>
         <item name="android:textColorPrimary">@color/crane_textColor_Primary</item>
         <!--<item name="android:windowTranslucentStatus">true</item>-->
@@ -42,7 +42,7 @@
         <item name="colorPrimary">@color/shrine_color_primary</item>
         <item name="colorPrimaryDark">@color/shrine_color_primary_dark</item>
         <item name="colorAccent">@color/shrine_color_accent</item>
-        <item name="colorButtonNormal">@color/shrine_button_focus</item>
+        <item name="button_color_normal">@color/shrine_button_focus</item>
         <item name="android:textColor">@color/shrine_text_color</item>
         <item name="android:textColorPrimary">@color/shrine_textColor_Primary</item>
         <!--<item name="android:windowTranslucentStatus">true</item>-->

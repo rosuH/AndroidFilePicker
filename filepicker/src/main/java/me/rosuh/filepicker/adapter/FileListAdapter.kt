@@ -93,12 +93,12 @@ class FileListAdapter(private val activity: FilePickerActivity, var data: ArrayL
             val isDir = File(itemImpl.filePath).isDirectory
 
             if (isDir) {
-                mIcon.setImageResource(R.drawable.ic_folder)
+                mIcon.setImageResource(R.drawable.ic_folder_file_picker)
                 mCbItem.visibility = if (isSkipDir) View.INVISIBLE else View.VISIBLE
                 return
             }
 
-            val resId: Int = itemImpl.fileType?.fileIconResId ?: R.drawable.ic_unknown
+            val resId: Int = itemImpl.fileType?.fileIconResId ?: R.drawable.ic_unknown_file_picker
             mIcon.setImageResource(resId)
         }
 

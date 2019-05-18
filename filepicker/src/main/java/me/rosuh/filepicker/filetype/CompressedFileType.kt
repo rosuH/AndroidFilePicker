@@ -13,7 +13,7 @@ class CompressedFileType : FileType {
     override val fileType: String
         get() = "Compressed"
     override val fileIconResId: Int
-        get() = R.drawable.ic_compressed
+        get() = R.drawable.ic_compressed_file_picker
 
     override fun verify(fileName: String): Boolean {
         /**

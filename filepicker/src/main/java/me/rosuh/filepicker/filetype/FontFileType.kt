@@ -13,7 +13,7 @@ class FontFileType : FileType {
     override val fileType: String
         get() = "Font"
     override val fileIconResId: Int
-        get() = R.drawable.ic_unknown
+        get() = R.drawable.ic_unknown_file_picker
 
     override fun verify(fileName: String): Boolean {
         /**

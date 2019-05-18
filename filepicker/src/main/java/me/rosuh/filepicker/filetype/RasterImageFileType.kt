@@ -12,7 +12,7 @@ class RasterImageFileType : FileType {
     override val fileType: String
         get() = "Image"
     override val fileIconResId: Int
-        get() = R.drawable.ic_image
+        get() = R.drawable.ic_image_file_picker
 
     override fun verify(fileName: String): Boolean {
         /**

@@ -6,6 +6,7 @@
     android:layout_height="72dp"
     android:clickable="true"
     android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
     android:background="?attr/selectableItemBackground"
     android:paddingTop="8dp"
     >

@@ -27,7 +27,7 @@
         android:id="@+id/iv_nav_file_picker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/ic_arrow_right"
+        android:background="@drawable/ic_arrow_right_file_picker"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_nav_file_picker"
         app:layout_constraintTop_toTopOf="parent" />

@@ -12,7 +12,7 @@ class ExecutableFileType : FileType {
     override val fileType: String
         get() = "Executable"
     override val fileIconResId: Int
-        get() = R.drawable.ic_unknown
+        get() = R.drawable.ic_unknown_file_picker
 
     override fun verify(fileName: String): Boolean {
         /**

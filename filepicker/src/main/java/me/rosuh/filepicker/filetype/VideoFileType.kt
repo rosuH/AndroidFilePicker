@@ -13,7 +13,7 @@ class VideoFileType : FileType {
     override val fileType: String
         get() = "Video"
     override val fileIconResId: Int
-        get() = R.drawable.ic_video
+        get() = R.drawable.ic_video_file_picker
 
     override fun verify(fileName: String): Boolean {
         /**
