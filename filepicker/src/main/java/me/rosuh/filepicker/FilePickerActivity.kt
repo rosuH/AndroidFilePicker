@@ -421,10 +421,7 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
      * 判断当前文件夹的子项是否超过预设数量，用于决定是否显示占位视图
      */
     private fun isLotsOfFiles(rootFile: File): Boolean {
-        if (rootFile.listFiles().size > DEFAULT_FILES_LIST_THRESHOLD) {
-            return true
-        }
-        return false
+        return rootFile.listFiles().size > DEFAULT_FILES_LIST_THRESHOLD
     }
 
     private fun switchButton(isEnable: Boolean) {
