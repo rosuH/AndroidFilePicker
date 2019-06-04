@@ -1,6 +1,8 @@
 package me.rosuh.filepicker.utils
 
 import android.os.Environment
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import me.rosuh.filepicker.bean.BeanSubscriber
 import me.rosuh.filepicker.bean.FileItemBeanImpl
 import me.rosuh.filepicker.bean.FileNavBeanImpl
@@ -21,8 +23,8 @@ class FileUtils {
          * 根据配置参数获取根目录文件
          * @return File
          */
-        fun getRootFile(): File {
-            return when (FilePickerManager.config.mediaStorageType) {
+        suspend fun getRootFile() = withContext(Dispatchers.IO){
+            when (FilePickerManager.config.mediaStorageType) {
                 EXTERNAL_STORAGE -> {
                     File(Environment.getExternalStorageDirectory().absoluteFile.toURI())
                 }
@@ -35,9 +37,8 @@ class FileUtils {
         /**
          * 获取给定文件对象 @param rootFil 下的所有文件，生成列表项对象 @return ArrayList<FileItemBeanImpl>
          */
-        fun produceListDataSource(rootFile: File, beanSubscriber: BeanSubscriber): ArrayList<FileItemBeanImpl> {
+        suspend fun produceListDataSource(rootFile: File, beanSubscriber: BeanSubscriber) = withContext(Dispatchers.IO) {
             var listData: ArrayList<FileItemBeanImpl>? = ArrayList()
-
             for (file in rootFile.listFiles()) {
                 //以符号 . 开头的视为隐藏文件或隐藏文件夹，后面进行过滤
                 val isHiddenFile = file.name.startsWith(".")
@@ -50,23 +51,21 @@ class FileUtils {
                 FilePickerManager.config.selfFileType?.fillFileType(itemBean) ?: FilePickerManager.config.defaultFileType.fillFileType(itemBean)
                 listData?.add(itemBean)
             }
-            // 隐藏文件过滤器
-            if (!FilePickerManager.config.isShowHiddenFiles) {
-                listData = filesHiderFilter(listData!!)
+            listData.apply {
+                // 隐藏文件过滤器
+                filesHiderFilter(this!!)
+                // 将当前列表数据暴露，以供调用者自己处理数据
+                FilePickerManager.config.selfFilter?.doFilter(this)
+                // 排序
+                sortWith(compareBy({!it.isDir}, {it.fileName}))
             }
-
-            // 将当前列表数据暴露，以供调用者自己处理数据
-            listData = FilePickerManager.config.selfFilter?.doFilter(listData!!)?:listData
-            listData!!.sortWith(compareBy({!it.isDir}, {it.fileName}))
-            return listData
         }
 
         /**
-         * 隐藏文件的过滤器，传入列表的数据集，然后将被视为隐藏文件的条目从中删除
-         * @param listData ArrayList<FileItemBeanImpl>
+         * 隐藏文件的过滤器，传入列表的数据集[listData]，然后将被视为隐藏文件的条目从中删除
          */
-        private fun filesHiderFilter(listData: ArrayList<FileItemBeanImpl>): ArrayList<FileItemBeanImpl> {
-            return ArrayList(listData.filter { !it.isHide })
+        private fun filesHiderFilter(listData: ArrayList<FileItemBeanImpl>){
+            listData.retainAll { listData.filter { !it.isHide } }
         }
 
         /**

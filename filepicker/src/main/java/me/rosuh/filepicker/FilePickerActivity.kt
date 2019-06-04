@@ -1,6 +1,7 @@
 package me.rosuh.filepicker
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -34,6 +35,7 @@ import me.rosuh.filepicker.utils.FileUtils
 import java.io.File
 import java.util.concurrent.atomic.AtomicInteger
 
+@SuppressLint("ShowToast")
 class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewListener.IOnItemClickListener,
     BeanSubscriber {
 
@@ -66,7 +68,6 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
             Toast.LENGTH_SHORT
         )
     }
-    private val TAG = "FilePickerActivity"
     private var goBackBtn: ImageButton? = null
     private var selectAllBtn: Button? = null
     private var confirmBtn: Button? = null
@@ -131,30 +132,14 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
             if (Environment.getExternalStorageState() != MEDIA_MOUNTED) {
                 throw Throwable(cause = IllegalStateException("External storage is not available ====>>> Environment.getExternalStorageState() != MEDIA_MOUNTED"))
             }
-
             // 根目录文件对象
             val rootFile = FileUtils.getRootFile()
-            var listData: ArrayList<FileItemBeanImpl>? = null
             val isManyFiles = isLotsOfFiles(rootFile)
             if (isManyFiles) showManyFilesToast()
 
             // 文件列表数据集
             // 利用协程异步获取数据
-            val deferredList = async(Dispatchers.IO) {
-                val tmpListData = FileUtils.produceListDataSource(rootFile, this@FilePickerActivity)
-                if (isManyFiles) {
-                    // 如果是文件夹过多情况，则拿到结果后需要更新列表
-                    launch(Dispatchers.Main) {
-                        updateListUI(tmpListData)
-                    }
-                }
-                tmpListData
-            }
-            if (!isLotsOfFiles(rootFile)) {
-                // 如果文件数量不多，则直接等待结果返回
-                listData = deferredList.await()
-            }
-
+            val listData = FileUtils.produceListDataSource(rootFile, this@FilePickerActivity)
             // 导航栏数据集
             mNavDataSource = FileUtils.produceNavDataSource(
                 mNavDataSource,
@@ -384,21 +369,8 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
             val isManyFiles = isLotsOfFiles(nextFiles)
             if (isManyFiles) showManyFilesToast()
 
-            val getListJob = async(Dispatchers.IO) {
-                listDataList = FileUtils.produceListDataSource(nextFiles, this@FilePickerActivity)
-                if (isManyFiles) {
-                    launch(Dispatchers.Main) {
-                        updateListUI(listDataList)
-                    }
-                }
-                listDataList
-            }
-
-            mListAdapter = if (isLotsOfFiles(nextFiles)) {
-                produceListAdapter(null)
-            } else {
-                produceListAdapter(getListJob.await())
-            }
+            val tmpList = FileUtils.produceListDataSource(nextFiles, this@FilePickerActivity)
+            mListAdapter = produceListAdapter(tmpList)
 
             // 获取导航栏的数据集
             mNavDataSource = FileUtils.produceNavDataSource(ArrayList(mNavAdapter!!.data), fileBean.filePath)
@@ -472,7 +444,7 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
                     }
                 } else if (isCanSelect()) {
                     // 当前选中数少于最大选中数，则即将执行选中
-                    for (i in selectedCount.get()..(mListAdapter!!.data!!.size - 1)) {
+                    for (i in selectedCount.get() until mListAdapter!!.data!!.size) {
                         val data = mListAdapter!!.data!![i]
                         val file = File(data.filePath)
                         if (pickerConfig.isSkipDir && file.exists() && file.isDirectory) {
