@@ -13,22 +13,16 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import android.widget.Button
-import android.widget.CheckBox
-import android.widget.ImageButton
-import android.widget.TextView
-import android.widget.Toast
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
+import android.widget.*
 import kotlinx.coroutines.launch
 import me.rosuh.filepicker.R.string
 import me.rosuh.filepicker.adapter.FileListAdapter
 import me.rosuh.filepicker.adapter.FileNavAdapter
 import me.rosuh.filepicker.adapter.RecyclerViewListener
 import me.rosuh.filepicker.bean.BeanSubscriber
+import me.rosuh.filepicker.bean.FileBean
 import me.rosuh.filepicker.bean.FileItemBeanImpl
 import me.rosuh.filepicker.bean.FileNavBeanImpl
-import me.rosuh.filepicker.bean.FileBean
 import me.rosuh.filepicker.config.FilePickerManager
 import me.rosuh.filepicker.utils.BaseActivity
 import me.rosuh.filepicker.utils.FileUtils
@@ -36,7 +30,7 @@ import java.io.File
 import java.util.concurrent.atomic.AtomicInteger
 
 @SuppressLint("ShowToast")
-class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewListener.IOnItemClickListener,
+class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewListener.OnItemClickListener,
     BeanSubscriber {
 
     /**
@@ -51,7 +45,6 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
      * 导航栏数据集
      */
     private var mNavDataSource = ArrayList<FileNavBeanImpl>()
-    private lateinit var listDataList: ArrayList<FileItemBeanImpl>
     /**
      * 文件夹为空时展示的空视图
      */
@@ -176,14 +169,6 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
         rvNav!!.addOnItemTouchListener(navListener)
     }
 
-    private fun updateListUI(listData: ArrayList<FileItemBeanImpl>) {
-        mListAdapter = produceListAdapter(listData)
-        rvContentList!!.adapter = mListAdapter
-        mListAdapter!!.notifyDataSetChanged()
-        confirmBtn?.isEnabled = true
-        selectAllBtn?.isEnabled = true
-    }
-
     /**
      * 获取两个列表的监听器
      */
@@ -192,9 +177,7 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
     }
 
     /**
-     * 生产列表的适配器
-     * @param dataSource 列表数据集
-     * @return 列表适配器
+     * 构造列表的适配器
      */
     private fun produceListAdapter(dataSource: ArrayList<FileItemBeanImpl>?): FileListAdapter {
         val fileListAdapter = FileListAdapter(this@FilePickerActivity, dataSource)
@@ -203,9 +186,7 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
     }
 
     /**
-     * 生产导航栏适配器
-     * @param dataSource 导航栏数据集
-     * @return 导航栏适配器
+     * 构造导航栏适配器
      */
     private fun produceNavAdapter(dataSource: ArrayList<FileNavBeanImpl>): FileNavAdapter {
         val adapter = FileNavAdapter(this@FilePickerActivity, dataSource)
@@ -214,10 +195,7 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
     }
 
     /**
-     * 传递条目点击事件给调用者
-     * @param recyclerAdapter RecyclerView.Adapter
-     * @param view View?
-     * @param position Int
+     * 传递 item 点击事件给调用者
      */
     override fun onItemClick(
         recyclerAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
@@ -369,17 +347,13 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
             val isManyFiles = isLotsOfFiles(nextFiles)
             if (isManyFiles) showManyFilesToast()
 
-            val tmpList = FileUtils.produceListDataSource(nextFiles, this@FilePickerActivity)
-            mListAdapter = produceListAdapter(tmpList)
+            // 更新列表数据集
+            mListAdapter?.data = FileUtils.produceListDataSource(nextFiles, this@FilePickerActivity)
 
-            // 获取导航栏的数据集
+            // 更新导航栏的数据集
             mNavDataSource = FileUtils.produceNavDataSource(ArrayList(mNavAdapter!!.data), fileBean.filePath)
+            mNavAdapter?.data = mNavDataSource
 
-
-            mNavAdapter = produceNavAdapter(mNavDataSource)
-
-            rvContentList!!.adapter = mListAdapter
-            rvNav!!.adapter = mNavAdapter
             mListAdapter!!.notifyDataSetChanged()
             mNavAdapter!!.notifyDataSetChanged()
 

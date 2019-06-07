@@ -1,7 +1,6 @@
 package me.rosuh.filepicker.adapter
 
 import android.app.Activity
-import android.graphics.Rect
 import android.support.v4.view.GestureDetectorCompat
 import android.support.v7.widget.RecyclerView
 import android.view.GestureDetector
@@ -18,10 +17,10 @@ import me.rosuh.filepicker.utils.ScreenUtils
  * OnItemTouchListener 无法轻易实现对子控件点击事件的监听
  *
  */
-class RecyclerViewListener(val activity: Activity, val recyclerView: RecyclerView, val itemClickListener:IOnItemClickListener):
+class RecyclerViewListener(val activity: Activity, val recyclerView: RecyclerView, val itemClickListener: OnItemClickListener) :
     RecyclerView.OnItemTouchListener{
 
-    interface IOnItemClickListener {
+    interface OnItemClickListener {
 
         fun onItemClick(recyclerAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>, view: View, position: Int)
 

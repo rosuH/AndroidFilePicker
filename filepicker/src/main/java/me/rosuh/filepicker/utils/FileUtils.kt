@@ -35,37 +35,30 @@ class FileUtils {
         }
 
         /**
-         * 获取给定文件对象 @param rootFil 下的所有文件，生成列表项对象 @return ArrayList<FileItemBeanImpl>
+         * 获取给定文件对象[rootFile]下的所有文件，生成列表项对象
          */
         suspend fun produceListDataSource(rootFile: File, beanSubscriber: BeanSubscriber) = withContext(Dispatchers.IO) {
-            var listData: ArrayList<FileItemBeanImpl>? = ArrayList()
+            val listData: ArrayList<FileItemBeanImpl> = ArrayList()
             for (file in rootFile.listFiles()) {
                 //以符号 . 开头的视为隐藏文件或隐藏文件夹，后面进行过滤
                 val isHiddenFile = file.name.startsWith(".")
                 if (file.isDirectory) {
-                    listData?.add(FileItemBeanImpl(file.name, file.path, false, null, true, isHiddenFile, beanSubscriber))
+                    listData.add(FileItemBeanImpl(file.name, file.path, false, null, true, isHiddenFile, beanSubscriber))
                     continue
                 }
                 val itemBean = FileItemBeanImpl(file.name, file.path, false, null, false, isHiddenFile, beanSubscriber)
                 // 如果调用者没有实现文件类型甄别器，则使用的默认甄别器
                 FilePickerManager.config.selfFileType?.fillFileType(itemBean) ?: FilePickerManager.config.defaultFileType.fillFileType(itemBean)
-                listData?.add(itemBean)
+                listData.add(itemBean)
             }
             listData.apply {
-                // 隐藏文件过滤器
-                filesHiderFilter(this!!)
+                // 隐藏文件处理
+                hideFiles<FileItemBeanImpl>(!FilePickerManager.config.isShowHiddenFiles)
                 // 将当前列表数据暴露，以供调用者自己处理数据
                 FilePickerManager.config.selfFilter?.doFilter(this)
                 // 排序
                 sortWith(compareBy({!it.isDir}, {it.fileName}))
             }
-        }
-
-        /**
-         * 隐藏文件的过滤器，传入列表的数据集[listData]，然后将被视为隐藏文件的条目从中删除
-         */
-        private fun filesHiderFilter(listData: ArrayList<FileItemBeanImpl>){
-            listData.retainAll { listData.filter { !it.isHide } }
         }
 
         /**
@@ -116,5 +109,11 @@ class FileUtils {
             )
             return currentDataSource
         }
+    }
+}
+
+private fun <E> java.util.ArrayList<FileItemBeanImpl>?.hideFiles(hide: Boolean) {
+    if (hide) {
+        this?.removeAll { it.isHide }
     }
 }

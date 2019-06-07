@@ -6,15 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import me.rosuh.filepicker.FilePickerActivity
-import me.rosuh.filepicker.bean.FileNavBeanImpl
 import me.rosuh.filepicker.R
+import me.rosuh.filepicker.bean.FileNavBeanImpl
 
 /**
  *
  * @author rosu
  * @date 2018/11/21
  */
-class FileNavAdapter(private val activity: FilePickerActivity, val data: MutableList<FileNavBeanImpl>) :
+class FileNavAdapter(private val activity: FilePickerActivity, var data: MutableList<FileNavBeanImpl>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
      var recyclerViewListener: RecyclerViewListener? = null
