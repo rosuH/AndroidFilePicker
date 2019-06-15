@@ -12,7 +12,7 @@ class WebFileType : FileType {
     override val fileType: String
         get() = "Web"
     override val fileIconResId: Int
-        get() = R.drawable.ic_unknown_file_picker
+        get() = R.drawable.ic_html_file_picker
 
     override fun verify(fileName: String): Boolean {
         /**

@@ -13,7 +13,7 @@ class PageLayoutFileType : FileType {
     override val fileType: String
         get() = "PageLayout"
     override val fileIconResId: Int
-        get() = R.drawable.ic_unknown_file_picker
+        get() = R.drawable.ic_pdf_file_picker
 
     override fun verify(fileName: String): Boolean {
         /**
