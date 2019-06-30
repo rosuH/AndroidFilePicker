@@ -9,6 +9,7 @@ import me.rosuh.filepicker.bean.FileNavBeanImpl
 import me.rosuh.filepicker.config.FilePickerManager
 import me.rosuh.filepicker.config.StorageMediaTypeEnum.EXTERNAL_STORAGE
 import java.io.File
+import java.util.*
 
 /**
  *
@@ -38,7 +39,7 @@ class FileUtils {
          * 获取给定文件对象[rootFile]下的所有文件，生成列表项对象
          */
         suspend fun produceListDataSource(rootFile: File, beanSubscriber: BeanSubscriber) = withContext(Dispatchers.IO) {
-            val listData: ArrayList<FileItemBeanImpl> = ArrayList()
+            var listData: ArrayList<FileItemBeanImpl> = ArrayList()
             for (file in rootFile.listFiles()) {
                 //以符号 . 开头的视为隐藏文件或隐藏文件夹，后面进行过滤
                 val isHiddenFile = file.name.startsWith(".")
@@ -51,14 +52,14 @@ class FileUtils {
                 FilePickerManager.config.selfFileType?.fillFileType(itemBean) ?: FilePickerManager.config.defaultFileType.fillFileType(itemBean)
                 listData.add(itemBean)
             }
-            listData.apply {
+            listData.run {
                 // 隐藏文件处理
-                hideFiles<FileItemBeanImpl>(!FilePickerManager.config.isShowHiddenFiles)
-                // 将当前列表数据暴露，以供调用者自己处理数据
-                FilePickerManager.config.selfFilter?.doFilter(this)
+                this.hideFiles<FileItemBeanImpl>(!FilePickerManager.config.isShowHiddenFiles)
                 // 排序
-                sortWith(compareBy({!it.isDir}, {it.fileName}))
+                this.sortWith(compareBy({!it.isDir}, {it.fileName}))
             }
+            // 将当前列表数据暴露，以供调用者自己处理数据
+            FilePickerManager.config.selfFilter?.doFilter(listData)?:listData
         }
 
         /**

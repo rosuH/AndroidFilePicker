@@ -1,4 +1,4 @@
-package me.rosuh.demo
+package me.rosuh.sample
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
