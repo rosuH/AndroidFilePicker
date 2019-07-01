@@ -61,7 +61,6 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
             Toast.LENGTH_SHORT
         )
     }
-    private var indexHashMap: HashMap<String, Int> = HashMap()
     private var goBackBtn: ImageButton? = null
     private var selectAllBtn: Button? = null
     private var confirmBtn: Button? = null
@@ -211,7 +210,7 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
                 if (!file.exists())return
                 if (file.isDirectory) {
                     // 如果是文件夹，则进入
-                    enterDirAndUpdateUI(item, position)
+                    enterDirAndUpdateUI(item)
                 } else {
                     FilePickerManager.config.fileItemOnClickListener.onItemClick(recyclerAdapter, view, position)
                 }
@@ -270,7 +269,7 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
             R.id.btn_nav_file_picker -> {
                 val item = (recyclerAdapter as FileNavAdapter).getItem(position)
                 item ?: return
-                enterDirAndUpdateUI(item, -1)
+                enterDirAndUpdateUI(item)
             }
             else -> {
                 val item = (recyclerAdapter as FileListAdapter).getItem(position)
@@ -321,16 +320,11 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
 
     /**
      * 从导航栏中调用本方法，需要传入 pos，以便生产新的 nav adapter
-     * [contentPosition] 是内容列表的 pos，用来记录历史位置
      */
-    private fun enterDirAndUpdateUI(fileBean: FileBean, contentPosition: Int) {
+    private fun enterDirAndUpdateUI(fileBean: FileBean) {
         launch {
             //清除当前选中状态
             cleanStatus()
-            // 获取导航栏 pos
-            val navPos = getNavPos(fileBean)
-            // 保存点击位置
-            saveIndex(fileBean, navPos, contentPosition)
 
             // 获取文件夹文件
             val nextFiles = File(fileBean.filePath)
@@ -347,39 +341,14 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
             mListAdapter!!.notifyDataSetChanged()
             mNavAdapter!!.notifyDataSetChanged()
 
-            if (navPos != -1) {
-                rvNav?.smoothScrollToPosition(navPos)
-            }
-
-            if (indexHashMap[fileBean.filePath] != null && indexHashMap[fileBean.fileName] != -1){
-                rvContentList?.scrollToPosition(indexHashMap[fileBean.filePath]!!)
-            } else {
-                rvContentList?.scrollToPosition(0)
+            rvNav?.adapter?.itemCount?.let {
+                rvNav?.smoothScrollToPosition(if (it == 0){
+                    0
+                } else {
+                    it - 1
+                })
             }
         }
-    }
-
-    private fun saveIndex(fileBean:FileBean, navPos:Int, contentPosition: Int) {
-        // 保存当前列表的点击位置
-        if (contentPosition == -1) return
-        (rvNav?.adapter as? FileNavAdapter)?.data?.get(navPos)?.let {
-            indexHashMap[it.filePath] = contentPosition
-        }
-    }
-
-    private fun getNavPos(fileBean: FileBean): Int {
-        (rvNav?.adapter as? FileNavAdapter)?.data?.let {
-            for (i in it){
-                if (i.fileName == fileBean.fileName){
-                    return if (it.indexOf(i) == -1){
-                        0
-                    } else {
-                        it.indexOf(i)
-                    }
-                }
-            }
-        }
-        return 0
     }
 
     /**
@@ -417,7 +386,7 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
         } else {
             // 即将进入的 item 的索引
             val willEnterItemPos = mNavDataSource.size - 2
-            enterDirAndUpdateUI(mNavDataSource[willEnterItemPos], -1)
+            enterDirAndUpdateUI(mNavDataSource[willEnterItemPos])
         }
     }
 
