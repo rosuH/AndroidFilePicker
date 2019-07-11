@@ -10,10 +10,13 @@ import android.os.Environment
 import android.os.Environment.MEDIA_MOUNTED
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.*
+import com.orhanobut.logger.AndroidLogAdapter
+import com.orhanobut.logger.Logger
 import kotlinx.coroutines.launch
 import me.rosuh.filepicker.R.string
 import me.rosuh.filepicker.adapter.FileListAdapter
@@ -32,7 +35,7 @@ import java.util.concurrent.atomic.AtomicInteger
 @SuppressLint("ShowToast")
 class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewListener.OnItemClickListener,
     BeanSubscriber {
-
+    private var swipeRefreshLayout: SwipeRefreshLayout? = null
     /**
      * 文件列表适配器
      */
@@ -71,6 +74,8 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
         setTheme(pickerConfig.themeId)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_file_picker)
+        Logger.addLogAdapter(AndroidLogAdapter())
+
         // 核验权限
         if (isPermissionGrated()) {
             prepareLauncher()
@@ -121,28 +126,46 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
      * 在做完权限申请之后开始的真正的工作
      */
     private fun prepareLauncher() {
+        Logger.i("$LOG_TAG_COROUTINES =======>> prepareLauncher")
         launch {
             if (Environment.getExternalStorageState() != MEDIA_MOUNTED) {
                 throw Throwable(cause = IllegalStateException("External storage is not available ====>>> Environment.getExternalStorageState() != MEDIA_MOUNTED"))
             }
-            // 根目录文件对象
-            val rootFile = FileUtils.getRootFile()
-            val isManyFiles = isLotsOfFiles(rootFile)
-            if (isManyFiles) showManyFilesToast()
+            // 加载中布局
+            initLoadingView()
+            reloadList()
+        }
+        Logger.i("$LOG_TAG_COROUTINES =======>> out of launch")
+    }
 
-            // 文件列表数据集
-            // 利用协程异步获取数据
-            val listData = FileUtils.produceListDataSource(rootFile, this@FilePickerActivity)
+    private fun reloadList() {
+        launch {
+            val rootFile = FileUtils.suspendGetRootFile()
+            val listData = FileUtils.suspendProduceListDataSource(rootFile, this@FilePickerActivity)
             // 导航栏数据集
             mNavDataSource = FileUtils.produceNavDataSource(
                 mNavDataSource,
                 Environment.getExternalStorageDirectory().absolutePath
             )
-            initView(listData, mNavDataSource)
+            initRv(listData, mNavDataSource)
+            setLoadingFinish()
         }
     }
 
-    private fun initView(listData: ArrayList<FileItemBeanImpl>?, navDataList: ArrayList<FileNavBeanImpl>) {
+    private fun setLoadingFinish() {
+        swipeRefreshLayout?.isRefreshing = false
+    }
+
+    private fun initLoadingView() {
+        swipeRefreshLayout = findViewById<SwipeRefreshLayout>(R.id.srl)
+        swipeRefreshLayout?.setOnRefreshListener {
+            reloadList()
+        }
+        swipeRefreshLayout?.isRefreshing = true
+    }
+
+
+    private fun initRv(listData: ArrayList<FileItemBeanImpl>?, navDataList: ArrayList<FileNavBeanImpl>) {
         tvToolTitle = findViewById(R.id.tv_toolbar_title_file_picker)
         goBackBtn = findViewById(R.id.btn_go_back_file_picker)
         goBackBtn?.setOnClickListener(this)
@@ -207,7 +230,7 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
                 val item = (recyclerAdapter as FileListAdapter).getItem(position)
                 item ?: return
                 val file = File(item.filePath)
-                if (!file.exists())return
+                if (!file.exists()) return
                 if (file.isDirectory) {
                     // 如果是文件夹，则进入
                     enterDirAndUpdateUI(item)
@@ -332,7 +355,7 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
             if (isManyFiles) showManyFilesToast()
 
             // 更新列表数据集
-            mListAdapter?.data = FileUtils.produceListDataSource(nextFiles, this@FilePickerActivity)
+            mListAdapter?.data = FileUtils.suspendProduceListDataSource(nextFiles, this@FilePickerActivity)
 
             // 更新导航栏的数据集
             mNavDataSource = FileUtils.produceNavDataSource(ArrayList(mNavAdapter!!.data), fileBean.filePath)
@@ -342,11 +365,13 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
             mNavAdapter!!.notifyDataSetChanged()
 
             rvNav?.adapter?.itemCount?.let {
-                rvNav?.smoothScrollToPosition(if (it == 0){
-                    0
-                } else {
-                    it - 1
-                })
+                rvNav?.smoothScrollToPosition(
+                    if (it == 0) {
+                        0
+                    } else {
+                        it - 1
+                    }
+                )
             }
         }
     }
@@ -469,5 +494,6 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
     companion object {
         private const val FILE_PICKER_PERMISSION_REQUEST_CODE = 10201
         private const val DEFAULT_FILES_LIST_THRESHOLD = 200
+        const val LOG_TAG_COROUTINES = "coroutines"
     }
 }

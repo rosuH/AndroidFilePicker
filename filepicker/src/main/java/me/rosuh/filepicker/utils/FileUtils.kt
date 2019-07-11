@@ -1,6 +1,7 @@
 package me.rosuh.filepicker.utils
 
 import android.os.Environment
+import com.orhanobut.logger.Logger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import me.rosuh.filepicker.bean.BeanSubscriber
@@ -9,7 +10,6 @@ import me.rosuh.filepicker.bean.FileNavBeanImpl
 import me.rosuh.filepicker.config.FilePickerManager
 import me.rosuh.filepicker.config.StorageMediaTypeEnum.EXTERNAL_STORAGE
 import java.io.File
-import java.util.*
 
 /**
  *
@@ -24,8 +24,22 @@ class FileUtils {
          * 根据配置参数获取根目录文件
          * @return File
          */
-        suspend fun getRootFile() = withContext(Dispatchers.IO){
-            when (FilePickerManager.config.mediaStorageType) {
+        suspend fun suspendGetRootFile() = withContext(Dispatchers.IO){
+            getRootFile()
+        }
+
+        fun getRootFile():File {
+            Logger.i("begin suspendGetRootFile()")
+            var count = 0
+            while (true){
+                if (count >= 5){
+                    break
+                }
+                Thread.sleep(1000)
+                count ++
+            }
+            Logger.i("finish suspendGetRootFile()")
+            return when (FilePickerManager.config.mediaStorageType) {
                 EXTERNAL_STORAGE -> {
                     File(Environment.getExternalStorageDirectory().absoluteFile.toURI())
                 }
@@ -38,7 +52,11 @@ class FileUtils {
         /**
          * 获取给定文件对象[rootFile]下的所有文件，生成列表项对象
          */
-        suspend fun produceListDataSource(rootFile: File, beanSubscriber: BeanSubscriber) = withContext(Dispatchers.IO) {
+        suspend fun suspendProduceListDataSource(rootFile: File, beanSubscriber: BeanSubscriber) = withContext(Dispatchers.IO) {
+            produceListDataSource(rootFile, beanSubscriber)
+        }
+
+        fun produceListDataSource(rootFile: File, beanSubscriber: BeanSubscriber):ArrayList<FileItemBeanImpl>{
             var listData: ArrayList<FileItemBeanImpl> = ArrayList()
             for (file in rootFile.listFiles()) {
                 //以符号 . 开头的视为隐藏文件或隐藏文件夹，后面进行过滤
@@ -59,7 +77,7 @@ class FileUtils {
                 this.sortWith(compareBy({!it.isDir}, {it.fileName}))
             }
             // 将当前列表数据暴露，以供调用者自己处理数据
-            FilePickerManager.config.selfFilter?.doFilter(listData)?:listData
+            return FilePickerManager.config.selfFilter?.doFilter(listData)?:listData
         }
 
         /**

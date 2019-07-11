@@ -62,9 +62,8 @@
 
         <Button
             android:id="@+id/btn_confirm_file_picker"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="78dp"
+            android:layout_height="32dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
@@ -85,15 +84,21 @@
         app:layout_constraintTop_toBottomOf="@+id/ll_tool_bar_file_picker"
         tools:visibility="gone" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_list_file_picker"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/srl"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rv_nav_file_picker"
-        tools:visibility="gone" />
+        app:layout_constraintTop_toBottomOf="@id/rv_nav_file_picker">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_list_file_picker"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical"
+            tools:visibility="gone" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 </android.support.constraint.ConstraintLayout>
