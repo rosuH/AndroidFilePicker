@@ -12,7 +12,7 @@
     <RelativeLayout
         android:id="@+id/ll_tool_bar_file_picker"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
         android:elevation="7dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -94,7 +94,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rv_nav_file_picker">
 
-        <android.support.v7.widget.RecyclerView
+        <me.rosuh.filepicker.widget.RecyclerViewFilePicker
             android:id="@+id/rv_list_file_picker"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

@@ -24,46 +24,29 @@ import java.io.File
  * 文件列表适配器类
  */
 class FileListAdapter(private val activity: FilePickerActivity, var data: ArrayList<FileItemBeanImpl>?) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var recyclerViewListener: RecyclerViewListener? = null
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when (viewType){
-            EMPTY_LIST_FILE_TYPE -> {
-                EmptyListHolder(LayoutInflater.from(activity).inflate(R.layout.list_item_empty, parent, false))
-            }
-            else -> {
-                val itemView = LayoutInflater.from(activity).inflate(R.layout.item_list_file_picker, parent, false)
-                FileListItemHolder(itemView)
-            }
-        }
+        val itemView = LayoutInflater.from(activity).inflate(R.layout.item_list_file_picker, parent, false)
+        return FileListItemHolder(itemView)
     }
 
     override fun getItemCount(): Int {
-        return data?.size?:10
+        return data?.size ?: 10
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (data == null){
-            return EMPTY_LIST_FILE_TYPE
-        }
         return DEFAULT_FILE_TYPE
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when(getItemViewType(position)){
-            EMPTY_LIST_FILE_TYPE -> {
-                (holder as EmptyListHolder).bind()
-            }
-            else -> {
-                (holder as FileListItemHolder).bind(data!![position], position)
-            }
-        }
+        (holder as FileListItemHolder).bind(data!![position], position)
     }
 
-    fun getItem(position: Int):FileItemBeanImpl?{
+    fun getItem(position: Int): FileItemBeanImpl? {
         if (position >= 0 &&
             position < data!!.size &&
             getItemViewType(position) == DEFAULT_FILE_TYPE
@@ -72,14 +55,14 @@ class FileListAdapter(private val activity: FilePickerActivity, var data: ArrayL
     }
 
     inner class FileListItemHolder(itemView: View) :
-        RecyclerView.ViewHolder(itemView){
+        RecyclerView.ViewHolder(itemView) {
 
         private val isSkipDir: Boolean = FilePickerManager.config.isSkipDir
         private val mTvFileName = itemView.findViewById<TextView>(R.id.tv_list_file_picker)!!
         private val mCbItem = itemView.findViewById<CheckBox>(R.id.cb_list_file_picker)!!
         private val mIcon = itemView.findViewById<ImageView>(R.id.iv_icon_list_file_picker)!!
-        private var mItemBeanImpl:FileItemBeanImpl ?= null
-        private var mPosition:Int? = null
+        private var mItemBeanImpl: FileItemBeanImpl? = null
+        private var mPosition: Int? = null
 
 
         fun bind(itemImpl: FileItemBeanImpl, position: Int) {
@@ -94,7 +77,7 @@ class FileListAdapter(private val activity: FilePickerActivity, var data: ArrayL
 
             if (isDir) {
                 mIcon.setImageResource(R.drawable.ic_folder_file_picker)
-                mCbItem.visibility = if (isSkipDir) View.INVISIBLE else View.VISIBLE
+                mCbItem.visibility = if (isSkipDir) View.GONE else View.VISIBLE
                 return
             }
 
@@ -104,14 +87,20 @@ class FileListAdapter(private val activity: FilePickerActivity, var data: ArrayL
 
     }
 
-    inner class EmptyListHolder(itemView: View): RecyclerView.ViewHolder(itemView){
 
-        fun bind(){
-            val anim1 = ObjectAnimator.ofInt(itemView.findViewById<View>(R.id.view_empty_icon), "backgroundColor",
-                Color.parseColor("#CCCCCC"), Color.parseColor("#DDDDDD"))
 
-            val anim2 = ObjectAnimator.ofInt(itemView.findViewById<View>(R.id.view_empty_str), "backgroundColor",
-                Color.parseColor("#CCCCCC"), Color.parseColor("#DDDDDD"))
+    inner class EmptyListHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        fun bind() {
+            val anim1 = ObjectAnimator.ofInt(
+                itemView.findViewById<View>(R.id.view_empty_icon), "backgroundColor",
+                Color.parseColor("#CCCCCC"), Color.parseColor("#DDDDDD")
+            )
+
+            val anim2 = ObjectAnimator.ofInt(
+                itemView.findViewById<View>(R.id.view_empty_str), "backgroundColor",
+                Color.parseColor("#CCCCCC"), Color.parseColor("#DDDDDD")
+            )
             anim1.duration = 2000
             anim2.duration = 2000
             anim1.setEvaluator(ArgbEvaluator())
@@ -126,7 +115,6 @@ class FileListAdapter(private val activity: FilePickerActivity, var data: ArrayL
     }
 
     companion object {
-        const val EMPTY_LIST_FILE_TYPE = 1000
         const val DEFAULT_FILE_TYPE = 10001
     }
 }

@@ -1,7 +1,6 @@
 package me.rosuh.filepicker.utils
 
 import android.os.Environment
-import com.orhanobut.logger.Logger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import me.rosuh.filepicker.bean.BeanSubscriber
@@ -29,16 +28,6 @@ class FileUtils {
         }
 
         fun getRootFile():File {
-            Logger.i("begin suspendGetRootFile()")
-            var count = 0
-            while (true){
-                if (count >= 5){
-                    break
-                }
-                Thread.sleep(1000)
-                count ++
-            }
-            Logger.i("finish suspendGetRootFile()")
             return when (FilePickerManager.config.mediaStorageType) {
                 EXTERNAL_STORAGE -> {
                     File(Environment.getExternalStorageDirectory().absoluteFile.toURI())

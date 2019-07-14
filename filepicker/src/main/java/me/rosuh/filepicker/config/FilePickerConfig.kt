@@ -56,9 +56,10 @@ class FilePickerConfig (private val pickerManager: FilePickerManager) {
      * 全选文字，取消全选文字，返回文字，已选择文字
      */
     internal var selectAllText: String? = contextRes.getString(R.string.file_picker_tv_select_all)
-    internal var unSelectAllText: String? = contextRes.getString(R.string.file_picker_tv_unselect_all)
+    internal var deSelectAllText: String? = contextRes.getString(R.string.file_picker_tv_deselect_all)
     internal var goBackText: String? = contextRes.getString(R.string.file_picker_go_back)
     internal var hadSelectedText: String? = contextRes.getString(R.string.file_picker_selected_count)
+    internal var confirmText: String? = contextRes.getString(R.string.file_picker_tv_select_done)
 
     private fun reset():FilePickerConfig{
         isShowHiddenFiles = false
@@ -72,9 +73,9 @@ class FilePickerConfig (private val pickerManager: FilePickerManager) {
         fileItemOnClickListener = FileItemOnClickListenerImpl()
         themeId  = R.style.FilePickerThemeRail
         selectAllText = contextRes.getString(R.string.file_picker_tv_select_all)
-        unSelectAllText =  contextRes.getString(R.string.file_picker_tv_unselect_all)
+        deSelectAllText =  contextRes.getString(R.string.file_picker_tv_deselect_all)
         goBackText = contextRes.getString(R.string.file_picker_go_back)
-        hadSelectedText = contextRes.getString(R.string.file_picker_tv_selected)
+        hadSelectedText = contextRes.getString(R.string.file_picker_selected_count)
         return this
     }
 
@@ -131,7 +132,7 @@ class FilePickerConfig (private val pickerManager: FilePickerManager) {
         hadSelectedString: String?
     ): FilePickerConfig {
         selectAllText = selectAllString
-        unSelectAllText = unSelectAllString
+        deSelectAllText = unSelectAllString
         goBackText = goBackString
         hadSelectedText = hadSelectedString
         return this
