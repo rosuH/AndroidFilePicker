@@ -13,6 +13,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AnimationUtils
@@ -29,6 +30,7 @@ import me.rosuh.filepicker.bean.FileNavBeanImpl
 import me.rosuh.filepicker.config.FilePickerManager
 import me.rosuh.filepicker.utils.BaseActivity
 import me.rosuh.filepicker.utils.FileUtils
+import me.rosuh.filepicker.widget.PosLinearLayoutManager
 import me.rosuh.filepicker.widget.RecyclerViewFilePicker
 import java.io.File
 import java.util.concurrent.atomic.AtomicInteger
@@ -177,10 +179,28 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
 
     private fun initLoadingView() {
         swipeRefreshLayout = findViewById(R.id.srl)
-        swipeRefreshLayout?.setOnRefreshListener {
-            reloadList()
+        swipeRefreshLayout?.apply {
+            setOnRefreshListener {
+                reloadList()
+            }
+            isRefreshing = true
+            setColorSchemeColors(*resources.getIntArray(
+                when(pickerConfig.themeId){
+                    R.style.FilePickerThemeCrane ->{
+                        R.array.crane_swl_colors
+                    }
+                    R.style.FilePickerThemeReply ->{
+                        R.array.reply_swl_colors
+                    }
+                    R.style.FilePickerThemeShrine ->{
+                        R.array.shrine_swl_colors
+                    }
+                    else ->{
+                        R.array.rail_swl_colors
+                    }
+                }
+            ))
         }
-        swipeRefreshLayout?.isRefreshing = true
     }
 
 
@@ -201,7 +221,7 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
             emptyView = LayoutInflater.from(context).inflate(R.layout.empty_file_list_file_picker, null, false)
             adapter = listAdapter
             layoutAnimation = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_item_anim_file_picker)
-            layoutManager = LinearLayoutManager(this@FilePickerActivity)
+            layoutManager = PosLinearLayoutManager(this@FilePickerActivity)
             addOnItemTouchListener(fileListListener)
         }
     }
@@ -246,11 +266,33 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
                 val file = File(item.filePath)
                 if (!file.exists()) return
                 if (file.isDirectory) {
+                    (rvNav?.adapter as? FileNavAdapter)?.let{
+                        saveCurrPos(it.data.last(), position)
+                    }
                     // 如果是文件夹，则进入
                     enterDirAndUpdateUI(item)
                 } else {
                     FilePickerManager.config.fileItemOnClickListener.onItemClick(recyclerAdapter, view, position)
                 }
+            }
+        }
+    }
+
+    private val currPosMap: HashMap<String, Int> by lazy {
+        HashMap<String, Int>(4)
+    }
+    private val currOffestMap: HashMap<String, Int> by lazy {
+        HashMap<String, Int>(4)
+    }
+
+    /**
+     * 保存当前文件夹被点击项，下次进入时将滑动到此
+     */
+    private fun saveCurrPos(item: FileNavBeanImpl?, position: Int){
+        item?.run {
+            currPosMap[filePath] = position
+            (rvContentList?.layoutManager as? LinearLayoutManager)?.let {
+                currOffestMap.put(filePath, it.findViewByPosition(position)?.top?:0)
             }
         }
     }
@@ -374,7 +416,7 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
             navAdapter?.data = navDataSource
 
             navAdapter!!.notifyDataSetChanged()
-            notifyDataChangedForList()
+            notifyDataChangedForList(fileBean)
 
             rvNav?.adapter?.itemCount?.let {
                 rvNav?.smoothScrollToPosition(
@@ -388,8 +430,12 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
         }
     }
 
-    private fun notifyDataChangedForList() {
+    private fun notifyDataChangedForList(fileBean: FileBean) {
         rvContentList?.apply {
+            (layoutManager as? PosLinearLayoutManager)?.setTargetPos(
+                currPosMap[fileBean.filePath] ?:0,
+                currOffestMap[fileBean.filePath] ?:0
+            )
             layoutAnimation = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_item_anim_file_picker)
             adapter?.notifyDataSetChanged()
             scheduleLayoutAnimation()
@@ -420,12 +466,13 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
     }
 
     override fun onBackPressed() {
-        if (navDataSource.size <= 1) {
+        if ((rvNav?.adapter as? FileNavAdapter)?.itemCount?:0 <= 1) {
             super.onBackPressed()
         } else {
             // 即将进入的 item 的索引
-            val willEnterItemPos = navDataSource.size - 2
-            enterDirAndUpdateUI(navDataSource[willEnterItemPos])
+            (rvNav?.adapter as? FileNavAdapter)?.run {
+                enterDirAndUpdateUI(getItem(this.itemCount - 2)!!)
+            }
         }
     }
 

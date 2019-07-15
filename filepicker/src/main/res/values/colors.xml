@@ -6,6 +6,19 @@
     <color name="rail_button_focus">#01714b</color>
     <color name="rail_text_color">#fff</color>
     <color name="rail_textColor_Primary">#fff</color>
+    <color name="rail_swl_color_1">#9900C381</color>
+    <color name="rail_swl_color_2">#BF00C381</color>
+    <color name="rail_swl_color_3">#CC00C381</color>
+    <color name="rail_swl_color_4">#E600C381</color>
+    <color name="rail_swl_color_5">#00c381</color>
+    <integer-array name="rail_swl_colors">
+        <item>@color/rail_swl_color_1</item>
+        <item>@color/rail_swl_color_2</item>
+        <item>@color/rail_swl_color_3</item>
+        <item>@color/rail_swl_color_4</item>
+        <item>@color/rail_swl_color_5</item>
+    </integer-array>
+
 
     <color name="reply_color_primary">#304956</color>
     <color name="reply_color_primary_dark">#446576</color>
@@ -13,6 +26,18 @@
     <color name="reply_button_focus">#865900</color>
     <color name="reply_text_color">#fff</color>
     <color name="reply_textColor_Primary">#fff</color>
+    <color name="reply_swl_color_1">#99ffa900</color>
+    <color name="reply_swl_color_2">#BFffa900</color>
+    <color name="reply_swl_color_3">#CCffa900</color>
+    <color name="reply_swl_color_4">#E6ffa900</color>
+    <color name="reply_swl_color_5">#ffa900</color>
+    <integer-array name="reply_swl_colors">
+        <item>@color/reply_swl_color_1</item>
+        <item>@color/reply_swl_color_2</item>
+        <item>@color/reply_swl_color_3</item>
+        <item>@color/reply_swl_color_4</item>
+        <item>@color/reply_swl_color_5</item>
+    </integer-array>
 
     <color name="crane_color_primary">#7d005c</color>
     <color name="crane_color_primary_dark">#57003a</color>
@@ -20,6 +45,18 @@
     <color name="crane_button_focus">#8f0000</color>
     <color name="crane_text_color">#fff</color>
     <color name="crane_textColor_Primary">#fff</color>
+    <color name="crane_swl_color_1">#99f60000</color>
+    <color name="crane_swl_color_2">#BFf60000</color>
+    <color name="crane_swl_color_3">#CCf60000</color>
+    <color name="crane_swl_color_4">#E6f60000</color>
+    <color name="crane_swl_color_5">#f60000</color>
+    <integer-array name="crane_swl_colors">
+        <item>@color/crane_swl_color_1</item>
+        <item>@color/crane_swl_color_2</item>
+        <item>@color/crane_swl_color_3</item>
+        <item>@color/crane_swl_color_4</item>
+        <item>@color/crane_swl_color_5</item>
+    </integer-array>
 
     <color name="shrine_color_primary">#ffd9cd</color>
     <color name="shrine_color_primary_dark">#dfc3c2</color>
@@ -27,4 +64,16 @@
     <color name="shrine_button_focus">#301b1e</color>
     <color name="shrine_text_color">#48282c</color>
     <color name="shrine_textColor_Primary">#fff</color>
+    <color name="shrine_swl_color_1">#99ffd9cd</color>
+    <color name="shrine_swl_color_2">#BFffd9cd</color>
+    <color name="shrine_swl_color_3">#CC48282c</color>
+    <color name="shrine_swl_color_4">#E648282c</color>
+    <color name="shrine_swl_color_5">#48282c</color>
+    <integer-array name="shrine_swl_colors">
+        <item>@color/shrine_swl_color_1</item>
+        <item>@color/shrine_swl_color_2</item>
+        <item>@color/shrine_swl_color_3</item>
+        <item>@color/shrine_swl_color_4</item>
+        <item>@color/shrine_swl_color_5</item>
+    </integer-array>
 </resources>
