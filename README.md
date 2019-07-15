@@ -126,3 +126,4 @@ The result is a path list of the selected file (`ArrayList<String>()`).
 - [Matisse](https://github.com/zhihu/Matisse)
 - [Default Icon Author Shulk](http://iconfont.cn/collections/detail?spm=a313x.7781069.1998910419.d9df05512&cid=11271)
 - [Theme Color](https://material.io/design/material-studies/about-our-material-studies.html)
+- [Empty icon](https://github.com/rosuH/AndroidFilePicker/blob/master/filepicker/src/main/res/drawable/ic_empty_file_list_file_picker.xml) made by [freepik](https://www.freepik.com/) from www.flaticon.com
