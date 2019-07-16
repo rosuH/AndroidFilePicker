@@ -353,8 +353,11 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
             else -> {
                 val item = (recyclerAdapter as FileListAdapter).getItem(position)
                 item ?: return
-                // 略过文件夹
-                if (item.isDir && pickerConfig.isSkipDir) return
+                // 文件夹直接进入
+                if (item.isDir && pickerConfig.isSkipDir) {
+                    enterDirAndUpdateUI(item)
+                    return
+                }
 
                 val checkBox = view.findViewById<CheckBox>(R.id.cb_list_file_picker)
                 // checkBox 的点击事件被拦截下来到此，不会继续传递下去
