@@ -61,6 +61,9 @@ class RecyclerViewListener(val activity: Activity, val recyclerView: RecyclerVie
                     }
                     itemClickListener.onItemClick(recyclerView.adapter!!, childView, recyclerView.getChildLayoutPosition(childView))
                 }
+                R.id.item_nav_file_picker -> {
+                    itemClickListener.onItemClick(recyclerView.adapter!!, childView, recyclerView.getChildLayoutPosition(childView))
+                }
             }
             return true
         }
