@@ -212,6 +212,7 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
             navAdapter = produceNavAdapter(navDataList)
             adapter = navAdapter
             layoutManager = LinearLayoutManager(this@FilePickerActivity, LinearLayoutManager.HORIZONTAL, false)
+            removeOnItemTouchListener(navListener)
             addOnItemTouchListener(navListener)
         }
 
@@ -222,6 +223,7 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
             adapter = listAdapter
             layoutAnimation = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_item_anim_file_picker)
             layoutManager = PosLinearLayoutManager(this@FilePickerActivity)
+            removeOnItemTouchListener(fileListListener)
             addOnItemTouchListener(fileListListener)
         }
     }

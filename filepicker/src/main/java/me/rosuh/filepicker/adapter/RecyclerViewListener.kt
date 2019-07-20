@@ -38,8 +38,7 @@ class RecyclerViewListener(val activity: Activity, val recyclerView: RecyclerVie
     }
 
     override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-        gestureDetectorCompat.onTouchEvent(e)
-        return false
+        return gestureDetectorCompat.onTouchEvent(e)
     }
 
     override fun onRequestDisallowInterceptTouchEvent(p0: Boolean) {}
@@ -53,8 +52,6 @@ class RecyclerViewListener(val activity: Activity, val recyclerView: RecyclerVie
         override fun onSingleTapUp(e: MotionEvent?): Boolean {
             val childView = recyclerView.findChildViewUnder(e!!.x, e.y)
             childView?:return false
-
-
             when(childView.id){
                 R.id.item_list_file_picker -> {
                     // 点击在 icon 上或者点击在 checkbox 上
