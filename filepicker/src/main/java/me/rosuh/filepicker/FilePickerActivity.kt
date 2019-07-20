@@ -58,7 +58,6 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
     private val pickerConfig by lazy { FilePickerManager.config }
     private val fileListListener: RecyclerViewListener by lazy { getListener(rvContentList!!) }
     private val navListener: RecyclerViewListener by lazy { getListener(rvNav!!) }
-    private val fileListener: RecyclerViewListener by lazy { getListener(rvContentList!!) }
 
     private var selectAllBtn: Button? = null
     private var confirmBtn: Button? = null
