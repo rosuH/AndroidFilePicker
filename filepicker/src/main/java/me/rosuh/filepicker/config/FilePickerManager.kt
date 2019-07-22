@@ -16,10 +16,6 @@ object FilePickerManager{
      * 启动 Launcher Activity 所需的 request code
      */
     const val REQUEST_CODE = 10401
-    /**
-     * 获取 context 返回结果时，所需的 intent.extra key
-     */
-    val RESULT_KEY = "FILE_PICKER_MANAGER"
 
     internal var context:WeakReference<Activity> ?= null
     internal var fragment:WeakReference<Fragment> ?= null
@@ -27,8 +23,10 @@ object FilePickerManager{
 
     fun from(activity: Activity):FilePickerConfig{
         this.context = WeakReference(activity)
-        this.config = FilePickerConfig(this)
-        return this.config
+        if (!this::config.isInitialized){
+            this.config = FilePickerConfig(this)
+        }
+        return config
     }
 
     /**
@@ -37,8 +35,11 @@ object FilePickerManager{
     fun from(fragment: Fragment):FilePickerConfig{
         this.fragment = WeakReference(fragment)
         this.context = WeakReference(fragment.activity!!)
-        this.config = FilePickerConfig(this)
-        return this.config
+
+        if (!this::config.isInitialized){
+            this.config = FilePickerConfig(this)
+        }
+        return config
     }
 
     private var dataList: List<String> = ArrayList()

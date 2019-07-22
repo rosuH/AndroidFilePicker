@@ -95,7 +95,7 @@ class FilePickerConfig (private val pickerManager: FilePickerManager) {
     }
 
     fun maxSelectable(max:Int):FilePickerConfig{
-        maxSelectable = if (max == -1) Int.MAX_VALUE else max
+        maxSelectable = if (max < 0) Int.MAX_VALUE else max
         return this
     }
 

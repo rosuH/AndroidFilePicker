@@ -24,10 +24,7 @@ import java.io.File
  * 文件列表适配器类
  */
 class FileListAdapter(private val activity: FilePickerActivity, var data: ArrayList<FileItemBeanImpl>?) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
-    var recyclerViewListener: RecyclerViewListener? = null
-
+    BaseAdapter() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val itemView = LayoutInflater.from(activity).inflate(R.layout.item_list_file_picker, parent, false)
@@ -46,7 +43,7 @@ class FileListAdapter(private val activity: FilePickerActivity, var data: ArrayL
         (holder as FileListItemHolder).bind(data!![position], position)
     }
 
-    fun getItem(position: Int): FileItemBeanImpl? {
+    override fun getItem(position: Int): FileItemBeanImpl? {
         if (position >= 0 &&
             position < data!!.size &&
             getItemViewType(position) == DEFAULT_FILE_TYPE
@@ -85,33 +82,6 @@ class FileListAdapter(private val activity: FilePickerActivity, var data: ArrayL
             mIcon.setImageResource(resId)
         }
 
-    }
-
-
-
-    inner class EmptyListHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        fun bind() {
-            val anim1 = ObjectAnimator.ofInt(
-                itemView.findViewById<View>(R.id.view_empty_icon), "backgroundColor",
-                Color.parseColor("#CCCCCC"), Color.parseColor("#DDDDDD")
-            )
-
-            val anim2 = ObjectAnimator.ofInt(
-                itemView.findViewById<View>(R.id.view_empty_str), "backgroundColor",
-                Color.parseColor("#CCCCCC"), Color.parseColor("#DDDDDD")
-            )
-            anim1.duration = 2000
-            anim2.duration = 2000
-            anim1.setEvaluator(ArgbEvaluator())
-            anim2.setEvaluator(ArgbEvaluator())
-            anim1.repeatMode = ValueAnimator.REVERSE
-            anim1.repeatCount = ValueAnimator.INFINITE
-            anim2.repeatMode = ValueAnimator.REVERSE
-            anim2.repeatCount = ValueAnimator.INFINITE
-            anim1.start()
-            anim2.start()
-        }
     }
 
     companion object {

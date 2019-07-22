@@ -13,7 +13,6 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AnimationUtils
@@ -59,7 +58,6 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
     private val pickerConfig by lazy { FilePickerManager.config }
     private val fileListListener: RecyclerViewListener by lazy { getListener(rvContentList!!) }
     private val navListener: RecyclerViewListener by lazy { getListener(rvNav!!) }
-    private val fileListener: RecyclerViewListener by lazy { getListener(rvContentList!!) }
 
     private var selectAllBtn: Button? = null
     private var confirmBtn: Button? = null
@@ -206,12 +204,12 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
 
     private fun initRv(listData: ArrayList<FileItemBeanImpl>?, navDataList: ArrayList<FileNavBeanImpl>) {
         listData?.let { switchButton(true) }
-
         // 导航栏适配器
         rvNav?.apply {
             navAdapter = produceNavAdapter(navDataList)
             adapter = navAdapter
             layoutManager = LinearLayoutManager(this@FilePickerActivity, LinearLayoutManager.HORIZONTAL, false)
+            removeOnItemTouchListener(navListener)
             addOnItemTouchListener(navListener)
         }
 
@@ -222,8 +220,10 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
             adapter = listAdapter
             layoutAnimation = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_item_anim_file_picker)
             layoutManager = PosLinearLayoutManager(this@FilePickerActivity)
+            removeOnItemTouchListener(fileListListener)
             addOnItemTouchListener(fileListListener)
         }
+        cleanStatus()
     }
 
     /**
@@ -237,18 +237,14 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
      * 构造列表的适配器
      */
     private fun produceListAdapter(dataSource: ArrayList<FileItemBeanImpl>?): FileListAdapter {
-        val fileListAdapter = FileListAdapter(this@FilePickerActivity, dataSource)
-        fileListAdapter.recyclerViewListener = fileListener
-        return fileListAdapter
+        return FileListAdapter(this@FilePickerActivity, dataSource)
     }
 
     /**
      * 构造导航栏适配器
      */
     private fun produceNavAdapter(dataSource: ArrayList<FileNavBeanImpl>): FileNavAdapter {
-        val adapter = FileNavAdapter(this@FilePickerActivity, dataSource)
-        adapter.recyclerViewListener = navListener
-        return adapter
+        return FileNavAdapter(this@FilePickerActivity, dataSource)
     }
 
     /**
@@ -259,12 +255,14 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
         view: View,
         position: Int
     ) {
+        val item = (recyclerAdapter as me.rosuh.filepicker.adapter.BaseAdapter).getItem(position)
+        item ?: return
+        val file = File(item.filePath)
+        if (!file.exists()){
+            return
+        }
         when (view.id) {
             R.id.item_list_file_picker -> {
-                val item = (recyclerAdapter as FileListAdapter).getItem(position)
-                item ?: return
-                val file = File(item.filePath)
-                if (!file.exists()) return
                 if (file.isDirectory) {
                     (rvNav?.adapter as? FileNavAdapter)?.let{
                         saveCurrPos(it.data.last(), position)
@@ -275,13 +273,22 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
                     FilePickerManager.config.fileItemOnClickListener.onItemClick(recyclerAdapter, view, position)
                 }
             }
+            R.id.item_nav_file_picker -> {
+                if (file.isDirectory) {
+                    (rvNav?.adapter as? FileNavAdapter)?.let{
+                        saveCurrPos(it.data.last(), position)
+                    }
+                    // 如果是文件夹，则进入
+                    enterDirAndUpdateUI(item)
+                }
+            }
         }
     }
 
     private val currPosMap: HashMap<String, Int> by lazy {
         HashMap<String, Int>(4)
     }
-    private val currOffestMap: HashMap<String, Int> by lazy {
+    private val currOffsetMap: HashMap<String, Int> by lazy {
         HashMap<String, Int>(4)
     }
 
@@ -292,7 +299,7 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
         item?.run {
             currPosMap[filePath] = position
             (rvContentList?.layoutManager as? LinearLayoutManager)?.let {
-                currOffestMap.put(filePath, it.findViewByPosition(position)?.top?:0)
+                currOffsetMap.put(filePath, it.findViewByPosition(position)?.top?:0)
             }
         }
     }
@@ -353,8 +360,11 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
             else -> {
                 val item = (recyclerAdapter as FileListAdapter).getItem(position)
                 item ?: return
-                // 略过文件夹
-                if (item.isDir && pickerConfig.isSkipDir) return
+                // 文件夹直接进入
+                if (item.isDir && pickerConfig.isSkipDir) {
+                    enterDirAndUpdateUI(item)
+                    return
+                }
 
                 val checkBox = view.findViewById<CheckBox>(R.id.cb_list_file_picker)
                 // checkBox 的点击事件被拦截下来到此，不会继续传递下去
@@ -434,7 +444,7 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
         rvContentList?.apply {
             (layoutManager as? PosLinearLayoutManager)?.setTargetPos(
                 currPosMap[fileBean.filePath] ?:0,
-                currOffestMap[fileBean.filePath] ?:0
+                currOffsetMap[fileBean.filePath] ?:0
             )
             layoutAnimation = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_item_anim_file_picker)
             adapter?.notifyDataSetChanged()

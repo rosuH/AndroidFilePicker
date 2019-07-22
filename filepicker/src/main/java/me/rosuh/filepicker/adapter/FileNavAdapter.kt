@@ -15,9 +15,7 @@ import me.rosuh.filepicker.bean.FileNavBeanImpl
  * @date 2018/11/21
  */
 class FileNavAdapter(private val activity: FilePickerActivity, var data: MutableList<FileNavBeanImpl>) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>(){
-
-     var recyclerViewListener: RecyclerViewListener? = null
+    BaseAdapter(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return NavListHolder(activity.layoutInflater, parent)
@@ -31,13 +29,16 @@ class FileNavAdapter(private val activity: FilePickerActivity, var data: Mutable
         (holder as NavListHolder).bind(data[postion], postion)
     }
 
-    fun getItem(position: Int): FileNavBeanImpl?{
-        if (position >= 0 && position < data.size) return data[position]
-        return null
+    override fun getItem(position: Int): FileNavBeanImpl?{
+        return if (position >= 0 && position < data.size) {
+            data[position]
+        } else {
+            null
+        }
     }
 
     inner class NavListHolder(inflater: LayoutInflater, val parent: ViewGroup):
-        RecyclerView.ViewHolder(inflater.inflate(R.layout.item_nav_file_picker, parent, false)), View.OnClickListener{
+        RecyclerView.ViewHolder(inflater.inflate(R.layout.item_nav_file_picker, parent, false)){
 
         private lateinit var mBtnDir:Button
 
@@ -47,15 +48,6 @@ class FileNavAdapter(private val activity: FilePickerActivity, var data: Mutable
             pos = position
             mBtnDir = itemView.findViewById(R.id.btn_nav_file_picker)
             mBtnDir.text = item!!.dirName
-            mBtnDir.setOnClickListener(this@NavListHolder)
-        }
-
-        override fun onClick(v: View?) {
-            recyclerViewListener?.itemClickListener?.onItemChildClick(
-                this@FileNavAdapter,
-                mBtnDir,
-                pos!!
-            )
         }
     }
 }
