@@ -54,7 +54,7 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
      * 文件夹为空时展示的空视图
      */
     private var selectedCount: AtomicInteger = AtomicInteger(0)
-    private val maxSelectable = FilePickerManager.config.maxSelectable
+    private val maxSelectable = FilePickerManager.config?.maxSelectable?:Int.MAX_VALUE
     private val pickerConfig by lazy { FilePickerManager.config }
     private val fileListListener: RecyclerViewListener by lazy { getListener(rvContentList!!) }
     private val navListener: RecyclerViewListener by lazy { getListener(rvNav!!) }
@@ -65,7 +65,7 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
     private var rvNav: RecyclerView? = null
     private var tvToolTitle: TextView? = null
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(pickerConfig.themeId)
+        setTheme(pickerConfig?.themeId?:R.style.FilePickerThemeReply)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity_for_file_picker)
         // 核验权限
@@ -138,11 +138,15 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
 
         selectAllBtn = findViewById<Button>(R.id.btn_selected_all_file_picker).apply {
             setOnClickListener(this@FilePickerActivity)
-            text = FilePickerManager.config.selectAllText
+            FilePickerManager.config?.selectAllText?.let {
+                text = it
+            }
         }
         confirmBtn = findViewById<Button>(R.id.btn_confirm_file_picker).apply {
             setOnClickListener(this@FilePickerActivity)
-            text = FilePickerManager.config.confirmText
+            FilePickerManager.config?.confirmText?.let {
+                text = it
+            }
         }
 
         rvContentList = findViewById(R.id.rv_list_file_picker)
