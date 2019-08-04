@@ -5,7 +5,6 @@ import android.view.View
 import android.widget.CheckBox
 import me.rosuh.filepicker.R
 import me.rosuh.filepicker.adapter.FileListAdapter
-import me.rosuh.filepicker.bean.FileItemBeanImpl
 import java.io.File
 
 /**
@@ -37,7 +36,7 @@ class FileItemOnClickListenerImpl : FileItemOnClickListener {
         val item = (itemAdapter as FileListAdapter).getItem(position)
         item ?: return
         val file = File(item.filePath)
-        val isSkipDir = FilePickerManager.config.isSkipDir
+        val isSkipDir = FilePickerManager.config?.isSkipDir ?: true
         // 如果是文件夹并且没有略过文件夹
         if (file.exists() && file.isDirectory && isSkipDir) return
         val cb = itemView.findViewById<CheckBox>(R.id.cb_list_file_picker)

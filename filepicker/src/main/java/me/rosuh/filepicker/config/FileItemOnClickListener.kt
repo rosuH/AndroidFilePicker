@@ -2,7 +2,6 @@ package me.rosuh.filepicker.config
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import me.rosuh.filepicker.bean.FileItemBeanImpl
 
 /**
  *

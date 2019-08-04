@@ -1,37 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_nav_file_picker"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:maxWidth="70dp"
-    android:orientation="horizontal">
+    android:layout_height="48dp"
+    android:layout_gravity="center"
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center">
 
-    <android.support.v7.widget.AppCompatButton
-        android:id="@+id/btn_nav_file_picker"
-        style="@style/Widget.AppCompat.Button.Borderless"
+    <TextView
+        android:id="@+id/tv_btn_nav_file_picker"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:drawableEnd="@drawable/ic_arrow_right_file_picker"
+        android:drawableRight="@drawable/ic_arrow_right_file_picker"
+        android:drawablePadding="16dp"
         android:ellipsize="middle"
         android:gravity="center"
         android:maxEms="12"
+        android:paddingStart="16dp"
+        android:paddingLeft="16dp"
         android:singleLine="true"
         android:textAllCaps="false"
         android:textColor="@color/shrine_text_color"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="16sp"
+        android:textStyle="bold"
         tools:text="SD 存储卡SD 存储卡SD 存储卡SD 存储卡" />
 
-    <android.support.v7.widget.AppCompatImageView
-        android:id="@+id/iv_nav_file_picker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="@drawable/ic_arrow_right_file_picker"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btn_nav_file_picker"
-        app:layout_constraintTop_toTopOf="parent" />
+    <!--<android.support.v7.widget.AppCompatImageView-->
+    <!--android:id="@+id/iv_nav_file_picker"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="center"-->
+    <!--android:background="@drawable/ic_arrow_right_file_picker"-->
+    <!--app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--app:layout_constraintStart_toEndOf="@+id/tv_btn_nav_file_picker"-->
+    <!--app:layout_constraintTop_toTopOf="parent" />-->
 
 </LinearLayout>

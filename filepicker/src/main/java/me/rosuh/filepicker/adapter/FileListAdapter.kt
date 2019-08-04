@@ -1,9 +1,5 @@
 package me.rosuh.filepicker.adapter
 
-import android.animation.ArgbEvaluator
-import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
-import android.graphics.Color
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -54,7 +50,7 @@ class FileListAdapter(private val activity: FilePickerActivity, var data: ArrayL
     inner class FileListItemHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
 
-        private val isSkipDir: Boolean = FilePickerManager.config.isSkipDir
+        private val isSkipDir: Boolean = FilePickerManager.config?.isSkipDir ?: true
         private val mTvFileName = itemView.findViewById<TextView>(R.id.tv_list_file_picker)!!
         private val mCbItem = itemView.findViewById<CheckBox>(R.id.cb_list_file_picker)!!
         private val mIcon = itemView.findViewById<ImageView>(R.id.iv_icon_list_file_picker)!!

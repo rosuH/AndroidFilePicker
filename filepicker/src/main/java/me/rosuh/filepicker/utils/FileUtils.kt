@@ -1,13 +1,16 @@
 package me.rosuh.filepicker.utils
 
+import android.content.Context
 import android.os.Environment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import me.rosuh.filepicker.R
 import me.rosuh.filepicker.bean.BeanSubscriber
 import me.rosuh.filepicker.bean.FileItemBeanImpl
 import me.rosuh.filepicker.bean.FileNavBeanImpl
+import me.rosuh.filepicker.config.FilePickerConfig.Companion.STORAGE_CUSTOM_ROOT_PATH
+import me.rosuh.filepicker.config.FilePickerConfig.Companion.STORAGE_EXTERNAL_STORAGE
 import me.rosuh.filepicker.config.FilePickerManager
-import me.rosuh.filepicker.config.StorageMediaTypeEnum.EXTERNAL_STORAGE
 import java.io.File
 
 /**
@@ -28,9 +31,16 @@ class FileUtils {
         }
 
         fun getRootFile():File {
-            return when (FilePickerManager.config.mediaStorageType) {
-                EXTERNAL_STORAGE -> {
+            return when (FilePickerManager.config?.mediaStorageType) {
+                STORAGE_EXTERNAL_STORAGE -> {
                     File(Environment.getExternalStorageDirectory().absoluteFile.toURI())
+                }
+                STORAGE_CUSTOM_ROOT_PATH -> {
+                    if (FilePickerManager.config?.customRootPath.isNullOrEmpty()) {
+                        File(Environment.getExternalStorageDirectory().absoluteFile.toURI())
+                    } else {
+                        File(FilePickerManager.config?.customRootPath)
+                    }
                 }
                 else -> {
                     File(Environment.getExternalStorageDirectory().absoluteFile.toURI())
@@ -56,17 +66,18 @@ class FileUtils {
                 }
                 val itemBean = FileItemBeanImpl(file.name, file.path, false, null, false, isHiddenFile, beanSubscriber)
                 // 如果调用者没有实现文件类型甄别器，则使用的默认甄别器
-                FilePickerManager.config.selfFileType?.fillFileType(itemBean) ?: FilePickerManager.config.defaultFileType.fillFileType(itemBean)
+                FilePickerManager.config?.selfFileType?.fillFileType(itemBean)
+                    ?: FilePickerManager.config?.defaultFileType?.fillFileType(itemBean)
                 listData.add(itemBean)
             }
             listData.run {
                 // 隐藏文件处理
-                this.hideFiles<FileItemBeanImpl>(!FilePickerManager.config.isShowHiddenFiles)
+                this.hideFiles<FileItemBeanImpl>(!(FilePickerManager.config?.isShowHiddenFiles ?: false))
                 // 排序
                 this.sortWith(compareBy({!it.isDir}, {it.fileName}))
             }
             // 将当前列表数据暴露，以供调用者自己处理数据
-            return FilePickerManager.config.selfFilter?.doFilter(listData)?:listData
+            return FilePickerManager.config?.selfFilter?.doFilter(listData) ?: listData
         }
 
         /**
@@ -75,14 +86,21 @@ class FileUtils {
          */
         fun produceNavDataSource(
             currentDataSource: ArrayList<FileNavBeanImpl>,
-            nextPath: String
+            nextPath: String,
+            context: Context
         ): ArrayList<FileNavBeanImpl> {
 
             if (currentDataSource.isEmpty()) {
-                // 如果为空，为根目录
+                // 优先级：目标设备名称 --> 自定义路径 --> 默认 SD 卡
                 currentDataSource.add(
                     FileNavBeanImpl(
-                        FilePickerManager.config.mediaStorageName,
+                        if (!FilePickerManager.config?.mediaStorageName.isNullOrEmpty()) {
+                            FilePickerManager.config?.mediaStorageName!!
+                        } else if (!FilePickerManager.config?.customRootPath.isNullOrEmpty()) {
+                            FilePickerManager.config?.customRootPath!!
+                        } else {
+                            context.getString(R.string.file_picker_tv_sd_card)
+                        },
                         nextPath
                     )
                 )

@@ -19,14 +19,12 @@ object FilePickerManager{
 
     internal var context:WeakReference<Activity> ?= null
     internal var fragment:WeakReference<Fragment> ?= null
-    internal lateinit var config:FilePickerConfig
+    internal var config: FilePickerConfig? = null
 
     fun from(activity: Activity):FilePickerConfig{
         this.context = WeakReference(activity)
-        if (!this::config.isInitialized){
-            this.config = FilePickerConfig(this)
-        }
-        return config
+        this.config = FilePickerConfig(this)
+        return config!!
     }
 
     /**
@@ -35,11 +33,7 @@ object FilePickerManager{
     fun from(fragment: Fragment):FilePickerConfig{
         this.fragment = WeakReference(fragment)
         this.context = WeakReference(fragment.activity!!)
-
-        if (!this::config.isInitialized){
-            this.config = FilePickerConfig(this)
-        }
-        return config
+        return config!!
     }
 
     private var dataList: List<String> = ArrayList()

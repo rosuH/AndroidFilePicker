@@ -4,7 +4,6 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
-import android.R
 
 /**
  *
@@ -25,11 +24,11 @@ class SampleAdapter(private val layoutInflater: LayoutInflater, private val data
         return data.size
     }
 
-    inner class SampleViewHolder(inflater: LayoutInflater, val parent:ViewGroup) :
+    inner class SampleViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
         RecyclerView.ViewHolder(inflater.inflate(android.R.layout.simple_list_item_1, parent, false)){
 
         fun bind(item:String){
-            val tv = itemView.findViewById<TextView>(R.id.text1)
+            val tv = itemView.findViewById<TextView>(android.R.id.text1)
             tv.text = item
         }
     }

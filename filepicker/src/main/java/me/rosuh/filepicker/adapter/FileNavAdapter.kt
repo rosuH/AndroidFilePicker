@@ -2,9 +2,8 @@ package me.rosuh.filepicker.adapter
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.TextView
 import me.rosuh.filepicker.FilePickerActivity
 import me.rosuh.filepicker.R
 import me.rosuh.filepicker.bean.FileNavBeanImpl
@@ -40,14 +39,14 @@ class FileNavAdapter(private val activity: FilePickerActivity, var data: Mutable
     inner class NavListHolder(inflater: LayoutInflater, val parent: ViewGroup):
         RecyclerView.ViewHolder(inflater.inflate(R.layout.item_nav_file_picker, parent, false)){
 
-        private lateinit var mBtnDir:Button
+        private var mBtnDir: TextView? = null
 
         private var pos:Int? = null
 
         fun bind(item: FileNavBeanImpl?, position:Int) {
             pos = position
-            mBtnDir = itemView.findViewById(R.id.btn_nav_file_picker)
-            mBtnDir.text = item!!.dirName
+            mBtnDir = itemView.findViewById(R.id.tv_btn_nav_file_picker)
+            mBtnDir?.text = item!!.dirName
         }
     }
 }

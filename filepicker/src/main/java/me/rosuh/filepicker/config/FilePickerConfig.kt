@@ -9,7 +9,7 @@ import me.rosuh.filepicker.R
  * @author rosu
  * @date 2018/11/27
  */
-class FilePickerConfig (private val pickerManager: FilePickerManager) {
+class FilePickerConfig(private val pickerManager: FilePickerManager) {
 
     private val contextRes = pickerManager.context!!.get()!!.resources
 
@@ -34,7 +34,17 @@ class FilePickerConfig (private val pickerManager: FilePickerManager) {
      * 存储类型
      */
     internal var mediaStorageName = contextRes.getString(R.string.file_picker_tv_sd_card)
-    internal var mediaStorageType: StorageMediaTypeEnum = StorageMediaTypeEnum.EXTERNAL_STORAGE
+
+    /**
+     * 自定义存储类型，根据此返回根目录
+     */
+    @get:StorageMediaType
+    @set:StorageMediaType
+    internal var mediaStorageType: String = STORAGE_EXTERNAL_STORAGE
+    /**
+     * 自定义根目录路径，需要先设置 [mediaStorageType] 为 [STORAGE_CUSTOM_ROOT_PATH]
+     */
+    internal var customRootPath: String = ""
     /**
      * 自定义过滤器
      */
@@ -43,7 +53,7 @@ class FilePickerConfig (private val pickerManager: FilePickerManager) {
      * 自定文件类型甄别器和默认类型甄别器
      */
     internal var selfFileType: AbstractFileType? = null
-    internal val defaultFileType:DefaultFileType by lazy { DefaultFileType() }
+    internal val defaultFileType: DefaultFileType by lazy { DefaultFileType() }
     /**
      * 点击操作接口，采用默认实现
      */
@@ -61,19 +71,19 @@ class FilePickerConfig (private val pickerManager: FilePickerManager) {
     internal var hadSelectedText: String? = contextRes.getString(R.string.file_picker_selected_count)
     internal var confirmText: String? = contextRes.getString(R.string.file_picker_tv_select_done)
 
-    private fun reset():FilePickerConfig{
+    private fun reset(): FilePickerConfig {
         isShowHiddenFiles = false
         isShowingCheckBox = true
         isSkipDir = true
         maxSelectable = Int.MAX_VALUE
         mediaStorageName = contextRes.getString(R.string.file_picker_tv_sd_card)
-        mediaStorageType = StorageMediaTypeEnum.EXTERNAL_STORAGE
+        mediaStorageType = STORAGE_EXTERNAL_STORAGE
         selfFilter = null
         selfFileType = null
         fileItemOnClickListener = FileItemOnClickListenerImpl()
-        themeId  = R.style.FilePickerThemeRail
+        themeId = R.style.FilePickerThemeRail
         selectAllText = contextRes.getString(R.string.file_picker_tv_select_all)
-        deSelectAllText =  contextRes.getString(R.string.file_picker_tv_deselect_all)
+        deSelectAllText = contextRes.getString(R.string.file_picker_tv_deselect_all)
         goBackText = contextRes.getString(R.string.file_picker_go_back)
         hadSelectedText = contextRes.getString(R.string.file_picker_selected_count)
         return this
@@ -94,14 +104,23 @@ class FilePickerConfig (private val pickerManager: FilePickerManager) {
         return this
     }
 
-    fun maxSelectable(max:Int):FilePickerConfig{
+    fun maxSelectable(max: Int): FilePickerConfig {
         maxSelectable = if (max < 0) Int.MAX_VALUE else max
         return this
     }
 
-    fun storageType(volumeName: String, storageMediaTypeEnum: StorageMediaTypeEnum): FilePickerConfig {
+    fun storageType(@StorageMediaType storageMediaType: String): FilePickerConfig {
+        return storageType("", storageMediaType)
+    }
+
+    fun storageType(volumeName: String, @StorageMediaType storageMediaType: String): FilePickerConfig {
         mediaStorageName = volumeName
-        mediaStorageType = storageMediaTypeEnum
+        mediaStorageType = storageMediaType
+        return this
+    }
+
+    fun setCustomRootPath(path: String): FilePickerConfig {
+        customRootPath = path
         return this
     }
 
@@ -148,5 +167,34 @@ class FilePickerConfig (private val pickerManager: FilePickerManager) {
         } else {
             fragment.startActivityForResult(intent, requestCode)
         }
+    }
+
+    companion object {
+        /**
+         * 手机内部的外置存储，也就是内置 SD 卡
+         */
+        @get:StorageMediaType
+        const val STORAGE_EXTERNAL_STORAGE = "STORAGE_EXTERNAL_STORAGE"
+        /**
+         * TODO 可拔插的 SD 卡
+         */
+        @get:StorageMediaType
+        const val STORAGE_UUID_SD_CARD = "STORAGE_UUID_SD_CARD"
+        /**
+         * TODO 可拔插 U 盘
+         */
+        @get:StorageMediaType
+        const val STORAGE_UUID_USB_DRIVE = "STORAGE_UUID_USB_DRIVE"
+        /**
+         * 自定义路径
+         */
+        @get:StorageMediaType
+        const val STORAGE_CUSTOM_ROOT_PATH = "STORAGE_CUSTOM_ROOT_PATH"
+
+        /**
+         * 存储类型，目前仅支持 [STORAGE_EXTERNAL_STORAGE] 和 [STORAGE_CUSTOM_ROOT_PATH]
+         */
+        @Retention(AnnotationRetention.SOURCE)
+        annotation class StorageMediaType
     }
 }
