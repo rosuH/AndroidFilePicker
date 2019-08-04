@@ -165,7 +165,7 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
             navDataSource = FileUtils.produceNavDataSource(
                 navDataSource,
                 if (navDataSource.isEmpty()) {
-                    Environment.getExternalStorageDirectory().absolutePath
+                    rootFile.path
                 } else {
                     navDataSource.last().dirPath
                 },
@@ -293,10 +293,10 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
     }
 
     private val currPosMap: HashMap<String, Int> by lazy {
-        HashMap(4)
+        HashMap<String, Int>(4)
     }
     private val currOffsetMap: HashMap<String, Int> by lazy {
-        HashMap(4)
+        HashMap<String, Int>(4)
     }
 
     /**
@@ -359,7 +359,7 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
         position: Int
     ) {
         when (view.id) {
-            R.id.btn_nav_file_picker -> {
+            R.id.tv_btn_nav_file_picker -> {
                 val item = (recyclerAdapter as FileNavAdapter).getItem(position)
                 item ?: return
                 enterDirAndUpdateUI(item)

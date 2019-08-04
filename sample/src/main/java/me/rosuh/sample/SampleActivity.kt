@@ -2,14 +2,15 @@ package me.rosuh.sample
 
 import android.app.Activity
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.widget.Button
 import android.widget.Toast
 import me.rosuh.filepicker.bean.FileItemBeanImpl
 import me.rosuh.filepicker.config.AbstractFileFilter
+import me.rosuh.filepicker.config.FilePickerConfig
 import me.rosuh.filepicker.config.FilePickerManager
 import me.rosuh.filepicker.filetype.RasterImageFileType
 
@@ -52,6 +53,7 @@ class SampleActivity : AppCompatActivity() {
         val singleDirBtn = findViewById<Button>(R.id.btn_single_dir)
         val multiFilesBtn = findViewById<Button>(R.id.btn_multi_file)
         val multiDirsBtn = findViewById<Button>(R.id.btn_multi_dir)
+        val customRootPathBtn = findViewById<Button>(R.id.btn_custom_root_path)
 
         // 下面随机切换主题
 
@@ -148,6 +150,16 @@ class SampleActivity : AppCompatActivity() {
                 })
                 .skipDirWhenSelect(false)
                 .setTheme(R.style.FilePickerThemeShrine)
+                .forResult(FilePickerManager.REQUEST_CODE)
+        }
+        // 自定义根目录
+        customRootPathBtn.setOnClickListener {
+            FilePickerManager.from(this@SampleActivity)
+                .storageType("下载", FilePickerConfig.STORAGE_CUSTOM_ROOT_PATH)
+                // 不指定名称则为导航栏将显示绝对路径
+//                .storageType(FilePickerConfig.STORAGE_CUSTOM_ROOT_PATH)
+                .setCustomRootPath("/storage/emulated/0/Download")
+                .setTheme(R.style.FilePickerThemeReply)
                 .forResult(FilePickerManager.REQUEST_CODE)
         }
     }

@@ -8,8 +8,9 @@ import me.rosuh.filepicker.R
 import me.rosuh.filepicker.bean.BeanSubscriber
 import me.rosuh.filepicker.bean.FileItemBeanImpl
 import me.rosuh.filepicker.bean.FileNavBeanImpl
+import me.rosuh.filepicker.config.FilePickerConfig.Companion.STORAGE_CUSTOM_ROOT_PATH
+import me.rosuh.filepicker.config.FilePickerConfig.Companion.STORAGE_EXTERNAL_STORAGE
 import me.rosuh.filepicker.config.FilePickerManager
-import me.rosuh.filepicker.config.StorageMediaTypeEnum.EXTERNAL_STORAGE
 import java.io.File
 
 /**
@@ -31,8 +32,15 @@ class FileUtils {
 
         fun getRootFile():File {
             return when (FilePickerManager.config?.mediaStorageType) {
-                EXTERNAL_STORAGE -> {
+                STORAGE_EXTERNAL_STORAGE -> {
                     File(Environment.getExternalStorageDirectory().absoluteFile.toURI())
+                }
+                STORAGE_CUSTOM_ROOT_PATH -> {
+                    if (FilePickerManager.config?.customRootPath.isNullOrEmpty()) {
+                        File(Environment.getExternalStorageDirectory().absoluteFile.toURI())
+                    } else {
+                        File(FilePickerManager.config?.customRootPath)
+                    }
                 }
                 else -> {
                     File(Environment.getExternalStorageDirectory().absoluteFile.toURI())
@@ -83,11 +91,16 @@ class FileUtils {
         ): ArrayList<FileNavBeanImpl> {
 
             if (currentDataSource.isEmpty()) {
-                // 如果为空，为根目录
+                // 优先级：目标设备名称 --> 自定义路径 --> 默认 SD 卡
                 currentDataSource.add(
                     FileNavBeanImpl(
-                        FilePickerManager.config?.mediaStorageName
-                            ?: context.getString(R.string.file_picker_tv_sd_card),
+                        if (!FilePickerManager.config?.mediaStorageName.isNullOrEmpty()) {
+                            FilePickerManager.config?.mediaStorageName!!
+                        } else if (!FilePickerManager.config?.customRootPath.isNullOrEmpty()) {
+                            FilePickerManager.config?.customRootPath!!
+                        } else {
+                            context.getString(R.string.file_picker_tv_sd_card)
+                        },
                         nextPath
                     )
                 )
