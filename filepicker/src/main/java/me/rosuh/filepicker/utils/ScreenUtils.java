@@ -1,11 +1,8 @@
 package me.rosuh.filepicker.utils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.util.DisplayMetrics;
-import android.view.View;
 import android.view.WindowManager;
-import me.rosuh.filepicker.config.FilePickerManager;
 
 /**
  * created by wuzhiming on 2018/10/24

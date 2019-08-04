@@ -19,7 +19,7 @@ object FilePickerManager{
 
     internal var context:WeakReference<Activity> ?= null
     internal var fragment:WeakReference<Fragment> ?= null
-    internal lateinit var config:FilePickerConfig
+    internal var config: FilePickerConfig? = null
 
     fun from(activity: Activity):FilePickerConfig{
         this.context = WeakReference(activity)
