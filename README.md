@@ -11,6 +11,7 @@ Well, it doesn't have a name like Rocky, Cosmos or Fish. Android File Picker, li
 - Launcher in Activity or Fragment
   - Start with a single line of code
 - Browse and select all files in local storage
+  - Custom Root path to start
   - Built-in default file type and file discriminator
   - Or you can implement the file type yourself
 - Custom list filter
