@@ -14,6 +14,7 @@
         android:textColor="#999999"
         android:drawablePadding="8dp"
         android:drawableTop="@drawable/ic_empty_file_list_file_picker"
+        app:layout_constraintVertical_bias="0.55"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

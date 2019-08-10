@@ -76,13 +76,11 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_nav_file_picker"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
         android:overScrollMode="never"
-        app:layout_constraintHeight_percent="0.075"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ll_tool_bar_file_picker"
-        tools:visibility="gone" />
+        app:layout_constraintTop_toBottomOf="@+id/ll_tool_bar_file_picker" />
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/srl"
