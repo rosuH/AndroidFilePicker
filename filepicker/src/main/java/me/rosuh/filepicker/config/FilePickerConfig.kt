@@ -27,6 +27,11 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
      */
     internal var isSkipDir = true
     /**
+     * 是否是单选
+     * 如果是单选，则隐藏顶部【全选/取消全选按钮】
+     */
+    internal var singleChoice = false
+    /**
      * 最大可被选中数量
      */
     internal var maxSelectable = Int.MAX_VALUE
@@ -141,6 +146,11 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
 
     fun setTheme(themeId: Int): FilePickerConfig {
         this.themeId = themeId
+        return this
+    }
+
+    fun enableSingleChoice(): FilePickerConfig {
+        this.singleChoice = true
         return this
     }
 
