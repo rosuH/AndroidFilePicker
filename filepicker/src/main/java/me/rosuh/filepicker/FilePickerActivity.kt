@@ -137,6 +137,11 @@ class FilePickerActivity : BaseActivity(), View.OnClickListener, RecyclerViewLis
         }
 
         selectAllBtn = findViewById<Button>(R.id.btn_selected_all_file_picker).apply {
+            if (pickerConfig?.singleChoice == true) {
+                // 单选隐藏并且不初始化
+                visibility = View.GONE
+                return@apply
+            }
             setOnClickListener(this@FilePickerActivity)
             FilePickerManager.config?.selectAllText?.let {
                 text = it

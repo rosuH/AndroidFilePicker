@@ -68,7 +68,7 @@ class SampleActivity : AppCompatActivity() {
             FilePickerManager
                 .from(this@SampleActivity)
                 .setTheme(R.style.FilePickerThemeRail)
-                .maxSelectable(1)
+                .enableSingleChoice()
                 .forResult(FilePickerManager.REQUEST_CODE)
         }
         // 只展示文件夹
