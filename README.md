@@ -102,7 +102,19 @@ override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) 
 
 The result is a path list of the selected file (`ArrayList<String>()`).
 
+## proguard-rules
 
+```pro
+-keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
+-keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
+-keepnames class kotlinx.coroutines.android.AndroidExceptionPreHandler {}
+-keepnames class kotlinx.coroutines.android.AndroidDispatcherFactory {}
+
+-keepclassmembernames class kotlinx.** {
+    volatile <fields>;
+}
+
+```
 
 ## More examples
 
