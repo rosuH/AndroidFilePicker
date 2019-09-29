@@ -6,11 +6,10 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 
 /**
- *
  * @author rosuh
  * @date 2019/1/7
  */
-abstract class BaseActivity:AppCompatActivity(), CoroutineScope by MainScope() {
+abstract class CoroutineScopeActivity:AppCompatActivity(), CoroutineScope by MainScope() {
 
     override fun onDestroy() {
         super.onDestroy()
