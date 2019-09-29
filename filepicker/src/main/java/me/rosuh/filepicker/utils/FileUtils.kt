@@ -74,7 +74,7 @@ class FileUtils {
                 // 隐藏文件处理
                 this.hideFiles<FileItemBeanImpl>(!(FilePickerManager.config?.isShowHiddenFiles ?: false))
                 // 排序
-                this.sortWith(compareBy({!it.isDir}, {it.fileName}))
+                this.sortWith(compareBy({!it.isDir}, {it.fileName.toUpperCase()}))
             }
             // 将当前列表数据暴露，以供调用者自己处理数据
             return FilePickerManager.config?.selfFilter?.doFilter(listData) ?: listData
