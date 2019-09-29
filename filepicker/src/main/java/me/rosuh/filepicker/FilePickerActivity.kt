@@ -5,12 +5,13 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.os.Environment.MEDIA_MOUNTED
+import android.support.constraint.ConstraintLayout
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -30,8 +31,8 @@ import me.rosuh.filepicker.bean.FileNavBeanImpl
 import me.rosuh.filepicker.config.FilePickerManager
 import me.rosuh.filepicker.utils.CoroutineScopeActivity
 import me.rosuh.filepicker.utils.FileUtils
+import me.rosuh.filepicker.utils.ScreenUtils
 import me.rosuh.filepicker.widget.PosLinearLayoutManager
-import me.rosuh.filepicker.widget.RecyclerViewFilePicker
 import java.io.File
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -39,7 +40,6 @@ import java.util.concurrent.atomic.AtomicInteger
 class FilePickerActivity : CoroutineScopeActivity(), View.OnClickListener,
     RecyclerViewListener.OnItemClickListener,
     BeanSubscriber {
-    private var swipeRefreshLayout: SwipeRefreshLayout? = null
     /**
      * 文件列表适配器
      */
@@ -74,12 +74,7 @@ class FilePickerActivity : CoroutineScopeActivity(), View.OnClickListener,
         }
     }
 
-    private fun isPermissionGrated(): Boolean {
-        return ContextCompat.checkSelfPermission(
-            this,
-            Manifest.permission.READ_EXTERNAL_STORAGE
-        ) == PackageManager.PERMISSION_GRANTED
-    }
+    private fun isPermissionGrated() = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
 
     /**
      * 申请权限
@@ -116,25 +111,21 @@ class FilePickerActivity : CoroutineScopeActivity(), View.OnClickListener,
      * 在做完权限申请之后开始的真正的工作
      */
     private fun prepareLauncher() {
-        launch {
-            if (Environment.getExternalStorageState() != MEDIA_MOUNTED) {
-                throw Throwable(cause = IllegalStateException("External storage is not available ====>>> Environment.getExternalStorageState() != MEDIA_MOUNTED"))
-            }
-            initView()
-            // 加载中布局
-            initLoadingView()
-            reloadList()
+        if (Environment.getExternalStorageState() != MEDIA_MOUNTED) {
+            throw Throwable(cause = IllegalStateException("External storage is not available ====>>> Environment.getExternalStorageState() != MEDIA_MOUNTED"))
         }
+        initView()
+        // 加载中布局
+        initLoadingView()
+        loadList()
     }
 
     private fun initView() {
-        btn_go_back_file_picker.apply {
-            setOnClickListener(this@FilePickerActivity)
-        }
+        btn_go_back_file_picker.setOnClickListener(this@FilePickerActivity)
 
         btn_selected_all_file_picker.apply {
+            // 单选模式时隐藏并且不初始化
             if (pickerConfig?.singleChoice == true) {
-                // 单选隐藏并且不初始化
                 visibility = View.GONE
                 return@apply
             }
@@ -144,6 +135,18 @@ class FilePickerActivity : CoroutineScopeActivity(), View.OnClickListener,
             }
         }
         btn_confirm_file_picker.apply {
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT){
+                // 小于 4.4 的样式兼容
+                layoutParams = RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
+                    addRule(RelativeLayout.CENTER_VERTICAL)
+                    setMargins(0, 0, ScreenUtils.dipToPx(this@FilePickerActivity, 16f), 0)
+                }
+
+            }
             setOnClickListener(this@FilePickerActivity)
             FilePickerManager.config?.confirmText?.let {
                 text = it
@@ -151,7 +154,7 @@ class FilePickerActivity : CoroutineScopeActivity(), View.OnClickListener,
         }
     }
 
-    private fun reloadList() {
+    private fun loadList() {
         launch {
             val rootFile = if (navDataSource.isEmpty()) {
                 FileUtils.suspendGetRootFile()
@@ -175,14 +178,13 @@ class FilePickerActivity : CoroutineScopeActivity(), View.OnClickListener,
     }
 
     private fun setLoadingFinish() {
-        swipeRefreshLayout?.isRefreshing = false
+        swipe_refresh_layout?.isRefreshing = false
     }
 
     private fun initLoadingView() {
-        swipeRefreshLayout = findViewById(R.id.srl)
-        swipeRefreshLayout?.apply {
+        swipe_refresh_layout?.apply {
             setOnRefreshListener {
-                reloadList()
+                loadList()
             }
             isRefreshing = true
             setColorSchemeColors(
