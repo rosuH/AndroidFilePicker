@@ -8,6 +8,7 @@
     <string name="custom_root_path">自定义根目录路径</string>
     <string name="show_hidden_files">显示隐藏文件</string>
     <string name="single_select_file">单选文件</string>
+    <string name="show_in_fragment">在 fragment 中显示</string>
     <string name="multi_select">多选文件</string>
     <string name="single_folder">单选文件夹</string>
     <string name="multi_folder">多选文件夹</string>

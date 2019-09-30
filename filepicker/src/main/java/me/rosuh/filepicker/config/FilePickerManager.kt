@@ -33,6 +33,7 @@ object FilePickerManager{
     fun from(fragment: Fragment):FilePickerConfig{
         this.fragment = WeakReference(fragment)
         this.context = WeakReference(fragment.activity!!)
+        this.config = FilePickerConfig(this)
         return config!!
     }
 
