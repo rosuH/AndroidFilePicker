@@ -3,9 +3,14 @@ package me.rosuh.sample
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.app.DialogFragment
+import android.support.v4.app.FragmentManager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
 import me.rosuh.filepicker.bean.FileItemBeanImpl
@@ -161,6 +166,34 @@ class SampleActivity : AppCompatActivity() {
                 .setCustomRootPath("/storage/emulated/0/Download")
                 .setTheme(R.style.FilePickerThemeReply)
                 .forResult(FilePickerManager.REQUEST_CODE)
+        }
+        findViewById<Button>(R.id.btn_show_in_fragment).setOnClickListener {
+            SampleFragment.show(supportFragmentManager, "SampleFragment")
+        }
+    }
+
+    class SampleFragment: DialogFragment() {
+
+        override fun onCreateView(
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
+        ): View? {
+            return inflater.inflate(R.layout.fragment_sample, container, false)
+        }
+
+        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+            super.onViewCreated(view, savedInstanceState)
+            view.findViewById<Button>(R.id.btn_go).setOnClickListener {
+                FilePickerManager.from(this).forResult(1001)
+            }
+        }
+
+        companion object{
+            fun show(supportFragmentManager: FragmentManager?, s: String) {
+                SampleFragment().show(supportFragmentManager, s)
+            }
+
         }
     }
 
