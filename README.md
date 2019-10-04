@@ -102,7 +102,7 @@ override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) 
 
 The result is a path list of the selected file (`ArrayList<String>()`).
 
-## proguard-rules
+## proguard-rules(For pre v0.5.1)
 
 ```pro
 -keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
@@ -115,6 +115,8 @@ The result is a path list of the selected file (`ArrayList<String>()`).
 }
 
 ```
+
+Starting with 0.5.2, we removed the coroutine library and implemented it using native threads, so there is no need to add proguard-rules.
 
 ## More examples
 
