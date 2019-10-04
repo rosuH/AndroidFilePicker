@@ -11,7 +11,7 @@ import me.rosuh.filepicker.R
  */
 class FilePickerConfig(private val pickerManager: FilePickerManager) {
 
-    private val contextRes = pickerManager.context!!.get()!!.resources
+    private val contextRes = pickerManager.contextRef!!.get()!!.resources
 
     /**
      * 是否显示隐藏文件，默认隐藏
@@ -168,8 +168,8 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
     }
 
     fun forResult(requestCode: Int) {
-        val activity = pickerManager.context?.get()!!
-        val fragment = pickerManager.fragment?.get()
+        val activity = pickerManager.contextRef?.get()!!
+        val fragment = pickerManager.fragmentRef?.get()
 
         val intent = Intent(activity, FilePickerActivity::class.java)
         if (fragment == null) {

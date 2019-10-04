@@ -2,8 +2,6 @@ package me.rosuh.filepicker.utils
 
 import android.content.Context
 import android.os.Environment
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import me.rosuh.filepicker.R
 import me.rosuh.filepicker.bean.BeanSubscriber
 import me.rosuh.filepicker.bean.FileItemBeanImpl
@@ -26,10 +24,6 @@ class FileUtils {
          * 根据配置参数获取根目录文件
          * @return File
          */
-        suspend fun suspendGetRootFile() = withContext(Dispatchers.IO){
-            getRootFile()
-        }
-
         fun getRootFile():File {
             return when (FilePickerManager.config?.mediaStorageType) {
                 STORAGE_EXTERNAL_STORAGE -> {
@@ -51,10 +45,6 @@ class FileUtils {
         /**
          * 获取给定文件对象[rootFile]下的所有文件，生成列表项对象
          */
-        suspend fun suspendProduceListDataSource(rootFile: File, beanSubscriber: BeanSubscriber) = withContext(Dispatchers.IO) {
-            produceListDataSource(rootFile, beanSubscriber)
-        }
-
         fun produceListDataSource(rootFile: File, beanSubscriber: BeanSubscriber):ArrayList<FileItemBeanImpl>{
             var listData: ArrayList<FileItemBeanImpl> = ArrayList()
             for (file in rootFile.listFiles()) {

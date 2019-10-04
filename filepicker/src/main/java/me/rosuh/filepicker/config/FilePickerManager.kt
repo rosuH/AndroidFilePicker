@@ -17,22 +17,29 @@ object FilePickerManager{
      */
     const val REQUEST_CODE = 10401
 
-    internal var context:WeakReference<Activity> ?= null
-    internal var fragment:WeakReference<Fragment> ?= null
+    internal var contextRef:WeakReference<Activity> ?= null
+    internal var fragmentRef:WeakReference<Fragment> ?= null
     internal var config: FilePickerConfig? = null
 
     fun from(activity: Activity):FilePickerConfig{
-        this.context = WeakReference(activity)
+        reset()
+        this.contextRef = WeakReference(activity)
         this.config = FilePickerConfig(this)
         return config!!
     }
 
+    private fun reset() {
+        contextRef?.clear()
+        fragmentRef?.clear()
+    }
+
     /**
-     * 不能使用 fragment.getContext()，因为无法保证外部的代码环境
+     * 不能使用 fragmentRef.getContext()，因为无法保证外部的代码环境
      */
     fun from(fragment: Fragment):FilePickerConfig{
-        this.fragment = WeakReference(fragment)
-        this.context = WeakReference(fragment.activity!!)
+        reset()
+        this.fragmentRef = WeakReference(fragment)
+        this.contextRef = WeakReference(fragment.activity!!)
         this.config = FilePickerConfig(this)
         return config!!
     }

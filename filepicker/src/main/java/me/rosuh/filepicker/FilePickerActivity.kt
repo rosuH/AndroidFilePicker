@@ -5,13 +5,11 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Build
-import android.os.Bundle
-import android.os.Environment
+import android.os.*
 import android.os.Environment.MEDIA_MOUNTED
-import android.support.constraint.ConstraintLayout
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -19,7 +17,6 @@ import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.*
 import kotlinx.android.synthetic.main.main_activity_for_file_picker.*
-import kotlinx.coroutines.launch
 import me.rosuh.filepicker.R.string
 import me.rosuh.filepicker.adapter.FileListAdapter
 import me.rosuh.filepicker.adapter.FileNavAdapter
@@ -29,7 +26,6 @@ import me.rosuh.filepicker.bean.FileBean
 import me.rosuh.filepicker.bean.FileItemBeanImpl
 import me.rosuh.filepicker.bean.FileNavBeanImpl
 import me.rosuh.filepicker.config.FilePickerManager
-import me.rosuh.filepicker.utils.CoroutineScopeActivity
 import me.rosuh.filepicker.utils.FileUtils
 import me.rosuh.filepicker.utils.ScreenUtils
 import me.rosuh.filepicker.widget.PosLinearLayoutManager
@@ -37,9 +33,37 @@ import java.io.File
 import java.util.concurrent.atomic.AtomicInteger
 
 @SuppressLint("ShowToast")
-class FilePickerActivity : CoroutineScopeActivity(), View.OnClickListener,
+class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
     RecyclerViewListener.OnItemClickListener,
     BeanSubscriber {
+
+    private var mainHandler = Handler(Looper.getMainLooper())
+
+    private val loadFileThread by lazy {
+        Thread{
+            val rootFile = if (navDataSource.isEmpty()) {
+                FileUtils.getRootFile()
+            } else {
+                File(navDataSource.last().dirPath)
+            }
+            val listData = FileUtils.produceListDataSource(rootFile, this@FilePickerActivity)
+            // 导航栏数据集
+            navDataSource = FileUtils.produceNavDataSource(
+                navDataSource,
+                if (navDataSource.isEmpty()) {
+                    rootFile.path
+                } else {
+                    navDataSource.last().dirPath
+                },
+                this@FilePickerActivity
+            )
+            mainHandler.post{
+                initRv(listData, navDataSource)
+                setLoadingFinish()
+            }
+        }
+    }
+
     /**
      * 文件列表适配器
      */
@@ -71,6 +95,13 @@ class FilePickerActivity : CoroutineScopeActivity(), View.OnClickListener,
             prepareLauncher()
         } else {
             requestPermission()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (loadFileThread.isAlive){
+            loadFileThread.interrupt()
         }
     }
 
@@ -155,26 +186,7 @@ class FilePickerActivity : CoroutineScopeActivity(), View.OnClickListener,
     }
 
     private fun loadList() {
-        launch {
-            val rootFile = if (navDataSource.isEmpty()) {
-                FileUtils.suspendGetRootFile()
-            } else {
-                File(navDataSource.last().dirPath)
-            }
-            val listData = FileUtils.suspendProduceListDataSource(rootFile, this@FilePickerActivity)
-            // 导航栏数据集
-            navDataSource = FileUtils.produceNavDataSource(
-                navDataSource,
-                if (navDataSource.isEmpty()) {
-                    rootFile.path
-                } else {
-                    navDataSource.last().dirPath
-                },
-                this@FilePickerActivity
-            )
-            initRv(listData, navDataSource)
-            setLoadingFinish()
-        }
+        loadFileThread.start()
     }
 
     private fun setLoadingFinish() {
@@ -436,37 +448,35 @@ class FilePickerActivity : CoroutineScopeActivity(), View.OnClickListener,
      * 从导航栏中调用本方法，需要传入 pos，以便生产新的 nav adapter
      */
     private fun enterDirAndUpdateUI(fileBean: FileBean) {
-        launch {
-            //清除当前选中状态
-            cleanStatus()
+        //清除当前选中状态
+        cleanStatus()
 
-            // 获取文件夹文件
-            val nextFiles = File(fileBean.filePath)
+        // 获取文件夹文件
+        val nextFiles = File(fileBean.filePath)
 
-            // 更新列表数据集
-            listAdapter?.data =
-                FileUtils.suspendProduceListDataSource(nextFiles, this@FilePickerActivity)
+        // 更新列表数据集
+        listAdapter?.data =
+            FileUtils.produceListDataSource(nextFiles, this@FilePickerActivity)
 
-            // 更新导航栏的数据集
-            navDataSource = FileUtils.produceNavDataSource(
-                ArrayList(navAdapter!!.data),
-                fileBean.filePath,
-                this@FilePickerActivity
+        // 更新导航栏的数据集
+        navDataSource = FileUtils.produceNavDataSource(
+            ArrayList(navAdapter!!.data),
+            fileBean.filePath,
+            this@FilePickerActivity
+        )
+        navAdapter?.data = navDataSource
+
+        navAdapter!!.notifyDataSetChanged()
+        notifyDataChangedForList(fileBean)
+
+        rv_nav_file_picker?.adapter?.itemCount?.let {
+            rv_nav_file_picker?.smoothScrollToPosition(
+                if (it == 0) {
+                    0
+                } else {
+                    it - 1
+                }
             )
-            navAdapter?.data = navDataSource
-
-            navAdapter!!.notifyDataSetChanged()
-            notifyDataChangedForList(fileBean)
-
-            rv_nav_file_picker?.adapter?.itemCount?.let {
-                rv_nav_file_picker?.smoothScrollToPosition(
-                    if (it == 0) {
-                        0
-                    } else {
-                        it - 1
-                    }
-                )
-            }
         }
     }
 
@@ -576,9 +586,6 @@ class FilePickerActivity : CoroutineScopeActivity(), View.OnClickListener,
         }
     }
 
-    /**
-     * TODO 使用挂起函数解决遍历操作带来的阻塞问题 ，同一文件夹要缓存结果
-     */
     private fun getAvailableCount(): Long {
         var count: Long = 0
         for (item in listAdapter!!.data!!) {
