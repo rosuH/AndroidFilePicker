@@ -8,6 +8,11 @@
         <item name="android:textColorPrimary">@color/rail_textColor_Primary</item>
         <!--<item name="android:windowTranslucentStatus">true</item>-->
         <item name="android:fitsSystemWindows">true</item>
+        <item name="buttonStyle">@style/FilePickerThemeRailButtonStyle</item>
+    </style>
+
+    <style name="FilePickerThemeRailButtonStyle" parent="Widget.AppCompat.Button.Borderless">
+        <item name="background">@drawable/btn_selector_file_picker_rail</item>
     </style>
 
 
@@ -18,9 +23,14 @@
         <item name="colorAccent">@color/reply_color_accent</item>
         <item name="android:textColor">@color/reply_text_color</item>
         <item name="android:textColorPrimary">@color/reply_textColor_Primary</item>
+        <item name="buttonStyle">@style/FilePickerThemeReplyButtonStyle</item>
         <!--<item name="android:windowTranslucentStatus">true</item>-->
         <item name="android:fitsSystemWindows">true</item>
 
+    </style>
+
+    <style name="FilePickerThemeReplyButtonStyle" parent="Widget.AppCompat.Button.Borderless">
+        <item name="background">@drawable/btn_selector_file_picker_reply</item>
     </style>
 
     <!--https://material.io/design/material-studies/crane.html#about-crane-->
@@ -28,6 +38,7 @@
         <item name="colorPrimary">@color/crane_color_primary</item>
         <item name="colorPrimaryDark">@color/crane_color_primary_dark</item>
         <item name="colorAccent">@color/crane_color_accent</item>
+        <item name="buttonStyle">@style/FilePickerThemeCraneButtonStyle</item>
         <item name="android:textColor">@color/crane_text_color</item>
         <item name="android:textColorPrimary">@color/crane_textColor_Primary</item>
         <!--<item name="android:windowTranslucentStatus">true</item>-->
@@ -35,15 +46,22 @@
 
     </style>
 
-
+    <style name="FilePickerThemeCraneButtonStyle" parent="Widget.AppCompat.Button.Borderless">
+        <item name="background">@drawable/btn_selector_file_picker_crane</item>
+    </style>
     <!--https://material.io/design/material-studies/shrine.html#about-shrine-->
     <style name="FilePickerThemeShrine" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/shrine_color_primary</item>
         <item name="colorPrimaryDark">@color/shrine_color_primary_dark</item>
         <item name="colorAccent">@color/shrine_color_accent</item>
+        <item name="buttonStyle">@style/FilePickerThemeShrineButtonStyle</item>
         <item name="android:textColor">@color/shrine_text_color</item>
         <item name="android:textColorPrimary">@color/shrine_textColor_Primary</item>
         <!--<item name="android:windowTranslucentStatus">true</item>-->
         <item name="android:fitsSystemWindows">true</item>
+    </style>
+
+    <style name="FilePickerThemeShrineButtonStyle" parent="Widget.AppCompat.Button.Borderless">
+        <item name="background">@drawable/btn_selector_file_picker_shrine</item>
     </style>
 </resources>
