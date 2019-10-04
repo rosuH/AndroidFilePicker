@@ -108,7 +108,7 @@ override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) 
 }
 ```
 
-## 混淆规则
+## 混淆规则（0.5.1 及以前版本）
 
 ```
 -keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
@@ -121,6 +121,7 @@ override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) 
 }
 
 ```
+从 0.5.2 开始，我们移除掉了协程库，并使用原生线程实现，所以无需加入混淆。
 
 ### 更多示例
 
