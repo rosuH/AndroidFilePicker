@@ -9,7 +9,7 @@ import java.lang.ref.WeakReference
  * @author rosu
  * @date 2018/11/22
  */
-object FilePickerManager{
+object FilePickerManager {
 
 
     /**
@@ -17,15 +17,16 @@ object FilePickerManager{
      */
     const val REQUEST_CODE = 10401
 
-    internal var contextRef:WeakReference<Activity> ?= null
-    internal var fragmentRef:WeakReference<Fragment> ?= null
-    internal var config: FilePickerConfig? = null
+    internal var contextRef: WeakReference<Activity>? = null
+    internal var fragmentRef: WeakReference<Fragment>? = null
+    internal val config: FilePickerConfig by lazy {
+        FilePickerConfig(this)
+    }
 
-    fun from(activity: Activity):FilePickerConfig{
+    fun from(activity: Activity): FilePickerConfig {
         reset()
         this.contextRef = WeakReference(activity)
-        this.config = FilePickerConfig(this)
-        return config!!
+        return config
     }
 
     private fun reset() {
@@ -36,12 +37,11 @@ object FilePickerManager{
     /**
      * 不能使用 fragmentRef.getContext()，因为无法保证外部的代码环境
      */
-    fun from(fragment: Fragment):FilePickerConfig{
+    fun from(fragment: Fragment): FilePickerConfig {
         reset()
         this.fragmentRef = WeakReference(fragment)
         this.contextRef = WeakReference(fragment.activity!!)
-        this.config = FilePickerConfig(this)
-        return config!!
+        return config
     }
 
     private var dataList: List<String> = ArrayList()

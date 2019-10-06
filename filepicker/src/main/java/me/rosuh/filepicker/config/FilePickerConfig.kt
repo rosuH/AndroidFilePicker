@@ -1,6 +1,8 @@
 package me.rosuh.filepicker.config
 
 import android.content.Intent
+import android.support.annotation.NonNull
+import android.support.annotation.StringRes
 import me.rosuh.filepicker.FilePickerActivity
 import me.rosuh.filepicker.R
 
@@ -68,31 +70,18 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
      */
     internal var themeId: Int = R.style.FilePickerThemeRail
     /**
-     * 全选文字，取消全选文字，返回文字，已选择文字
+     * 全选文字，取消全选文字，返回文字，已选择文字，确认按钮，选择限制提示语，空列表提示
      */
-    internal var selectAllText: String? = contextRes.getString(R.string.file_picker_tv_select_all)
-    internal var deSelectAllText: String? = contextRes.getString(R.string.file_picker_tv_deselect_all)
-    internal var goBackText: String? = contextRes.getString(R.string.file_picker_go_back)
-    internal var hadSelectedText: String? = contextRes.getString(R.string.file_picker_selected_count)
-    internal var confirmText: String? = contextRes.getString(R.string.file_picker_tv_select_done)
+    internal var selectAllText: String = contextRes.getString(R.string.file_picker_tv_select_all)
 
-    private fun reset(): FilePickerConfig {
-        isShowHiddenFiles = false
-        isShowingCheckBox = true
-        isSkipDir = true
-        maxSelectable = Int.MAX_VALUE
-        mediaStorageName = contextRes.getString(R.string.file_picker_tv_sd_card)
-        mediaStorageType = STORAGE_EXTERNAL_STORAGE
-        selfFilter = null
-        selfFileType = null
-        fileItemOnClickListener = FileItemOnClickListenerImpl()
-        themeId = R.style.FilePickerThemeRail
-        selectAllText = contextRes.getString(R.string.file_picker_tv_select_all)
-        deSelectAllText = contextRes.getString(R.string.file_picker_tv_deselect_all)
-        goBackText = contextRes.getString(R.string.file_picker_go_back)
-        hadSelectedText = contextRes.getString(R.string.file_picker_selected_count)
-        return this
-    }
+    internal var deSelectAllText: String =
+        contextRes.getString(R.string.file_picker_tv_deselect_all)
+    @StringRes
+    internal var hadSelectedText: Int = R.string.file_picker_selected_count
+    internal var confirmText: String = contextRes.getString(R.string.file_picker_tv_select_done)
+    @StringRes
+    internal var maxSelectCountTips: Int = R.string.max_select_count_tips
+    internal var emptyListTips: String = contextRes.getString(R.string.empty_list_tips_file_picker)
 
     fun showHiddenFiles(isShow: Boolean): FilePickerConfig {
         isShowHiddenFiles = isShow
@@ -154,16 +143,44 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
         return this
     }
 
+    /**
+     * 设置界面的字符串，包括：
+     * 选中全部[selectAllString]
+     * 取消选中[unSelectAllString]
+     * 已选择[hadSelectedStrRes]
+     * 确认[confirmText]
+     * 多选限制提示：“您只能选择 1 个条目”[maxSelectCountTipsStrRes]
+     * 空试图体视：“空空如也”[emptyListTips]
+     * 注意：
+     * [hadSelectedStrRes] 和 [maxSelectCountTipsStrRes] 是 String format 限制的字符串，你需要传入 [string.xml]
+     * 中的 id，并且包含一个可传入 Int 类型参数的占位符
+     *----------------------------------------------------------------------------------------------
+     * Set the string of the interface, including:
+     * Select all [selectAllString]
+     * Uncheck [unSelectAllString]
+     * Selected [hadSelectedStrRes]
+     * Confirm [confirmText]
+     * Multiple selection limit prompt: "You can only select 1 item" [maxSelectCountTipsStrRes]
+     * Empty tries to look at the stereo: "empty as well" [emptyListTips]
+     * Note:
+     * [hadSelectedStrRes] and [maxSelectCountTipsStrRes] are strings of String format restrictions, you need to pass in [string.xml]
+     * The id in * and contains a placeholder for passing in an Int type parameter
+     */
+    @JvmOverloads
     fun setText(
-        selectAllString: String?,
-        unSelectAllString: String?,
-        goBackString: String?,
-        hadSelectedString: String?
+        @NonNull selectAllString: String = contextRes.getString(R.string.file_picker_tv_select_all),
+        @NonNull unSelectAllString: String = contextRes.getString(R.string.file_picker_tv_deselect_all),
+        @NonNull @StringRes hadSelectedStrRes: Int = R.string.file_picker_selected_count,
+        @NonNull confirmText: String = contextRes.getString(R.string.file_picker_tv_select_done),
+        @NonNull @StringRes maxSelectCountTipsStrRes: Int = R.string.max_select_count_tips,
+        @NonNull emptyListTips: String = contextRes.getString(R.string.empty_list_tips_file_picker)
     ): FilePickerConfig {
-        selectAllText = selectAllString
-        deSelectAllText = unSelectAllString
-        goBackText = goBackString
-        hadSelectedText = hadSelectedString
+        this.selectAllText = selectAllString
+        this.deSelectAllText = unSelectAllString
+        this.hadSelectedText = hadSelectedStrRes
+        this.confirmText = confirmText
+        this.maxSelectCountTips = maxSelectCountTipsStrRes
+        this.emptyListTips = emptyListTips
         return this
     }
 
