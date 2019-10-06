@@ -185,7 +185,15 @@ class SampleActivity : AppCompatActivity() {
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             super.onViewCreated(view, savedInstanceState)
             view.findViewById<Button>(R.id.btn_go).setOnClickListener {
-                FilePickerManager.from(this).forResult(1001)
+                FilePickerManager.from(this)
+                    .setText(
+                        "A",
+                        "B",
+                        hadSelectedStrRes = R.string.demo_test_had_selected,
+                        confirmText = "C",
+                        emptyListTips = "E"
+                    )
+                    .forResult(1001)
             }
         }
 

@@ -6,17 +6,21 @@
 
     <TextView
         android:id="@+id/tv_empty_list"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:drawableTop="@drawable/ic_empty_file_list_file_picker"
+        android:drawablePadding="8dp"
+        android:gravity="center"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:singleLine="true"
         android:text="@string/empty_list_tips_file_picker"
+        android:textColor="#999999"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:textColor="#999999"
-        android:drawablePadding="8dp"
-        android:drawableTop="@drawable/ic_empty_file_list_file_picker"
-        app:layout_constraintVertical_bias="0.55"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.55" />
 </android.support.constraint.ConstraintLayout>

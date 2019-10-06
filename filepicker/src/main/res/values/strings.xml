@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name_file_picker">filepicker</string>
-    <string name="file_picker_go_back">Back</string>
     <string name="file_picker_selected_count">Selected·%1$d</string>
     <string name="file_picker_request_permission_failed">Storage permission is not granted</string>
     <string name="file_picker_tv_select_all">Select all</string>
