@@ -25,15 +25,15 @@ class FileUtils {
          * @return File
          */
         fun getRootFile():File {
-            return when (FilePickerManager.config?.mediaStorageType) {
+            return when (FilePickerManager.config.mediaStorageType) {
                 STORAGE_EXTERNAL_STORAGE -> {
                     File(Environment.getExternalStorageDirectory().absoluteFile.toURI())
                 }
                 STORAGE_CUSTOM_ROOT_PATH -> {
-                    if (FilePickerManager.config?.customRootPath.isNullOrEmpty()) {
+                    if (FilePickerManager.config.customRootPath.isEmpty()) {
                         File(Environment.getExternalStorageDirectory().absoluteFile.toURI())
                     } else {
-                        File(FilePickerManager.config?.customRootPath)
+                        File(FilePickerManager.config.customRootPath)
                     }
                 }
                 else -> {

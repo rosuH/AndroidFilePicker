@@ -12,7 +12,7 @@ public class SampleInJavaActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sample_in_java);
         FilePickerManager.INSTANCE
-                .from(this)
-                .getConfirmText$filepicker_debug()
+                .from(this);
+//        FilePickerManager.INSTANCE
     }
 }

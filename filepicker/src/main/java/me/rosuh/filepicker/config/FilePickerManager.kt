@@ -10,8 +10,6 @@ import java.lang.ref.WeakReference
  * @date 2018/11/22
  */
 object FilePickerManager {
-
-
     /**
      * 启动 Launcher Activity 所需的 request code
      */
