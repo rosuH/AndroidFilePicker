@@ -310,7 +310,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
                     enterDirAndUpdateUI(item)
                 } else {
                     FilePickerManager.config.fileItemOnClickListener.onItemClick(
-                        recyclerAdapter,
+                        recyclerAdapter as FileListAdapter,
                         view,
                         position
                     )

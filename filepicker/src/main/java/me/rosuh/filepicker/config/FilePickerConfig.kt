@@ -138,6 +138,9 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
         return this
     }
 
+    /**
+     * 是否启用单选模式
+     */
     fun enableSingleChoice(): FilePickerConfig {
         this.singleChoice = true
         return this

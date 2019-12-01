@@ -1,6 +1,5 @@
 package me.rosuh.filepicker.config
 
-import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.CheckBox
 import me.rosuh.filepicker.R
@@ -13,25 +12,25 @@ import java.io.File
  * @date 2018/11/30
  * 提供条目点击监听器的默认实现
  */
-class FileItemOnClickListenerImpl : FileItemOnClickListener {
+internal class FileItemOnClickListenerImpl : FileItemOnClickListener {
     /**
      * 条目被点击默认实现
      */
-    override fun onItemClick(itemAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>, itemView: View, position: Int) {
+    override fun onItemClick(itemAdapter: FileListAdapter, itemView: View, position: Int) {
 
     }
 
     /**
      * 条目子控件被点击默认实现
      */
-    override fun onItemChildClick(itemAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>, itemView: View, position: Int) {
+    override fun onItemChildClick(itemAdapter: FileListAdapter, itemView: View, position: Int) {
 
     }
 
     /**
      * 条目被长按默认实现
      */
-    override fun onItemLongClick(itemAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>, itemView: View, position: Int) {
+    override fun onItemLongClick(itemAdapter: FileListAdapter, itemView: View, position: Int) {
         if (itemView.id != R.id.item_list_file_picker) return
         val item = (itemAdapter as FileListAdapter).getItem(position)
         item ?: return

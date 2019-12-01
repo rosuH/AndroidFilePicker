@@ -13,10 +13,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
+import me.rosuh.filepicker.adapter.FileListAdapter
 import me.rosuh.filepicker.bean.FileItemBeanImpl
 import me.rosuh.filepicker.config.AbstractFileFilter
 import me.rosuh.filepicker.config.FilePickerConfig
 import me.rosuh.filepicker.config.FilePickerManager
+import me.rosuh.filepicker.config.SimpleItemClickListener
 import me.rosuh.filepicker.filetype.RasterImageFileType
 
 
@@ -172,7 +174,7 @@ class SampleActivity : AppCompatActivity() {
         }
     }
 
-    class SampleFragment: DialogFragment() {
+    class SampleFragment : DialogFragment() {
 
         override fun onCreateView(
             inflater: LayoutInflater,
@@ -193,11 +195,25 @@ class SampleActivity : AppCompatActivity() {
                         confirmText = "C",
                         emptyListTips = "E"
                     )
+                    .setItemClickListener(object : SimpleItemClickListener() {
+                        override fun onItemClick(
+                            itemAdapter: FileListAdapter,
+                            itemView: View,
+                            position: Int
+                        ) {
+                            super.onItemClick(itemAdapter, itemView, position)
+                            Toast.makeText(
+                                activity,
+                                "${itemAdapter.data!![position].fileName} was clicked",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    })
                     .forResult(1001)
             }
         }
 
-        companion object{
+        companion object {
             fun show(supportFragmentManager: FragmentManager?, s: String) {
                 SampleFragment().show(supportFragmentManager, s)
             }

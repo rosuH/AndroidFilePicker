@@ -1,7 +1,7 @@
 package me.rosuh.filepicker.config
 
-import android.support.v7.widget.RecyclerView
 import android.view.View
+import me.rosuh.filepicker.adapter.FileListAdapter
 
 /**
  *
@@ -10,15 +10,18 @@ import android.view.View
  */
 interface FileItemOnClickListener {
 
-    fun onItemClick(itemAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
-                    itemView: View,
-                    position: Int)
+    fun onItemClick(
+        itemAdapter: FileListAdapter,
+        itemView: View,
+        position: Int)
 
-    fun onItemChildClick(itemAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
-                         itemView: View,
-                         position: Int)
+    fun onItemChildClick(
+        itemAdapter: FileListAdapter,
+        itemView: View,
+        position: Int)
 
-    fun onItemLongClick(itemAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
-                        itemView: View,
-                        position: Int)
+    fun onItemLongClick(
+        itemAdapter: FileListAdapter,
+        itemView: View,
+        position: Int)
 }
