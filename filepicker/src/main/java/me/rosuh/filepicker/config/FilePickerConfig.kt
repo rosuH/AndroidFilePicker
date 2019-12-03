@@ -103,11 +103,8 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
         return this
     }
 
-    fun storageType(@StorageMediaType storageMediaType: String): FilePickerConfig {
-        return storageType("", storageMediaType)
-    }
-
-    fun storageType(volumeName: String, @StorageMediaType storageMediaType: String): FilePickerConfig {
+    @JvmOverloads
+    fun storageType(volumeName: String = "", @StorageMediaType storageMediaType: String): FilePickerConfig {
         mediaStorageName = volumeName
         mediaStorageType = storageMediaType
         return this
