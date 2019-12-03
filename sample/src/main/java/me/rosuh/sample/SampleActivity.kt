@@ -74,7 +74,7 @@ class SampleActivity : AppCompatActivity() {
         singleBtn.setOnClickListener {
             FilePickerManager
                 .from(this@SampleActivity)
-                .setTheme(R.style.FilePickerThemeRail)
+                .setTheme(getRandomTheme())
                 .enableSingleChoice()
                 .forResult(FilePickerManager.REQUEST_CODE)
         }
@@ -82,7 +82,7 @@ class SampleActivity : AppCompatActivity() {
         onlyDirBtn.setOnClickListener {
             FilePickerManager
                 .from(this@SampleActivity)
-                .setTheme(R.style.FilePickerThemeShrine)
+                .setTheme(getRandomTheme())
                 .filter(object : AbstractFileFilter() {
                     override fun doFilter(listData: ArrayList<FileItemBeanImpl>): ArrayList<FileItemBeanImpl> {
                         return ArrayList(listData.filter { item ->
@@ -96,6 +96,7 @@ class SampleActivity : AppCompatActivity() {
         onlyImgBtn.setOnClickListener {
             FilePickerManager
                 .from(this@SampleActivity)
+                .setTheme(getRandomTheme())
                 .filter(object : AbstractFileFilter() {
                     override fun doFilter(listData: ArrayList<FileItemBeanImpl>): ArrayList<FileItemBeanImpl> {
                         return ArrayList(listData.filter { item ->
@@ -110,6 +111,7 @@ class SampleActivity : AppCompatActivity() {
         displayHiddenBtn.setOnClickListener {
             FilePickerManager
                 .from(this@SampleActivity)
+                .setTheme(getRandomTheme())
                 .showHiddenFiles(true)
                 .forResult(FilePickerManager.REQUEST_CODE)
         }
@@ -117,7 +119,8 @@ class SampleActivity : AppCompatActivity() {
         singleFileBtn.setOnClickListener {
             FilePickerManager
                 .from(this@SampleActivity)
-                .maxSelectable(1)
+                .setTheme(getRandomTheme())
+                .enableSingleChoice()
                 .showCheckBox(false)
                 .forResult(FilePickerManager.REQUEST_CODE)
         }
@@ -125,7 +128,8 @@ class SampleActivity : AppCompatActivity() {
         singleDirBtn.setOnClickListener {
             FilePickerManager
                 .from(this@SampleActivity)
-                .maxSelectable(1)
+                .enableSingleChoice()
+                .setTheme(getRandomTheme())
                 .filter(object : AbstractFileFilter() {
                     override fun doFilter(listData: ArrayList<FileItemBeanImpl>): ArrayList<FileItemBeanImpl> {
                         return ArrayList(listData.filter { item ->
@@ -141,6 +145,7 @@ class SampleActivity : AppCompatActivity() {
         multiFilesBtn.setOnClickListener {
             FilePickerManager
                 .from(this@SampleActivity)
+                .setTheme(getRandomTheme())
                 .setTheme(R.style.FilePickerThemeCrane)
                 .forResult(FilePickerManager.REQUEST_CODE)
         }
@@ -148,6 +153,7 @@ class SampleActivity : AppCompatActivity() {
         multiDirsBtn.setOnClickListener {
             FilePickerManager
                 .from(this@SampleActivity)
+                .setTheme(getRandomTheme())
                 .filter(object : AbstractFileFilter() {
                     override fun doFilter(listData: ArrayList<FileItemBeanImpl>): ArrayList<FileItemBeanImpl> {
                         return ArrayList(listData.filter { item ->
@@ -163,6 +169,7 @@ class SampleActivity : AppCompatActivity() {
         customRootPathBtn.setOnClickListener {
             FilePickerManager.from(this@SampleActivity)
                 .storageType("下载", FilePickerConfig.STORAGE_CUSTOM_ROOT_PATH)
+                .setTheme(getRandomTheme())
                 // 不指定名称则为导航栏将显示绝对路径
 //                .storageType(FilePickerConfig.STORAGE_CUSTOM_ROOT_PATH)
                 .setCustomRootPath("/storage/emulated/0/Download")
@@ -171,6 +178,18 @@ class SampleActivity : AppCompatActivity() {
         }
         findViewById<Button>(R.id.btn_show_in_fragment).setOnClickListener {
             SampleFragment.show(supportFragmentManager, "SampleFragment")
+        }
+    }
+
+    private fun getRandomTheme(): Int {
+        return arrayListOf(
+            R.style.FilePickerThemeRail,
+            R.style.FilePickerThemeCrane,
+            R.style.FilePickerThemeReply,
+            R.style.FilePickerThemeShrine
+        ).run {
+            shuffle()
+            first()
         }
     }
 
@@ -204,7 +223,7 @@ class SampleActivity : AppCompatActivity() {
                             super.onItemClick(itemAdapter, itemView, position)
                             Toast.makeText(
                                 activity,
-                                "${itemAdapter.data!![position].fileName} was clicked",
+                                "${itemAdapter.dataList!![position].fileName} was clicked",
                                 Toast.LENGTH_SHORT
                             ).show()
                         }

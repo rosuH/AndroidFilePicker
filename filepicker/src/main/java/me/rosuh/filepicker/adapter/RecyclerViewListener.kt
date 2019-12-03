@@ -22,11 +22,11 @@ class RecyclerViewListener(val activity: Activity, val recyclerView: RecyclerVie
 
     interface OnItemClickListener {
 
-        fun onItemClick(recyclerAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>, view: View, position: Int)
+        fun onItemClick(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>, view: View, position: Int)
 
-        fun onItemLongClick(recyclerAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>, view: View, position: Int)
+        fun onItemLongClick(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>, view: View, position: Int)
 
-        fun onItemChildClick(recyclerAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>, view: View, position: Int)
+        fun onItemChildClick(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>, view: View, position: Int)
     }
 
 

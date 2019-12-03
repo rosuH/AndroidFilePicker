@@ -64,7 +64,7 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
     /**
      * 点击操作接口，采用默认实现
      */
-    var fileItemOnClickListener: FileItemOnClickListener = FileItemOnClickListenerImpl()
+    var fileItemOnClickListener: FileItemOnClickListener? = null
     /**
      * 主题
      */
@@ -152,7 +152,7 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
      * 多选限制提示：“您只能选择 1 个条目”[maxSelectCountTipsStrRes]
      * 空试图体视：“空空如也”[emptyListTips]
      * 注意：
-     * [hadSelectedStrRes] 和 [maxSelectCountTipsStrRes] 是 String format 限制的字符串，你需要传入 [string.xml]
+     * [hadSelectedStrRes] 和 [maxSelectCountTipsStrRes] 是 String format 限制的字符串，你需要传入 [R.string.file_picker_selected_count] 类似的
      * 中的 id，并且包含一个可传入 Int 类型参数的占位符
      *----------------------------------------------------------------------------------------------
      * Set the string of the interface, including:
@@ -163,7 +163,7 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
      * Multiple selection limit prompt: "You can only select 1 item" [maxSelectCountTipsStrRes]
      * Empty tries to look at the stereo: "empty as well" [emptyListTips]
      * Note:
-     * [hadSelectedStrRes] and [maxSelectCountTipsStrRes] are strings of String format restrictions, you need to pass in [string.xml]
+     * [hadSelectedStrRes] and [maxSelectCountTipsStrRes] are strings of String format restrictions, you need to pass some string like [R.string.file_picker_selected_count]
      * The id in * and contains a placeholder for passing in an Int type parameter
      */
     fun setText(

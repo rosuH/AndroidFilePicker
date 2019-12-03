@@ -22,22 +22,22 @@ public class SampleInJavaActivity extends AppCompatActivity {
                 .setItemClickListener(new FileItemOnClickListener() {
                     @Override
                     public void onItemClick(@NotNull FileListAdapter itemAdapter, @NotNull View itemView, int position) {
-                        if (itemAdapter.getData() != null) {
-                            Toast.makeText(SampleInJavaActivity.this, itemAdapter.getData().get(position).getFileName(), Toast.LENGTH_SHORT).show();
+                        if (itemAdapter.getDataList() != null) {
+                            Toast.makeText(SampleInJavaActivity.this, itemAdapter.getDataList().get(position).getFileName(), Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onItemChildClick(@NotNull FileListAdapter itemAdapter, @NotNull View itemView, int position) {
-                        if (itemAdapter.getData() != null) {
-                            Toast.makeText(SampleInJavaActivity.this, itemAdapter.getData().get(position).getFileName(), Toast.LENGTH_SHORT).show();
+                        if (itemAdapter.getDataList() != null) {
+                            Toast.makeText(SampleInJavaActivity.this, itemAdapter.getDataList().get(position).getFileName(), Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onItemLongClick(@NotNull FileListAdapter itemAdapter, @NotNull View itemView, int position) {
-                        if (itemAdapter.getData() != null) {
-                            Toast.makeText(SampleInJavaActivity.this, itemAdapter.getData().get(position).getFileName(), Toast.LENGTH_SHORT).show();
+                        if (itemAdapter.getDataList() != null) {
+                            Toast.makeText(SampleInJavaActivity.this, itemAdapter.getDataList().get(position).getFileName(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 })
