@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
+import kotlinx.android.synthetic.main.demo_activity_main.*
 import me.rosuh.filepicker.adapter.FileListAdapter
 import me.rosuh.filepicker.bean.FileItemBeanImpl
 import me.rosuh.filepicker.config.AbstractFileFilter
@@ -48,30 +49,8 @@ class SampleActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.demo_activity_main)
-
-        rv = findViewById(R.id.rv_main)
-
-        val defaultBtn = findViewById<Button>(R.id.btn_default)
-        val singleBtn = findViewById<Button>(R.id.btn_single)
-        val onlyDirBtn = findViewById<Button>(R.id.btn_only_dir)
-        val onlyImgBtn = findViewById<Button>(R.id.btn_only_image)
-        val displayHiddenBtn = findViewById<Button>(R.id.btn_display_hidden)
-        val singleFileBtn = findViewById<Button>(R.id.btn_single_file)
-        val singleDirBtn = findViewById<Button>(R.id.btn_single_dir)
-        val multiFilesBtn = findViewById<Button>(R.id.btn_multi_file)
-        val multiDirsBtn = findViewById<Button>(R.id.btn_multi_dir)
-        val customRootPathBtn = findViewById<Button>(R.id.btn_custom_root_path)
-
-        // 下面随机切换主题
-
-        // 默认状态
-        defaultBtn.setOnClickListener {
-            FilePickerManager
-                .from(this@SampleActivity)
-                .forResult(FilePickerManager.REQUEST_CODE)
-        }
         // 单选
-        singleBtn.setOnClickListener {
+        btn_single.setOnClickListener {
             FilePickerManager
                 .from(this@SampleActivity)
                 .setTheme(getRandomTheme())
@@ -79,7 +58,7 @@ class SampleActivity : AppCompatActivity() {
                 .forResult(FilePickerManager.REQUEST_CODE)
         }
         // 只展示文件夹
-        onlyDirBtn.setOnClickListener {
+        btn_only_dir.setOnClickListener {
             FilePickerManager
                 .from(this@SampleActivity)
                 .setTheme(getRandomTheme())
@@ -93,7 +72,7 @@ class SampleActivity : AppCompatActivity() {
                 .forResult(FilePickerManager.REQUEST_CODE)
         }
         // 只展示图片
-        onlyImgBtn.setOnClickListener {
+        btn_only_image.setOnClickListener {
             FilePickerManager
                 .from(this@SampleActivity)
                 .setTheme(getRandomTheme())
@@ -108,7 +87,7 @@ class SampleActivity : AppCompatActivity() {
         }
 
         // 显示隐藏文件，. 符号开头的
-        displayHiddenBtn.setOnClickListener {
+        btn_display_hidden.setOnClickListener {
             FilePickerManager
                 .from(this@SampleActivity)
                 .setTheme(getRandomTheme())
@@ -116,7 +95,7 @@ class SampleActivity : AppCompatActivity() {
                 .forResult(FilePickerManager.REQUEST_CODE)
         }
         // 单选文件
-        singleFileBtn.setOnClickListener {
+        btn_single_file.setOnClickListener {
             FilePickerManager
                 .from(this@SampleActivity)
                 .setTheme(getRandomTheme())
@@ -125,7 +104,7 @@ class SampleActivity : AppCompatActivity() {
                 .forResult(FilePickerManager.REQUEST_CODE)
         }
         // 单选文件夹
-        singleDirBtn.setOnClickListener {
+        btn_single_dir.setOnClickListener {
             FilePickerManager
                 .from(this@SampleActivity)
                 .enableSingleChoice()
@@ -142,7 +121,7 @@ class SampleActivity : AppCompatActivity() {
                 .forResult(FilePickerManager.REQUEST_CODE)
         }
         // 多选文件
-        multiFilesBtn.setOnClickListener {
+        btn_multi_file.setOnClickListener {
             FilePickerManager
                 .from(this@SampleActivity)
                 .setTheme(getRandomTheme())
@@ -150,7 +129,7 @@ class SampleActivity : AppCompatActivity() {
                 .forResult(FilePickerManager.REQUEST_CODE)
         }
         // 多选文件夹
-        multiDirsBtn.setOnClickListener {
+        btn_multi_dir.setOnClickListener {
             FilePickerManager
                 .from(this@SampleActivity)
                 .setTheme(getRandomTheme())
@@ -166,7 +145,7 @@ class SampleActivity : AppCompatActivity() {
                 .forResult(FilePickerManager.REQUEST_CODE)
         }
         // 自定义根目录
-        customRootPathBtn.setOnClickListener {
+        btn_custom_root_path.setOnClickListener {
             FilePickerManager.from(this@SampleActivity)
                 .storageType("下载", FilePickerConfig.STORAGE_CUSTOM_ROOT_PATH)
                 .setTheme(getRandomTheme())
