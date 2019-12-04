@@ -261,6 +261,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
                 .inflate(R.layout.empty_file_list_file_picker, null).apply {
                     tv_empty_list.text = pickerConfig.emptyListTips
                 }
+            setHasFixedSize(true)
             adapter = listAdapter
             layoutAnimation =
                 AnimationUtils.loadLayoutAnimation(context, R.anim.layout_item_anim_file_picker)
@@ -381,42 +382,16 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
                     return
                 }
                 if (pickerConfig.singleChoice) {
-                    listAdapter?.check(position, view)
+                    listAdapter?.singleCheck(position)
                 } else {
-                    onNormalClick(item, view, position)
+                    listAdapter?.multipleCheckOrNo(item, position, ::isCanSelect) {
+                        Toast.makeText(
+                            this@FilePickerActivity.applicationContext,
+                            "最多只能选择 $maxSelectable 项",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
-            }
-        }
-    }
-
-    /**
-     * for multiple choice
-     */
-    private fun onNormalClick(
-        item: FileItemBeanImpl,
-        view: View,
-        position: Int
-    ) {
-        when {
-            item.isChecked() -> {
-                // 当前被选中，说明即将取消选中
-                // had selected, will dis-select
-                listAdapter?.disCheck(position, view)
-            }
-            isCanSelect() -> {
-                // 当前未被选中，并且检查合格，则即将新增选中
-                // current item is not selected, and can be selected, will select
-                listAdapter?.check(position, view)
-            }
-            else -> {
-                // 新增选中项失败的情况
-                // add new selected item failed
-                listAdapter?.disCheck(position, view)
-                Toast.makeText(
-                    this@FilePickerActivity.applicationContext,
-                    "最多只能选择 $maxSelectable 项",
-                    Toast.LENGTH_SHORT
-                ).show()
             }
         }
     }
@@ -586,9 +561,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
         return count
     }
 
-    private fun isCanSelect(): Boolean {
-        return selectedCount < maxSelectable
-    }
+    private fun isCanSelect() = selectedCount < maxSelectable
 
     companion object {
         private const val FILE_PICKER_PERMISSION_REQUEST_CODE = 10201

@@ -2,6 +2,7 @@ package me.rosuh.filepicker.adapter
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import me.rosuh.filepicker.FilePickerActivity
@@ -15,9 +16,17 @@ import me.rosuh.filepicker.bean.FileNavBeanImpl
  */
 class FileNavAdapter(private val activity: FilePickerActivity, var data: MutableList<FileNavBeanImpl>) :
     BaseAdapter(){
+    private lateinit var recyclerView: RecyclerView
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        if (parent is RecyclerView){
+            recyclerView = parent
+        }
         return NavListHolder(activity.layoutInflater, parent)
+    }
+
+    override fun getItemView(position: Int): View? {
+        return recyclerView.findViewHolderForAdapterPosition(position)?.itemView
     }
 
     override fun getItemCount(): Int {

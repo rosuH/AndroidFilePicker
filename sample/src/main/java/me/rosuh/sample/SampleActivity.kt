@@ -21,11 +21,10 @@ import me.rosuh.filepicker.config.FilePickerConfig
 import me.rosuh.filepicker.config.FilePickerManager
 import me.rosuh.filepicker.config.SimpleItemClickListener
 import me.rosuh.filepicker.filetype.RasterImageFileType
+import me.rosuh.filepicker.utils.ScreenUtils
 
 
 class SampleActivity : AppCompatActivity() {
-    private var rv: RecyclerView? = null
-
     /**
      * 自定义文件过滤器
      */
@@ -224,8 +223,9 @@ class SampleActivity : AppCompatActivity() {
             FilePickerManager.REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
                     val list = FilePickerManager.obtainData()
-                    rv!!.adapter = SampleAdapter(layoutInflater, ArrayList(list))
-                    rv!!.layoutManager = LinearLayoutManager(this@SampleActivity)
+                    rv_main.adapter = SampleAdapter(layoutInflater, ArrayList(list))
+                    rv_main.layoutManager = LinearLayoutManager(this@SampleActivity)
+                    ns_root.scrollTo(0, ScreenUtils.getScreenHeightInPixel(this))
                 } else {
                     Toast.makeText(this@SampleActivity, "没有选择图片", Toast.LENGTH_SHORT).show()
                 }

@@ -4,14 +4,11 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
-import android.widget.ImageView
-import android.widget.RadioButton
-import android.widget.TextView
+import android.widget.*
 import me.rosuh.filepicker.FilePickerActivity
 import me.rosuh.filepicker.R
 import me.rosuh.filepicker.bean.FileItemBeanImpl
-import me.rosuh.filepicker.config.FilePickerManager
+import me.rosuh.filepicker.config.FilePickerManager.config as config
 import java.io.File
 
 /**
@@ -23,7 +20,7 @@ import java.io.File
 class FileListAdapter(
     private val activity: FilePickerActivity,
     var dataList: ArrayList<FileItemBeanImpl>?,
-    private var isSingleChoice: Boolean = FilePickerManager.config.singleChoice
+    private var isSingleChoice: Boolean = config.singleChoice
 ) : BaseAdapter() {
     private var latestChoicePos = -1
     private lateinit var recyclerView: RecyclerView
@@ -54,6 +51,10 @@ class FileListAdapter(
         }
     }
 
+    override fun getItemView(position: Int): View? {
+        return recyclerView.findViewHolderForAdapterPosition(position)?.itemView
+    }
+
     override fun getItemCount(): Int {
         return dataList?.size ?: 10
     }
@@ -66,6 +67,32 @@ class FileListAdapter(
         (holder as BaseViewHolder).bind(dataList!![position], position)
     }
 
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        position: Int,
+        payloads: MutableList<Any>
+    ) {
+        // Using payload to refresh partly
+        // 使用 payload 进行局部刷新
+        if (payloads.isNullOrEmpty()) {
+            onBindViewHolder(holder, position)
+            return
+        }
+        when (holder) {
+            is FileListItemHolder -> {
+                holder.itemView.findViewById<CheckBox>(R.id.cb_list_file_picker)?.let {
+                    it.isChecked = payloads[0] as Boolean
+                }
+            }
+            is FileListItemSingleChoiceHolder -> {
+                holder.itemView.findViewById<RadioButton>(R.id.rb_list_file_picker)?.let {
+                    it.isChecked = payloads[0] as Boolean
+                }
+            }
+        }
+    }
+
+
     override fun getItem(position: Int): FileItemBeanImpl? {
         if (position >= 0 &&
             position < dataList!!.size &&
@@ -74,38 +101,55 @@ class FileListAdapter(
         return null
     }
 
-    fun disCheck(position: Int, view: View) {
-        getItem(position)?.let {
-            it.setCheck(false)
-            view.findViewById<CheckBox>(R.id.cb_list_file_picker).isChecked = false
-        }
-    }
-
-    fun check(position: Int, view: View) {
-        if (isSingleChoice) {
-            singleCheck(position, view)
-        } else {
-            multipleCheck(position, view)
-        }
-    }
-
     /*--------------------------OutSide call method begin------------------------------*/
+    inline fun multipleCheckOrNo(
+        item: FileItemBeanImpl,
+        position: Int,
+        isCanSelect: () -> Boolean,
+        checkFailedFunc: () -> Unit
+    ) {
+        when {
+            item.isChecked() -> {
+                // 当前被选中，说明即将取消选中
+                // had selected, will dis-select
+                multipleDisCheck(position)
+            }
+            isCanSelect() -> {
+                // 当前未被选中，并且检查合格，则即将新增选中
+                // current item is not selected, and can be selected, will select
+                multipleCheck(position)
+            }
+            else -> {
+                // 新增选中项失败的情况
+                // add new selected item failed
+                checkFailedFunc()
+            }
+        }
+    }
 
-    private fun multipleCheck(position: Int, view: View) {
+    fun multipleCheck(position: Int) {
         getItem(position)?.let {
             it.setCheck(true)
-            view.findViewById<CheckBox>(R.id.cb_list_file_picker).isChecked = true
+            notifyItemChanged(position, true)
         }
     }
 
-    private fun singleCheck(position: Int, view: View) {
-        val rb = view.findViewById<RadioButton>(R.id.rb_list_file_picker)
+
+    fun multipleDisCheck(position: Int) {
+        getItem(position)?.let {
+            it.setCheck(false)
+            notifyItemChanged(position, false)
+        }
+    }
+
+
+    fun singleCheck(position: Int) {
         when (latestChoicePos) {
             -1 -> {
                 // 从未选中过
                 getItem(position)?.let {
                     it.setCheck(true)
-                    rb.isChecked = true
+                    notifyItemChanged(position, true)
                 }
                 latestChoicePos = position
             }
@@ -113,68 +157,51 @@ class FileListAdapter(
                 // 取消选中
                 getItem(latestChoicePos)?.let {
                     it.setCheck(false)
-                    rb.isChecked = false
+                    notifyItemChanged(latestChoicePos, false)
                 }
                 latestChoicePos = -1
             }
             else -> {
-                // 选中新项
+                // disCheck the old one
                 getItem(latestChoicePos)?.let {
                     it.setCheck(false)
-                    recyclerView.findViewHolderForAdapterPosition(latestChoicePos)
-                        ?.itemView
-                        ?.findViewById<RadioButton>(R.id.rb_list_file_picker)
-                        ?.isChecked = false
+                    notifyItemChanged(latestChoicePos, false)
                 }
+                // check the new one
                 latestChoicePos = position
                 getItem(latestChoicePos)?.let {
                     it.setCheck(true)
-                    rb.isChecked = true
+                    notifyItemChanged(latestChoicePos, true)
                 }
             }
         }
     }
 
     fun disCheckAll() {
-        dataList?.forEachIndexed { index, item ->
-            if (!(FilePickerManager.config.isSkipDir && item.isDir) && item.isChecked()) {
-                val itemView = recyclerView.findViewHolderForAdapterPosition(index)?.itemView
-                if (isSingleChoice) {
-                    itemView?.findViewById<RadioButton>(R.id.rb_list_file_picker)?.let {
-                        it.isChecked = false
-                    }
-                } else {
-                    itemView?.findViewById<CheckBox>(R.id.cb_list_file_picker)?.let {
-                        it.isChecked = false
-                    }
+        dataList
+            ?.forEachIndexed { index, item ->
+                if (!(config.isSkipDir && item.isDir) && item.isChecked()) {
+                    item.setCheck(false)
+                    notifyItemChanged(index, false)
                 }
-                item.setCheck(false)
             }
-        }
     }
 
     fun checkAll(hadSelectedCount: Int) {
         var checkCount = hadSelectedCount
-        dataList?.forEachIndexed { index, item ->
-            if (checkCount >= FilePickerManager.config.maxSelectable){
-                return
-            }
-            if (!(FilePickerManager.config.isSkipDir && item.isDir) && !item.isChecked()) {
-                val itemView = recyclerView.findViewHolderForAdapterPosition(index)?.itemView
-                if (isSingleChoice) {
-                    itemView?.findViewById<RadioButton>(R.id.rb_list_file_picker)?.let {
-                        it.isChecked = true
-                    }
-                } else {
-                    itemView?.findViewById<CheckBox>(R.id.cb_list_file_picker)?.let {
-                        it.isChecked = true
-                    }
+        dataList
+            ?.forEachIndexed { index, item ->
+                if (checkCount >= config.maxSelectable) {
+                    return
                 }
-                item.setCheck(true)
-                checkCount++
+                if (!(config.isSkipDir && item.isDir) && !item.isChecked()) {
+                    item.setCheck(true)
+                    notifyItemChanged(index, true)
+                    checkCount++
+                }
             }
-        }
     }
+
 
     /*--------------------------OutSide call method end------------------------------*/
 
@@ -190,7 +217,7 @@ class FileListAdapter(
     inner class FileListItemSingleChoiceHolder(itemView: View) :
         BaseViewHolder(itemView) {
 
-        private val isSkipDir: Boolean = FilePickerManager.config.isSkipDir
+        private val isSkipDir: Boolean = config.isSkipDir
         private val mTvFileName = itemView.findViewById<TextView>(R.id.tv_list_file_picker)!!
         private val mRbItem = itemView.findViewById<RadioButton>(R.id.rb_list_file_picker)!!
         private val mIcon = itemView.findViewById<ImageView>(R.id.iv_icon_list_file_picker)!!
@@ -226,7 +253,7 @@ class FileListAdapter(
     inner class FileListItemHolder(itemView: View) :
         BaseViewHolder(itemView) {
 
-        private val isSkipDir: Boolean = FilePickerManager.config.isSkipDir
+        private val isSkipDir: Boolean = config.isSkipDir
         private val mTvFileName = itemView.findViewById<TextView>(R.id.tv_list_file_picker)!!
         private val mCbItem = itemView.findViewById<CheckBox>(R.id.cb_list_file_picker)!!
         private val mIcon = itemView.findViewById<ImageView>(R.id.iv_icon_list_file_picker)!!
