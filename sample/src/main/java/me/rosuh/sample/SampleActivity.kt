@@ -13,16 +13,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
+import kotlinx.android.synthetic.main.demo_activity_main.*
+import me.rosuh.filepicker.adapter.FileListAdapter
 import me.rosuh.filepicker.bean.FileItemBeanImpl
 import me.rosuh.filepicker.config.AbstractFileFilter
 import me.rosuh.filepicker.config.FilePickerConfig
 import me.rosuh.filepicker.config.FilePickerManager
+import me.rosuh.filepicker.config.SimpleItemClickListener
 import me.rosuh.filepicker.filetype.RasterImageFileType
+import me.rosuh.filepicker.utils.ScreenUtils
 
 
 class SampleActivity : AppCompatActivity() {
-    private var rv: RecyclerView? = null
-
     /**
      * 自定义文件过滤器
      */
@@ -46,41 +48,19 @@ class SampleActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.demo_activity_main)
-
-        rv = findViewById(R.id.rv_main)
-
-        val defaultBtn = findViewById<Button>(R.id.btn_default)
-        val singleBtn = findViewById<Button>(R.id.btn_single)
-        val onlyDirBtn = findViewById<Button>(R.id.btn_only_dir)
-        val onlyImgBtn = findViewById<Button>(R.id.btn_only_image)
-        val displayHiddenBtn = findViewById<Button>(R.id.btn_display_hidden)
-        val singleFileBtn = findViewById<Button>(R.id.btn_single_file)
-        val singleDirBtn = findViewById<Button>(R.id.btn_single_dir)
-        val multiFilesBtn = findViewById<Button>(R.id.btn_multi_file)
-        val multiDirsBtn = findViewById<Button>(R.id.btn_multi_dir)
-        val customRootPathBtn = findViewById<Button>(R.id.btn_custom_root_path)
-
-        // 下面随机切换主题
-
-        // 默认状态
-        defaultBtn.setOnClickListener {
-            FilePickerManager
-                .from(this@SampleActivity)
-                .forResult(FilePickerManager.REQUEST_CODE)
-        }
         // 单选
-        singleBtn.setOnClickListener {
+        btn_single.setOnClickListener {
             FilePickerManager
                 .from(this@SampleActivity)
-                .setTheme(R.style.FilePickerThemeRail)
+                .setTheme(getRandomTheme())
                 .enableSingleChoice()
                 .forResult(FilePickerManager.REQUEST_CODE)
         }
         // 只展示文件夹
-        onlyDirBtn.setOnClickListener {
+        btn_only_dir.setOnClickListener {
             FilePickerManager
                 .from(this@SampleActivity)
-                .setTheme(R.style.FilePickerThemeShrine)
+                .setTheme(getRandomTheme())
                 .filter(object : AbstractFileFilter() {
                     override fun doFilter(listData: ArrayList<FileItemBeanImpl>): ArrayList<FileItemBeanImpl> {
                         return ArrayList(listData.filter { item ->
@@ -91,9 +71,10 @@ class SampleActivity : AppCompatActivity() {
                 .forResult(FilePickerManager.REQUEST_CODE)
         }
         // 只展示图片
-        onlyImgBtn.setOnClickListener {
+        btn_only_image.setOnClickListener {
             FilePickerManager
                 .from(this@SampleActivity)
+                .setTheme(getRandomTheme())
                 .filter(object : AbstractFileFilter() {
                     override fun doFilter(listData: ArrayList<FileItemBeanImpl>): ArrayList<FileItemBeanImpl> {
                         return ArrayList(listData.filter { item ->
@@ -105,25 +86,20 @@ class SampleActivity : AppCompatActivity() {
         }
 
         // 显示隐藏文件，. 符号开头的
-        displayHiddenBtn.setOnClickListener {
+        btn_display_hidden.setOnClickListener {
             FilePickerManager
                 .from(this@SampleActivity)
+                .setTheme(getRandomTheme())
                 .showHiddenFiles(true)
                 .forResult(FilePickerManager.REQUEST_CODE)
         }
-        // 单选文件
-        singleFileBtn.setOnClickListener {
-            FilePickerManager
-                .from(this@SampleActivity)
-                .maxSelectable(1)
-                .showCheckBox(false)
-                .forResult(FilePickerManager.REQUEST_CODE)
-        }
+
         // 单选文件夹
-        singleDirBtn.setOnClickListener {
+        btn_single_dir.setOnClickListener {
             FilePickerManager
                 .from(this@SampleActivity)
-                .maxSelectable(1)
+                .enableSingleChoice()
+                .setTheme(getRandomTheme())
                 .filter(object : AbstractFileFilter() {
                     override fun doFilter(listData: ArrayList<FileItemBeanImpl>): ArrayList<FileItemBeanImpl> {
                         return ArrayList(listData.filter { item ->
@@ -136,16 +112,18 @@ class SampleActivity : AppCompatActivity() {
                 .forResult(FilePickerManager.REQUEST_CODE)
         }
         // 多选文件
-        multiFilesBtn.setOnClickListener {
+        btn_multi_file.setOnClickListener {
             FilePickerManager
                 .from(this@SampleActivity)
+                .setTheme(getRandomTheme())
                 .setTheme(R.style.FilePickerThemeCrane)
                 .forResult(FilePickerManager.REQUEST_CODE)
         }
         // 多选文件夹
-        multiDirsBtn.setOnClickListener {
+        btn_multi_dir.setOnClickListener {
             FilePickerManager
                 .from(this@SampleActivity)
+                .setTheme(getRandomTheme())
                 .filter(object : AbstractFileFilter() {
                     override fun doFilter(listData: ArrayList<FileItemBeanImpl>): ArrayList<FileItemBeanImpl> {
                         return ArrayList(listData.filter { item ->
@@ -158,9 +136,10 @@ class SampleActivity : AppCompatActivity() {
                 .forResult(FilePickerManager.REQUEST_CODE)
         }
         // 自定义根目录
-        customRootPathBtn.setOnClickListener {
+        btn_custom_root_path.setOnClickListener {
             FilePickerManager.from(this@SampleActivity)
                 .storageType("下载", FilePickerConfig.STORAGE_CUSTOM_ROOT_PATH)
+                .setTheme(getRandomTheme())
                 // 不指定名称则为导航栏将显示绝对路径
 //                .storageType(FilePickerConfig.STORAGE_CUSTOM_ROOT_PATH)
                 .setCustomRootPath("/storage/emulated/0/Download")
@@ -172,7 +151,19 @@ class SampleActivity : AppCompatActivity() {
         }
     }
 
-    class SampleFragment: DialogFragment() {
+    private fun getRandomTheme(): Int {
+        return arrayListOf(
+            R.style.FilePickerThemeRail,
+            R.style.FilePickerThemeCrane,
+            R.style.FilePickerThemeReply,
+            R.style.FilePickerThemeShrine
+        ).run {
+            shuffle()
+            first()
+        }
+    }
+
+    class SampleFragment : DialogFragment() {
 
         override fun onCreateView(
             inflater: LayoutInflater,
@@ -193,11 +184,25 @@ class SampleActivity : AppCompatActivity() {
                         confirmText = "C",
                         emptyListTips = "E"
                     )
+                    .setItemClickListener(object : SimpleItemClickListener() {
+                        override fun onItemClick(
+                            itemAdapter: FileListAdapter,
+                            itemView: View,
+                            position: Int
+                        ) {
+                            super.onItemClick(itemAdapter, itemView, position)
+                            Toast.makeText(
+                                activity,
+                                "${itemAdapter.dataList!![position].fileName} was clicked",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    })
                     .forResult(1001)
             }
         }
 
-        companion object{
+        companion object {
             fun show(supportFragmentManager: FragmentManager?, s: String) {
                 SampleFragment().show(supportFragmentManager, s)
             }
@@ -210,8 +215,9 @@ class SampleActivity : AppCompatActivity() {
             FilePickerManager.REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
                     val list = FilePickerManager.obtainData()
-                    rv!!.adapter = SampleAdapter(layoutInflater, ArrayList(list))
-                    rv!!.layoutManager = LinearLayoutManager(this@SampleActivity)
+                    rv_main.adapter = SampleAdapter(layoutInflater, ArrayList(list))
+                    rv_main.layoutManager = LinearLayoutManager(this@SampleActivity)
+                    ns_root.scrollTo(0, ScreenUtils.getScreenHeightInPixel(this))
                 } else {
                     Toast.makeText(this@SampleActivity, "没有选择图片", Toast.LENGTH_SHORT).show()
                 }

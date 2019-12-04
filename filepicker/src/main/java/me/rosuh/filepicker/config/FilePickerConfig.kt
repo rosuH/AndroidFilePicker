@@ -19,69 +19,69 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
      * 是否显示隐藏文件，默认隐藏
      * 以符号 . 开头的文件或文件夹视为隐藏
      */
-    internal var isShowHiddenFiles = false
+    var isShowHiddenFiles = false
     /**
      * 是否显示选中框，默认显示
      */
-    internal var isShowingCheckBox = true
+    var isShowingCheckBox = true
     /**
      * 在选中时是否忽略文件夹
      */
-    internal var isSkipDir = true
+    var isSkipDir = true
     /**
      * 是否是单选
      * 如果是单选，则隐藏顶部【全选/取消全选按钮】
      */
-    internal var singleChoice = false
+    var singleChoice = false
     /**
      * 最大可被选中数量
      */
-    internal var maxSelectable = Int.MAX_VALUE
+    var maxSelectable = Int.MAX_VALUE
     /**
      * 存储类型
      */
-    internal var mediaStorageName = contextRes.getString(R.string.file_picker_tv_sd_card)
+    var mediaStorageName = contextRes.getString(R.string.file_picker_tv_sd_card)
 
     /**
      * 自定义存储类型，根据此返回根目录
      */
     @get:StorageMediaType
     @set:StorageMediaType
-    internal var mediaStorageType: String = STORAGE_EXTERNAL_STORAGE
+    var mediaStorageType: String = STORAGE_EXTERNAL_STORAGE
     /**
      * 自定义根目录路径，需要先设置 [mediaStorageType] 为 [STORAGE_CUSTOM_ROOT_PATH]
      */
-    internal var customRootPath: String = ""
+    var customRootPath: String = ""
     /**
      * 自定义过滤器
      */
-    internal var selfFilter: AbstractFileFilter? = null
+    var selfFilter: AbstractFileFilter? = null
     /**
      * 自定文件类型甄别器和默认类型甄别器
      */
-    internal var selfFileType: AbstractFileType? = null
-    internal val defaultFileType: DefaultFileType by lazy { DefaultFileType() }
+    var selfFileType: AbstractFileType? = null
+    val defaultFileType: DefaultFileType by lazy { DefaultFileType() }
     /**
      * 点击操作接口，采用默认实现
      */
-    internal var fileItemOnClickListener: FileItemOnClickListener = FileItemOnClickListenerImpl()
+    var fileItemOnClickListener: FileItemOnClickListener? = null
     /**
      * 主题
      */
-    internal var themeId: Int = R.style.FilePickerThemeRail
+    var themeId: Int = R.style.FilePickerThemeRail
     /**
      * 全选文字，取消全选文字，返回文字，已选择文字，确认按钮，选择限制提示语，空列表提示
      */
-    internal var selectAllText: String = contextRes.getString(R.string.file_picker_tv_select_all)
+    var selectAllText: String = contextRes.getString(R.string.file_picker_tv_select_all)
 
-    internal var deSelectAllText: String =
+    var deSelectAllText: String =
         contextRes.getString(R.string.file_picker_tv_deselect_all)
     @StringRes
-    internal var hadSelectedText: Int = R.string.file_picker_selected_count
-    internal var confirmText: String = contextRes.getString(R.string.file_picker_tv_select_done)
+    var hadSelectedText: Int = R.string.file_picker_selected_count
+    var confirmText: String = contextRes.getString(R.string.file_picker_tv_select_done)
     @StringRes
-    internal var maxSelectCountTips: Int = R.string.max_select_count_tips
-    internal var emptyListTips: String = contextRes.getString(R.string.empty_list_tips_file_picker)
+    var maxSelectCountTips: Int = R.string.max_select_count_tips
+    var emptyListTips: String = contextRes.getString(R.string.empty_list_tips_file_picker)
 
     fun showHiddenFiles(isShow: Boolean): FilePickerConfig {
         isShowHiddenFiles = isShow
@@ -103,11 +103,8 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
         return this
     }
 
-    fun storageType(@StorageMediaType storageMediaType: String): FilePickerConfig {
-        return storageType("", storageMediaType)
-    }
-
-    fun storageType(volumeName: String, @StorageMediaType storageMediaType: String): FilePickerConfig {
+    @JvmOverloads
+    fun storageType(volumeName: String = "", @StorageMediaType storageMediaType: String): FilePickerConfig {
         mediaStorageName = volumeName
         mediaStorageType = storageMediaType
         return this
@@ -138,6 +135,9 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
         return this
     }
 
+    /**
+     * 是否启用单选模式
+     */
     fun enableSingleChoice(): FilePickerConfig {
         this.singleChoice = true
         return this
@@ -152,7 +152,7 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
      * 多选限制提示：“您只能选择 1 个条目”[maxSelectCountTipsStrRes]
      * 空试图体视：“空空如也”[emptyListTips]
      * 注意：
-     * [hadSelectedStrRes] 和 [maxSelectCountTipsStrRes] 是 String format 限制的字符串，你需要传入 [string.xml]
+     * [hadSelectedStrRes] 和 [maxSelectCountTipsStrRes] 是 String format 限制的字符串，你需要传入 [R.string.file_picker_selected_count] 类似的
      * 中的 id，并且包含一个可传入 Int 类型参数的占位符
      *----------------------------------------------------------------------------------------------
      * Set the string of the interface, including:
@@ -163,10 +163,9 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
      * Multiple selection limit prompt: "You can only select 1 item" [maxSelectCountTipsStrRes]
      * Empty tries to look at the stereo: "empty as well" [emptyListTips]
      * Note:
-     * [hadSelectedStrRes] and [maxSelectCountTipsStrRes] are strings of String format restrictions, you need to pass in [string.xml]
+     * [hadSelectedStrRes] and [maxSelectCountTipsStrRes] are strings of String format restrictions, you need to pass some string like [R.string.file_picker_selected_count]
      * The id in * and contains a placeholder for passing in an Int type parameter
      */
-    @JvmOverloads
     fun setText(
         @NonNull selectAllString: String = contextRes.getString(R.string.file_picker_tv_select_all),
         @NonNull unSelectAllString: String = contextRes.getString(R.string.file_picker_tv_deselect_all),

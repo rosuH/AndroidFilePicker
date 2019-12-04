@@ -10,8 +10,6 @@ import java.lang.ref.WeakReference
  * @date 2018/11/22
  */
 object FilePickerManager {
-
-
     /**
      * 启动 Launcher Activity 所需的 request code
      */
@@ -19,13 +17,12 @@ object FilePickerManager {
 
     internal var contextRef: WeakReference<Activity>? = null
     internal var fragmentRef: WeakReference<Fragment>? = null
-    internal val config: FilePickerConfig by lazy {
-        FilePickerConfig(this)
-    }
+    internal lateinit var config: FilePickerConfig
 
     fun from(activity: Activity): FilePickerConfig {
         reset()
         this.contextRef = WeakReference(activity)
+        config = FilePickerConfig(this)
         return config
     }
 
@@ -41,6 +38,7 @@ object FilePickerManager {
         reset()
         this.fragmentRef = WeakReference(fragment)
         this.contextRef = WeakReference(fragment.activity!!)
+        config = FilePickerConfig(this)
         return config
     }
 

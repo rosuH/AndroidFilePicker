@@ -5,7 +5,7 @@
     <string name="file_picker_selected_count">已選取·%1$d</string>
     <string name="file_picker_request_permission_failed">未授予儲存空間權限</string>
     <string name="file_picker_tv_select_all">全選</string>
-    <string name="file_picker_tv_deselect_all">取消全選</string>
+    <string name="file_picker_tv_deselect_all">取消</string>
     <string name="file_picker_tv_select_done">確認</string>
     <string name="file_picker_tv_sd_card">SD 存儲卡</string>
     <string name="too_many_files_tips">檔案太多\n載入中&#8230;</string>

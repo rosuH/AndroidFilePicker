@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_list_file_picker"
+    android:layout_width="match_parent"
+    android:layout_height="72dp"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:paddingTop="8dp">
+
+    <TextView
+        android:id="@+id/tv_list_file_picker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_toStartOf="@id/rb_list_file_picker"
+        android:layout_toLeftOf="@id/rb_list_file_picker"
+        android:layout_toEndOf="@id/iv_icon_list_file_picker"
+        android:layout_toRightOf="@id/iv_icon_list_file_picker"
+        android:ellipsize="middle"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
+        android:textColor="@color/shrine_text_color"
+        android:textSize="16sp"
+        tools:text="SD 存储卡SD 存储卡SD" />
+
+    <ImageView
+        android:id="@+id/iv_icon_list_file_picker"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:contentDescription="File Icon" />
+
+    <RadioButton
+        android:id="@+id/rb_list_file_picker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:clickable="false"
+        android:focusable="false" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_alignParentBottom="true"
+        android:background="#EEEEEE"
+        android:orientation="horizontal" />
+</RelativeLayout>
