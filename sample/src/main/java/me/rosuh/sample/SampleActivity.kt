@@ -93,15 +93,7 @@ class SampleActivity : AppCompatActivity() {
                 .showHiddenFiles(true)
                 .forResult(FilePickerManager.REQUEST_CODE)
         }
-        // 单选文件
-        btn_single_file.setOnClickListener {
-            FilePickerManager
-                .from(this@SampleActivity)
-                .setTheme(getRandomTheme())
-                .enableSingleChoice()
-                .showCheckBox(false)
-                .forResult(FilePickerManager.REQUEST_CODE)
-        }
+
         // 单选文件夹
         btn_single_dir.setOnClickListener {
             FilePickerManager

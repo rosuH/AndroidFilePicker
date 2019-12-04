@@ -50,15 +50,6 @@
             app:layout_constraintStart_toStartOf="@+id/guideline2"
             app:layout_constraintTop_toBottomOf="@+id/tv_title_choice_mode" />
 
-        <Button
-            android:id="@+id/btn_single_file"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/single_select_file"
-            app:layout_constraintEnd_toStartOf="@+id/guideline2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_single_dir" />
 
         <Button
             android:id="@+id/btn_single_dir"
@@ -76,7 +67,7 @@
             android:layout_height="1dp"
             android:layout_marginTop="8dp"
             android:background="@android:color/darker_gray"
-            app:layout_constraintTop_toBottomOf="@+id/btn_single_file" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_single_dir" />
 
         <TextView
             android:id="@+id/tv_title_filter"
