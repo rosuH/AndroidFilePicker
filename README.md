@@ -11,6 +11,7 @@ Well, it doesn't have a name like Rocky, Cosmos or Fish. Android File Picker, li
 - Launcher in Activity or Fragment
   - Start with a single line of code
 - Browse and select all files in local storage
+  - Custom Root path to start
   - Built-in default file type and file discriminator
   - Or you can implement the file type yourself
 - Built in Single Choice mode and Multiple Choice mode.
@@ -102,7 +103,21 @@ override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) 
 
 The result is a path list of the selected file (`ArrayList<String>()`).
 
+## proguard-rules(For pre v0.5.1)
 
+```pro
+-keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
+-keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
+-keepnames class kotlinx.coroutines.android.AndroidExceptionPreHandler {}
+-keepnames class kotlinx.coroutines.android.AndroidDispatcherFactory {}
+
+-keepclassmembernames class kotlinx.** {
+    volatile <fields>;
+}
+
+```
+
+Starting with 0.5.2, we removed the coroutine library and implemented it using native threads, so there is no need to add proguard-rules.
 
 ## More and more
 
@@ -122,3 +137,4 @@ The result is a path list of the selected file (`ArrayList<String>()`).
 - [Matisse](https://github.com/zhihu/Matisse)
 - [Default Icon Author Shulk](http://iconfont.cn/collections/detail?spm=a313x.7781069.1998910419.d9df05512&cid=11271)
 - [Theme Color](https://material.io/design/material-studies/about-our-material-studies.html)
+- [Empty icon](https://github.com/rosuH/AndroidFilePicker/blob/master/filepicker/src/main/res/drawable/ic_empty_file_list_file_picker.xml) made by [freepik](https://www.freepik.com/) from www.flaticon.com

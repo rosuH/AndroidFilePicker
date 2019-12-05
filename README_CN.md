@@ -108,6 +108,21 @@ override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) 
 }
 ```
 
+## 混淆规则（0.5.1 及以前版本）
+
+```
+-keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
+-keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
+-keepnames class kotlinx.coroutines.android.AndroidExceptionPreHandler {}
+-keepnames class kotlinx.coroutines.android.AndroidDispatcherFactory {}
+
+-keepclassmembernames class kotlinx.** {
+    volatile <fields>;
+}
+
+```
+从 0.5.2 开始，我们移除掉了协程库，并使用原生线程实现，所以无需加入混淆。
+
 ### 更多示例
 
 来翻翻我写的[飞行手册](https://github.com/rosuH/AndroidFilePicker/wiki)吧？
@@ -153,4 +168,4 @@ override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) 
 - [Matisse](https://github.com/zhihu/Matisse)
 - [默认图标作者 Shulk](http://iconfont.cn/collections/detail?spm=a313x.7781069.1998910419.d9df05512&cid=11271)
 - [主题配色](https://material.io/design/material-studies/about-our-material-studies.html)
-
+- [Empty icon](https://github.com/rosuH/AndroidFilePicker/blob/master/filepicker/src/main/res/drawable/ic_empty_file_list_file_picker.xml) made by [freepik](https://www.freepik.com/) from www.flaticon.com
