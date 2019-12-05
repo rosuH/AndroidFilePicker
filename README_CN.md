@@ -8,17 +8,18 @@
 
 它没有像 Rocky，Cosmos 或是 Peppa 这样的名字。 Android File Picker 正如其名，是一个本地文件选择器框架。 他的一些特征如下所述：
 
- - 在 `Activity` 或 `Fragment` 中启动
+- 在 `Activity` 或 `Fragment` 中启动
     - 从一行代码开始
- - 浏览本地存储中的所有文件
-    - 内置默认文件类型和文件鉴别器
-    - 或者您可以自己实现文件类型
- - 自定义列表过滤器
-    - 只想显示图片（或视频，音频......）？ 没问题！
-    - 当然，您也可只显示文件夹
- - 自定义`item`点击事件：只需要实现监听器
- - 四个内置主题和自定义主题
- - 还有更多待您自己探索的特性（？）
+- 浏览本地存储中的所有文件
+  - 内置默认文件类型和文件鉴别器
+  - 或者您可以自己实现文件类型
+- 内置了单选模式和多选模式
+- 自定义列表过滤器
+  - 只想显示图片（或视频，音频......）？ 没问题！
+  - 当然，您也可只显示文件夹
+- 自定义`item`点击事件：只需要实现监听器
+- 四个内置主题和自定义主题
+- 还有更多待您自己探索的特性（？）
 
 
 
@@ -28,7 +29,7 @@
 
 
 
-# 下载使用
+## 下载使用
 
 1. 在你的项目中添加依赖
 
@@ -55,9 +56,9 @@ dependencies {
 
 
 
-# 使用
+## 使用
 
-## 权限
+### 权限
 
 此库需要两个权限：
 
@@ -66,7 +67,7 @@ dependencies {
 
 如果您没有提前授予，这个库会自动申请该权限的。
 
-## 开始使用(`Kotlin`)
+### 开始使用(`Kotlin`)
 
 简单的链式调用示意：
 
@@ -88,7 +89,7 @@ FilePickerManager.INSTANCE
 
 
 
-## 获取结果
+### 获取结果
 
 *获取结果*：`onActivityResult`接受消息，然后调用`FilePickerManager.obtainData()`获取保存的数据，**结果是所选取文件的路径列表(`ArrayList<String>()`)**
 
@@ -133,23 +134,19 @@ override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) 
    3. 可配置导航栏的文本，默认显示、多选文本、取消选择文本以及根目录默认名称
 7. 公开条目(`item`)选择监听器，可自定义条目被点击的实现
 
-### 部分源码说明
+## 其他
 
-[看这里](https://github.com/rosuH/AndroidFilePicker/wiki/%E9%83%A8%E5%88%86%E6%BA%90%E7%A0%81%E8%AF%B4%E6%98%8E)。
+- [部分源码说明](https://github.com/rosuH/AndroidFilePicker/wiki/%E9%83%A8%E5%88%86%E6%BA%90%E7%A0%81%E8%AF%B4%E6%98%8E)。
 
-# Log
+- [更新日志](https://github.com/rosuH/AndroidFilePicker/wiki/Change-Log)
 
-[Update Log](https://github.com/rosuH/AndroidFilePicker/wiki/%E6%9B%B4%E6%96%B0%E6%97%A5%E5%BF%97)
-
-# TODO
-
-[TODO](https://github.com/rosuH/AndroidFilePicker/wiki/TODO)
+- [TODO](https://github.com/rosuH/AndroidFilePicker/wiki/TODO)
 
 
 
 ---
 
-# Special Thanks To:
+## Special Thanks To:
 
 - [*1 @whichName](https://github.com/whichname)
 - [BRVAH](https://github.com/CymChad/BaseRecyclerViewAdapterHelper)
