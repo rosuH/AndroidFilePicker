@@ -26,7 +26,7 @@ class AudioFileType : FileType {
         }
         val suffix = fileName.substring(fileName.lastIndexOf(".")  + 1)
         return when (suffix){
-            "aif", "iff", "m3u", "m4a", "mid", "mp3", "mpa", "wav", "wma" -> {
+            "aif", "iff", "m3u", "m4a", "mid", "mp3", "mpa", "wav", "wma", "ogg", "flac", "ape", "alac" -> {
                 true
             }
             else -> {
