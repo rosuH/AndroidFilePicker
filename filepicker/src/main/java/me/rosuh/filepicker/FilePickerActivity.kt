@@ -72,14 +72,17 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
      * 文件列表适配器
      */
     private var listAdapter: FileListAdapter? = null
+
     /**
      * 导航栏列表适配器
      */
     private var navAdapter: FileNavAdapter? = null
+
     /**
      * 导航栏数据集
      */
     private var navDataSource = ArrayList<FileNavBeanImpl>()
+
     /**
      * 文件夹为空时展示的空视图
      */

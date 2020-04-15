@@ -1,14 +1,21 @@
 package me.rosuh.filepicker.adapter
 
+import android.net.Uri
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.CheckBox
+import android.widget.ImageView
+import android.widget.RadioButton
+import android.widget.TextView
 import me.rosuh.filepicker.FilePickerActivity
 import me.rosuh.filepicker.R
 import me.rosuh.filepicker.bean.FileItemBeanImpl
-import me.rosuh.filepicker.config.FilePickerManager.config as config
+import me.rosuh.filepicker.config.FilePickerManager.config
+import me.rosuh.filepicker.engine.ImageLoadController
+import me.rosuh.filepicker.filetype.RasterImageFileType
+import me.rosuh.filepicker.filetype.VideoFileType
 import java.io.File
 
 /**
@@ -18,7 +25,7 @@ import java.io.File
  * 文件列表适配器类
  */
 class FileListAdapter(
-    private val activity: FilePickerActivity,
+    private val context: FilePickerActivity,
     var dataList: ArrayList<FileItemBeanImpl>?,
     private var isSingleChoice: Boolean = config.singleChoice
 ) : BaseAdapter() {
@@ -32,7 +39,7 @@ class FileListAdapter(
         return when (isSingleChoice) {
             true -> {
                 FileListItemSingleChoiceHolder(
-                    LayoutInflater.from(activity).inflate(
+                    LayoutInflater.from(context).inflate(
                         R.layout.item_single_choise_list_file_picker,
                         parent,
                         false
@@ -41,7 +48,7 @@ class FileListAdapter(
             }
             else -> {
                 FileListItemHolder(
-                    LayoutInflater.from(activity).inflate(
+                    LayoutInflater.from(context).inflate(
                         R.layout.item_list_file_picker,
                         parent,
                         false
@@ -242,7 +249,27 @@ class FileListAdapter(
             }
 
             val resId: Int = itemImpl.fileType?.fileIconResId ?: R.drawable.ic_unknown_file_picker
-            mIcon.setImageResource(resId)
+            when (itemImpl.fileType) {
+                is RasterImageFileType -> {
+                    ImageLoadController.load(
+                        context,
+                        mIcon,
+                        Uri.fromFile(File(itemImpl.filePath)),
+                        resId
+                    )
+                }
+                is VideoFileType -> {
+                    ImageLoadController.load(
+                        context,
+                        mIcon,
+                        Uri.fromFile(File(itemImpl.filePath)),
+                        resId
+                    )
+                }
+                else -> {
+                    mIcon.setImageResource(resId)
+                }
+            }
         }
 
     }
@@ -278,7 +305,27 @@ class FileListAdapter(
             }
 
             val resId: Int = itemImpl.fileType?.fileIconResId ?: R.drawable.ic_unknown_file_picker
-            mIcon.setImageResource(resId)
+            when (itemImpl.fileType) {
+                is RasterImageFileType -> {
+                    ImageLoadController.load(
+                        context,
+                        mIcon,
+                        Uri.fromFile(File(itemImpl.filePath)),
+                        resId
+                    )
+                }
+                is VideoFileType -> {
+                    ImageLoadController.load(
+                        context,
+                        mIcon,
+                        Uri.fromFile(File(itemImpl.filePath)),
+                        resId
+                    )
+                }
+                else -> {
+                    mIcon.setImageResource(resId)
+                }
+            }
         }
 
     }
