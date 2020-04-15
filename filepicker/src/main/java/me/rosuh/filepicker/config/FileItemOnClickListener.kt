@@ -13,15 +13,18 @@ interface FileItemOnClickListener {
     fun onItemClick(
         itemAdapter: FileListAdapter,
         itemView: View,
-        position: Int)
+        position: Int
+    )
 
     fun onItemChildClick(
         itemAdapter: FileListAdapter,
         itemView: View,
-        position: Int)
+        position: Int
+    )
 
     fun onItemLongClick(
         itemAdapter: FileListAdapter,
         itemView: View,
-        position: Int)
+        position: Int
+    )
 }

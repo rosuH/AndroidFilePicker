@@ -14,7 +14,12 @@ class PosLinearLayoutManager : LinearLayoutManager {
         reverseLayout
     )
 
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(
+    constructor(
+        context: Context?,
+        attrs: AttributeSet?,
+        defStyleAttr: Int,
+        defStyleRes: Int
+    ) : super(
         context,
         attrs,
         defStyleAttr,
@@ -26,7 +31,7 @@ class PosLinearLayoutManager : LinearLayoutManager {
     private var pendingPosOffset = -1
 
     override fun onLayoutChildren(recycler: RecyclerView.Recycler?, state: RecyclerView.State?) {
-        if (pendingTargetPos != -1 && state?.itemCount?:0 > 0){
+        if (pendingTargetPos != -1 && state?.itemCount ?: 0 > 0) {
             scrollToPositionWithOffset(pendingTargetPos, pendingPosOffset)
             pendingPosOffset = -1
             pendingTargetPos = -1
@@ -40,7 +45,7 @@ class PosLinearLayoutManager : LinearLayoutManager {
         super.onRestoreInstanceState(state)
     }
 
-    fun setTargetPos(pos:Int, offset:Int){
+    fun setTargetPos(pos: Int, offset: Int) {
         pendingTargetPos = pos
         pendingPosOffset = offset
     }

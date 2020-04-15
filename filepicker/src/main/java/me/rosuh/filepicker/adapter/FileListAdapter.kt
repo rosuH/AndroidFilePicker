@@ -99,7 +99,6 @@ class FileListAdapter(
         }
     }
 
-
     override fun getItem(position: Int): FileItemBeanImpl? {
         if (position >= 0 &&
             position < dataList!!.size &&
@@ -141,14 +140,12 @@ class FileListAdapter(
         }
     }
 
-
     fun multipleDisCheck(position: Int) {
         getItem(position)?.let {
             it.setCheck(false)
             notifyItemChanged(position, false)
         }
     }
-
 
     fun singleCheck(position: Int) {
         when (latestChoicePos) {
@@ -231,7 +228,6 @@ class FileListAdapter(
         private var mItemBeanImpl: FileItemBeanImpl? = null
         private var mPosition: Int? = null
 
-
         override fun bind(itemImpl: FileItemBeanImpl, position: Int) {
             mItemBeanImpl = itemImpl
             mPosition = position
@@ -271,7 +267,6 @@ class FileListAdapter(
                 }
             }
         }
-
     }
 
     /**
@@ -291,7 +286,6 @@ class FileListAdapter(
         override fun bind(itemImpl: FileItemBeanImpl, position: Int) {
             mItemBeanImpl = itemImpl
             mPosition = position
-
             mTvFileName.text = itemImpl.fileName
             mCbItem.isChecked = itemImpl.isChecked()
             mCbItem.visibility = View.VISIBLE
@@ -327,11 +321,9 @@ class FileListAdapter(
                 }
             }
         }
-
     }
 
     /*--------------------------ViewHolder End------------------------------*/
-
     companion object {
         const val DEFAULT_FILE_TYPE = 10001
     }

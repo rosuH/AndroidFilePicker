@@ -24,7 +24,7 @@ class FileUtils {
          * 根据配置参数获取根目录文件
          * @return File
          */
-        fun getRootFile():File {
+        fun getRootFile(): File {
             return when (FilePickerManager.config.mediaStorageType) {
                 STORAGE_EXTERNAL_STORAGE -> {
                     File(Environment.getExternalStorageDirectory().absoluteFile.toURI())
@@ -45,16 +45,37 @@ class FileUtils {
         /**
          * 获取给定文件对象[rootFile]下的所有文件，生成列表项对象
          */
-        fun produceListDataSource(rootFile: File, beanSubscriber: BeanSubscriber):ArrayList<FileItemBeanImpl>{
+        fun produceListDataSource(
+            rootFile: File,
+            beanSubscriber: BeanSubscriber
+        ): ArrayList<FileItemBeanImpl> {
             val listData: ArrayList<FileItemBeanImpl> = ArrayList()
             for (file in rootFile.listFiles()) {
                 //以符号 . 开头的视为隐藏文件或隐藏文件夹，后面进行过滤
                 val isHiddenFile = file.name.startsWith(".")
                 if (file.isDirectory) {
-                    listData.add(FileItemBeanImpl(file.name, file.path, false, null, true, isHiddenFile, beanSubscriber))
+                    listData.add(
+                        FileItemBeanImpl(
+                            file.name,
+                            file.path,
+                            false,
+                            null,
+                            true,
+                            isHiddenFile,
+                            beanSubscriber
+                        )
+                    )
                     continue
                 }
-                val itemBean = FileItemBeanImpl(file.name, file.path, false, null, false, isHiddenFile, beanSubscriber)
+                val itemBean = FileItemBeanImpl(
+                    file.name,
+                    file.path,
+                    false,
+                    null,
+                    false,
+                    isHiddenFile,
+                    beanSubscriber
+                )
                 // 如果调用者没有实现文件类型甄别器，则使用的默认甄别器
                 FilePickerManager.config.selfFileType?.fillFileType(itemBean)
                     ?: FilePickerManager.config.defaultFileType.fillFileType(itemBean)
@@ -64,7 +85,7 @@ class FileUtils {
                 // 隐藏文件处理
                 this.hideFiles<FileItemBeanImpl>(!FilePickerManager.config.isShowHiddenFiles)
                 // 排序
-                this.sortWith(compareBy({!it.isDir}, {it.fileName.toUpperCase()}))
+                this.sortWith(compareBy({ !it.isDir }, { it.fileName.toUpperCase() }))
             }
             // 将当前列表数据暴露，以供调用者自己处理数据
             return FilePickerManager.config.selfFilter?.doFilter(listData) ?: listData
@@ -113,7 +134,12 @@ class FileUtils {
                 // 将列表截取至目标路径元素
                 val isBackToAbove = nextPath == data.dirPath
                 if (isBackToAbove) {
-                    return ArrayList(currentDataSource.subList(0, currentDataSource.indexOf(data) + 1))
+                    return ArrayList(
+                        currentDataSource.subList(
+                            0,
+                            currentDataSource.indexOf(data) + 1
+                        )
+                    )
                 }
             }
             // 循环到此，意味着将是进入子目录

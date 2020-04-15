@@ -25,7 +25,7 @@ class DataFileType : FileType {
             // 如果没有 . 符号，即是没有文件后缀
             return false
         }
-        val suffix = fileName.substring(fileName.lastIndexOf(".")  + 1)
+        val suffix = fileName.substring(fileName.lastIndexOf(".") + 1)
         return when (suffix) {
             "csv", "dat", "ged", "key", "keychain", "pps",
             "ppt", "pptx", "sdf", "tar", "tax2016", "tax2017",

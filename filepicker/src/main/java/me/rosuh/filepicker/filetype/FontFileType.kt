@@ -21,12 +21,12 @@ class FontFileType : FileType {
          * 比如 文件名仅为：example_png
          */
         val isHasSuffix = fileName.contains(".")
-        if (!isHasSuffix){
+        if (!isHasSuffix) {
             // 如果没有 . 符号，即是没有文件后缀
             return false
         }
-        val suffix = fileName.substring(fileName.lastIndexOf(".")  + 1)
-        return when (suffix){
+        val suffix = fileName.substring(fileName.lastIndexOf(".") + 1)
+        return when (suffix) {
             "fnt", "fon", "otf", "ttf" -> {
                 true
             }
