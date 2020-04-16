@@ -10,6 +10,11 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 
+/**
+ * @author rosu
+ * @date 2020-04-15
+ * An [ImageEngine] implementation by using Glide
+ */
 class GlideEngine : ImageEngine {
     override fun loadImage(context: Context?, imageView: ImageView?, uri: Uri?, placeholder: Int) {
         if (context == null || imageView == null) {

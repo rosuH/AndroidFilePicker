@@ -24,20 +24,32 @@ class RecyclerViewListener(
 ) :
     RecyclerView.OnItemTouchListener {
 
+    /**
+     * Custom item click listener, receive item event and redispatch
+     */
     interface OnItemClickListener {
 
+        /**
+         * Item click
+         */
         fun onItemClick(
             adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
             view: View,
             position: Int
         )
 
+        /**
+         * Item long click
+         */
         fun onItemLongClick(
             adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
             view: View,
             position: Int
         )
 
+        /**
+         * Item child click
+         */
         fun onItemChildClick(
             adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
             view: View,
