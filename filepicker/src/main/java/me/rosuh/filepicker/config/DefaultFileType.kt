@@ -8,9 +8,9 @@ import me.rosuh.filepicker.filetype.*
  * @author rosu
  * @date 2018/11/27
  */
-class DefaultFileType: AbstractFileType(){
+class DefaultFileType : AbstractFileType() {
 
-    private val allDefaultFileType:ArrayList<FileType> by lazy {
+    private val allDefaultFileType: ArrayList<FileType> by lazy {
         val fileTypes = ArrayList<FileType>()
         fileTypes.add(AudioFileType())
         fileTypes.add(RasterImageFileType())
@@ -26,8 +26,8 @@ class DefaultFileType: AbstractFileType(){
     }
 
     override fun fillFileType(itemBeanImpl: FileItemBeanImpl): FileItemBeanImpl {
-        for (type in allDefaultFileType){
-            if (type.verify(itemBeanImpl.fileName)){
+        for (type in allDefaultFileType) {
+            if (type.verify(itemBeanImpl.fileName)) {
                 itemBeanImpl.fileType = type
                 break
             }

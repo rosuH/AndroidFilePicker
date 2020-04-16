@@ -47,7 +47,7 @@ object FilePickerManager {
     /**
      * 保存数据@param list List<String>到本类中
      */
-    fun saveData(list: List<String>) {
+    internal fun saveData(list: List<String>) {
         dataList = list
     }
 

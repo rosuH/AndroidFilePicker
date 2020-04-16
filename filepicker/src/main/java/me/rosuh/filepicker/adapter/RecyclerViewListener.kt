@@ -17,20 +17,47 @@ import me.rosuh.filepicker.utils.ScreenUtils
  * OnItemTouchListener 无法轻易实现对子控件点击事件的监听
  *
  */
-class RecyclerViewListener(val activity: Activity, val recyclerView: RecyclerView, val itemClickListener: OnItemClickListener) :
-    RecyclerView.OnItemTouchListener{
+class RecyclerViewListener(
+    val activity: Activity,
+    val recyclerView: RecyclerView,
+    val itemClickListener: OnItemClickListener
+) :
+    RecyclerView.OnItemTouchListener {
 
+    /**
+     * Custom item click listener, receive item event and redispatch
+     */
     interface OnItemClickListener {
 
-        fun onItemClick(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>, view: View, position: Int)
+        /**
+         * Item click
+         */
+        fun onItemClick(
+            adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
+            view: View,
+            position: Int
+        )
 
-        fun onItemLongClick(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>, view: View, position: Int)
+        /**
+         * Item long click
+         */
+        fun onItemLongClick(
+            adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
+            view: View,
+            position: Int
+        )
 
-        fun onItemChildClick(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>, view: View, position: Int)
+        /**
+         * Item child click
+         */
+        fun onItemChildClick(
+            adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
+            view: View,
+            position: Int
+        )
     }
 
-
-    private var gestureDetectorCompat:GestureDetectorCompat =
+    private var gestureDetectorCompat: GestureDetectorCompat =
         GestureDetectorCompat(recyclerView.context, ItemTouchHelperGestureListener())
 
     override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {
@@ -47,22 +74,33 @@ class RecyclerViewListener(val activity: Activity, val recyclerView: RecyclerVie
     private val iconRight = screenWidth * 0.1370
     private val checkBoxLeft = screenWidth * (1 - 0.1370)
 
-
-    inner class ItemTouchHelperGestureListener:GestureDetector.SimpleOnGestureListener() {
+    inner class ItemTouchHelperGestureListener : GestureDetector.SimpleOnGestureListener() {
         override fun onSingleTapUp(e: MotionEvent?): Boolean {
             val childView = recyclerView.findChildViewUnder(e!!.x, e.y)
-            childView?:return false
-            when(childView.id){
+            childView ?: return false
+            when (childView.id) {
                 R.id.item_list_file_picker -> {
                     // 点击在 icon 上或者点击在 checkbox 上
-                    if (e.x <= iconRight || e.x >= checkBoxLeft){
-                        itemClickListener.onItemChildClick(recyclerView.adapter!!, childView, recyclerView.getChildLayoutPosition(childView))
+                    if (e.x <= iconRight || e.x >= checkBoxLeft) {
+                        itemClickListener.onItemChildClick(
+                            recyclerView.adapter!!,
+                            childView,
+                            recyclerView.getChildLayoutPosition(childView)
+                        )
                         return true
                     }
-                    itemClickListener.onItemClick(recyclerView.adapter!!, childView, recyclerView.getChildLayoutPosition(childView))
+                    itemClickListener.onItemClick(
+                        recyclerView.adapter!!,
+                        childView,
+                        recyclerView.getChildLayoutPosition(childView)
+                    )
                 }
                 R.id.item_nav_file_picker -> {
-                    itemClickListener.onItemClick(recyclerView.adapter!!, childView, recyclerView.getChildLayoutPosition(childView))
+                    itemClickListener.onItemClick(
+                        recyclerView.adapter!!,
+                        childView,
+                        recyclerView.getChildLayoutPosition(childView)
+                    )
                 }
             }
             return true
@@ -70,10 +108,14 @@ class RecyclerViewListener(val activity: Activity, val recyclerView: RecyclerVie
 
         override fun onLongPress(e: MotionEvent?) {
             val childView = recyclerView.findChildViewUnder(e!!.x, e.y)
-            childView?:return
-            when(childView.id){
+            childView ?: return
+            when (childView.id) {
                 R.id.item_list_file_picker -> {
-                    itemClickListener.onItemLongClick(recyclerView.adapter!!, childView, recyclerView.getChildLayoutPosition(childView))
+                    itemClickListener.onItemLongClick(
+                        recyclerView.adapter!!,
+                        childView,
+                        recyclerView.getChildLayoutPosition(childView)
+                    )
                 }
             }
         }

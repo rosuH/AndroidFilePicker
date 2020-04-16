@@ -18,20 +18,20 @@ import me.rosuh.filepicker.filetype.FileType
  * @constructor
  */
 class FileItemBeanImpl(
-    override var fileName:String,
-    override var filePath:String,
-    private var isChecked:Boolean,
+    override var fileName: String,
+    override var filePath: String,
+    private var isChecked: Boolean,
     var fileType: FileType?,
-    var isDir:Boolean,
-    var isHide:Boolean,
+    var isDir: Boolean,
+    var isHide: Boolean,
     override var beanSubscriber: BeanSubscriber
-): FileBean{
+) : FileBean {
 
-    fun isChecked():Boolean{
+    fun isChecked(): Boolean {
         return isChecked
     }
 
-    fun setCheck(check:Boolean){
+    fun setCheck(check: Boolean) {
         isChecked = check
         beanSubscriber.updateItemUI(check)
     }

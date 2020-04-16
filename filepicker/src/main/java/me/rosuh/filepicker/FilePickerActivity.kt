@@ -72,14 +72,17 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
      * 文件列表适配器
      */
     private var listAdapter: FileListAdapter? = null
+
     /**
      * 导航栏列表适配器
      */
     private var navAdapter: FileNavAdapter? = null
+
     /**
      * 导航栏数据集
      */
     private var navDataSource = ArrayList<FileNavBeanImpl>()
+
     /**
      * 文件夹为空时展示的空视图
      */
@@ -88,7 +91,6 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
     private val pickerConfig by lazy { FilePickerManager.config }
     private val fileListListener: RecyclerViewListener by lazy { getListener(rv_list_file_picker) }
     private val navListener: RecyclerViewListener by lazy { getListener(rv_nav_file_picker) }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(pickerConfig.themeId)
@@ -184,7 +186,6 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
                     addRule(RelativeLayout.CENTER_VERTICAL)
                     setMargins(0, 0, ScreenUtils.dipToPx(this@FilePickerActivity, 16f), 0)
                 }
-
             }
             setOnClickListener(this@FilePickerActivity)
             FilePickerManager.config.confirmText.let {
@@ -237,7 +238,6 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
             )
         }
     }
-
 
     private fun initRv(
         listData: ArrayList<FileItemBeanImpl>?,
@@ -424,7 +424,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
      * 从导航栏中调用本方法，需要传入 pos，以便生产新的 nav adapter
      */
     private fun enterDirAndUpdateUI(fileBean: FileBean) {
-        //清除当前选中状态
+        // 清除当前选中状态
         cleanStatus()
 
         // 获取文件夹文件
@@ -468,7 +468,6 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
             scheduleLayoutAnimation()
         }
     }
-
 
     private fun switchButton(isEnable: Boolean) {
         btn_confirm_file_picker?.isEnabled = isEnable
