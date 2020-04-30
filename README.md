@@ -48,6 +48,7 @@ dependencies {
     implementation 'me.rosuh:AndroidFilePicker:$latest_version'
 }
 ```
+This lib now support AndroidX, check the version below.
 
 Check out [releases page](https://github.com/rosuH/AndroidFilePicker/releases) to see more versions.
 
@@ -119,7 +120,7 @@ The result is a path list of the selected file (`ArrayList<String>()`).
 
 Starting with 0.5.2, we removed the coroutine library and implemented it using native threads, so there is no need to add proguard-rules.
 
-## More and more
+## Docs
 
 - [Source Code Explanation](https://github.com/rosuH/AndroidFilePicker/wiki/4.-%E7%A4%BA%E4%BE%8B%E5%8F%8A%E8%A7%A3%E9%87%8A).
 
