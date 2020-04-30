@@ -3,16 +3,12 @@ package me.rosuh.sample
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
-import android.support.v4.app.FragmentManager
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.demo_activity_main.*
 import me.rosuh.filepicker.adapter.FileListAdapter
 import me.rosuh.filepicker.bean.FileItemBeanImpl
@@ -163,7 +159,7 @@ class SampleActivity : AppCompatActivity() {
         }
     }
 
-    class SampleFragment : DialogFragment() {
+    class SampleFragment : androidx.fragment.app.DialogFragment() {
 
         override fun onCreateView(
             inflater: LayoutInflater,
@@ -203,20 +199,22 @@ class SampleActivity : AppCompatActivity() {
         }
 
         companion object {
-            fun show(supportFragmentManager: FragmentManager?, s: String) {
-                SampleFragment().show(supportFragmentManager, s)
+            fun show(supportFragmentManager: androidx.fragment.app.FragmentManager?, s: String) {
+                supportFragmentManager?.let { SampleFragment().show(it, s) }
             }
 
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             FilePickerManager.REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
                     val list = FilePickerManager.obtainData()
                     rv_main.adapter = SampleAdapter(layoutInflater, ArrayList(list))
-                    rv_main.layoutManager = LinearLayoutManager(this@SampleActivity)
+                    rv_main.layoutManager =
+                        androidx.recyclerview.widget.LinearLayoutManager(this@SampleActivity)
                     ns_root.scrollTo(0, ScreenUtils.getScreenHeightInPixel(this))
                 } else {
                     Toast.makeText(this@SampleActivity, "没有选择图片", Toast.LENGTH_SHORT).show()
