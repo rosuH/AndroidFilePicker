@@ -33,6 +33,10 @@ import me.rosuh.filepicker.utils.FileUtils
 import me.rosuh.filepicker.utils.ScreenUtils
 import me.rosuh.filepicker.widget.PosLinearLayoutManager
 import java.io.File
+import java.util.concurrent.BlockingQueue
+import java.util.concurrent.LinkedBlockingQueue
+import java.util.concurrent.ThreadPoolExecutor
+import java.util.concurrent.TimeUnit
 
 @SuppressLint("ShowToast")
 class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
@@ -41,7 +45,28 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
 
     private var mainHandler = Handler(Looper.getMainLooper())
 
-    private var loadFileThread: Thread? = null
+    private val loadingFileWorkerQueue: BlockingQueue<Runnable> = LinkedBlockingQueue()
+
+    // Creates a thread pool manager
+    private var loadingThreadPool: ThreadPoolExecutor = ThreadPoolExecutor(
+        1,       // Initial pool size
+        1,       // Max pool size
+        KEEP_ALIVE_TIME,
+        TimeUnit.SECONDS,
+        loadingFileWorkerQueue
+    )
+        get() {
+            if (field.isShutdown) {
+                field = ThreadPoolExecutor(
+                    1,
+                    1,
+                    KEEP_ALIVE_TIME,
+                    TimeUnit.SECONDS,
+                    loadingFileWorkerQueue
+                )
+            }
+            return field
+        }
 
     private val loadFileRunnable: Runnable by lazy {
         Runnable {
@@ -107,8 +132,8 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
 
     override fun onDestroy() {
         super.onDestroy()
-        if (loadFileThread?.isAlive == true) {
-            loadFileThread?.interrupt()
+        if (!loadingThreadPool.isShutdown){
+            loadingThreadPool.shutdown()
         }
     }
 
@@ -201,11 +226,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
     }
 
     private fun loadList() {
-        if (loadFileThread?.isAlive == true) {
-            loadFileThread?.interrupt()
-        }
-        loadFileThread = Thread(loadFileRunnable)
-        loadFileThread?.start()
+        loadingThreadPool.submit(loadFileRunnable)
     }
 
     private fun setLoadingFinish() {
@@ -564,5 +585,8 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
 
     companion object {
         private const val FILE_PICKER_PERMISSION_REQUEST_CODE = 10201
+
+        // Sets the amount of time an idle thread waits before terminating
+        private const val KEEP_ALIVE_TIME = 10L
     }
 }
