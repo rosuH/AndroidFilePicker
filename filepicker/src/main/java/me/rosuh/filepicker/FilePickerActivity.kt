@@ -121,10 +121,11 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
         setTheme(pickerConfig.themeId)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity_for_file_picker)
+        initView()
         // 核验权限
         // checking permission
         if (isPermissionGrated()) {
-            prepareLauncher()
+            loadList()
         } else {
             requestPermission()
         }
@@ -166,24 +167,12 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
                         getString(string.file_picker_request_permission_failed),
                         Toast.LENGTH_SHORT
                     ).show()
+                    setLoadingFinish()
                 } else {
-                    prepareLauncher()
+                    loadList()
                 }
             }
         }
-    }
-
-    /**
-     * 在做完权限申请之后开始的真正的工作
-     */
-    private fun prepareLauncher() {
-        if (Environment.getExternalStorageState() != MEDIA_MOUNTED) {
-            throw Throwable(cause = IllegalStateException("External storage is not available ====>>> Environment.getExternalStorageState() != MEDIA_MOUNTED"))
-        }
-        initView()
-        // 加载中布局
-        initLoadingView()
-        loadList()
     }
 
     private fun initView() {
@@ -203,6 +192,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
         btn_confirm_file_picker.apply {
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
                 // 小于 4.4 的样式兼容
+                // compatible with 4.4 api
                 layoutParams = RelativeLayout.LayoutParams(
                     RelativeLayout.LayoutParams.WRAP_CONTENT,
                     RelativeLayout.LayoutParams.WRAP_CONTENT
@@ -223,17 +213,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
         } else {
             View.VISIBLE
         }
-    }
 
-    private fun loadList() {
-        loadingThreadPool.submit(loadFileRunnable)
-    }
-
-    private fun setLoadingFinish() {
-        swipe_refresh_layout?.isRefreshing = false
-    }
-
-    private fun initLoadingView() {
         swipe_refresh_layout?.apply {
             setOnRefreshListener {
                 loadList()
@@ -258,6 +238,17 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
                 )
             )
         }
+    }
+
+    private fun loadList() {
+        if (!isPermissionGrated()){
+            requestPermission()
+            return
+        }
+        if (Environment.getExternalStorageState() != MEDIA_MOUNTED) {
+            throw Throwable(cause = IllegalStateException("External storage is not available ====>>> Environment.getExternalStorageState() != MEDIA_MOUNTED"))
+        }
+        loadingThreadPool.submit(loadFileRunnable)
     }
 
     private fun initRv(
@@ -290,6 +281,10 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
             removeOnItemTouchListener(fileListListener)
             addOnItemTouchListener(fileListListener)
         }
+    }
+
+    private fun setLoadingFinish() {
+        swipe_refresh_layout?.isRefreshing = false
     }
 
     /**
@@ -564,21 +559,9 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
                 finish()
             }
             R.id.btn_go_back_file_picker -> {
-                finish()
+                onBackPressed()
             }
         }
-    }
-
-    private fun getAvailableCount(): Long {
-        var count: Long = 0
-        for (item in listAdapter!!.dataList!!) {
-            val file = File(item.filePath)
-            if (pickerConfig.isSkipDir && file.exists() && file.isDirectory) {
-                continue
-            }
-            count++
-        }
-        return count
     }
 
     private fun isCanSelect() = selectedCount < maxSelectable
