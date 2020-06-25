@@ -52,7 +52,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
         1,       // Initial pool size
         1,       // Max pool size
         KEEP_ALIVE_TIME,
-        TimeUnit.SECONDS,
+        TimeUnit.MINUTES,
         loadingFileWorkerQueue
     )
         get() {
@@ -61,7 +61,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
                     1,
                     1,
                     KEEP_ALIVE_TIME,
-                    TimeUnit.SECONDS,
+                    TimeUnit.MINUTES,
                     loadingFileWorkerQueue
                 )
             }
