@@ -19,69 +19,98 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
      * 是否显示隐藏文件，默认隐藏
      * 以符号 . 开头的文件或文件夹视为隐藏
      */
-    internal var isShowHiddenFiles = false
+    var isShowHiddenFiles = false
+        private set
+
     /**
      * 是否显示选中框，默认显示
      */
-    internal var isShowingCheckBox = true
+    var isShowingCheckBox = true
+        private set
+
     /**
      * 在选中时是否忽略文件夹
      */
-    internal var isSkipDir = true
+    var isSkipDir = true
+        private set
+
     /**
      * 是否是单选
      * 如果是单选，则隐藏顶部【全选/取消全选按钮】
      */
-    internal var singleChoice = false
+    var singleChoice = false
+        private set
+
     /**
      * 最大可被选中数量
      */
-    internal var maxSelectable = Int.MAX_VALUE
+    var maxSelectable = Int.MAX_VALUE
+        private set
+
     /**
      * 存储类型
      */
-    internal var mediaStorageName = contextRes.getString(R.string.file_picker_tv_sd_card)
+    var mediaStorageName = contextRes.getString(R.string.file_picker_tv_sd_card)
+        private set
 
     /**
      * 自定义存储类型，根据此返回根目录
      */
     @get:StorageMediaType
     @set:StorageMediaType
-    internal var mediaStorageType: String = STORAGE_EXTERNAL_STORAGE
+    var mediaStorageType: String = STORAGE_EXTERNAL_STORAGE
+        private set
+
     /**
      * 自定义根目录路径，需要先设置 [mediaStorageType] 为 [STORAGE_CUSTOM_ROOT_PATH]
      */
-    internal var customRootPath: String = ""
+    var customRootPath: String = ""
+        private set
+
     /**
      * 自定义过滤器
      */
-    internal var selfFilter: AbstractFileFilter? = null
+    var selfFilter: AbstractFileFilter? = null
+        private set
+
     /**
      * 自定文件类型甄别器和默认类型甄别器
      */
-    internal var selfFileType: AbstractFileType? = null
-    internal val defaultFileType: DefaultFileType by lazy { DefaultFileType() }
+    var customDetector: AbstractFileDetector? = null
+        private set
+    val defaultFileDetector: DefaultFileDetector by lazy { DefaultFileDetector() }
+
     /**
      * 点击操作接口，采用默认实现
      */
-    internal var fileItemOnClickListener: FileItemOnClickListener? = null
+    var fileItemOnClickListener: FileItemOnClickListener? = null
+        private set
+
     /**
      * 主题
      */
-    internal var themeId: Int = R.style.FilePickerThemeRail
+    var themeId: Int = R.style.FilePickerThemeRail
+        private set
+
     /**
      * 全选文字，取消全选文字，返回文字，已选择文字，确认按钮，选择限制提示语，空列表提示
      */
-    internal var selectAllText: String = contextRes.getString(R.string.file_picker_tv_select_all)
+    var selectAllText: String = contextRes.getString(R.string.file_picker_tv_select_all)
+        private set
+    var deSelectAllText: String = contextRes.getString(R.string.file_picker_tv_deselect_all)
+        private set
 
-    internal var deSelectAllText: String =
-        contextRes.getString(R.string.file_picker_tv_deselect_all)
     @StringRes
-    internal var hadSelectedText: Int = R.string.file_picker_selected_count
-    internal var confirmText: String = contextRes.getString(R.string.file_picker_tv_select_done)
+    var hadSelectedText: Int = R.string.file_picker_selected_count
+        private set
+    var confirmText: String = contextRes.getString(R.string.file_picker_tv_select_done)
+        private set
+
     @StringRes
-    internal var maxSelectCountTips: Int = R.string.max_select_count_tips
-    internal var emptyListTips: String = contextRes.getString(R.string.empty_list_tips_file_picker)
+    var maxSelectCountTips: Int = R.string.max_select_count_tips
+        private set
+    var emptyListTips: String = contextRes.getString(R.string.empty_list_tips_file_picker)
+        private set
 
     fun showHiddenFiles(isShow: Boolean): FilePickerConfig {
         isShowHiddenFiles = isShow
@@ -120,8 +149,12 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
         return this
     }
 
-    fun fileType(fileType: AbstractFileType): FilePickerConfig {
-        selfFileType = fileType
+    /**
+     * 实现 [AbstractFileDetector] 以自定义您自己的文件类型检测器
+     * Custom your file detector by implementing [AbstractFileDetector]
+     */
+    fun customDetector(detector: AbstractFileDetector): FilePickerConfig {
+        customDetector = detector
         return this
     }
 

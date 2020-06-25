@@ -77,8 +77,8 @@ class FileUtils {
                     beanSubscriber
                 )
                 // 如果调用者没有实现文件类型甄别器，则使用的默认甄别器
-                FilePickerManager.config.selfFileType?.fillFileType(itemBean)
-                    ?: FilePickerManager.config.defaultFileType.fillFileType(itemBean)
+                FilePickerManager.config.customDetector?.fillFileType(itemBean)
+                    ?: FilePickerManager.config.defaultFileDetector.fillFileType(itemBean)
                 listData.add(itemBean)
             }
             listData.run {
