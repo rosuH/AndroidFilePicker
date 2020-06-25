@@ -216,6 +216,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
 
         swipe_refresh_layout?.apply {
             setOnRefreshListener {
+                resetViewState()
                 loadList()
             }
             isRefreshing = true
@@ -441,7 +442,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
      */
     private fun enterDirAndUpdateUI(fileBean: FileBean) {
         // 清除当前选中状态
-        cleanStatus()
+        resetViewState()
 
         // 获取文件夹文件
         val nextFiles = File(fileBean.filePath)
@@ -490,7 +491,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
         btn_selected_all_file_picker?.isEnabled = isEnable
     }
 
-    private fun cleanStatus() {
+    private fun resetViewState() {
         selectedCount = 1
         updateItemUI(false)
     }
