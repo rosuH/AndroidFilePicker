@@ -7,7 +7,6 @@ import android.support.v4.app.DialogFragment
 import android.support.v4.app.FragmentManager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,10 +15,8 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.demo_activity_main.*
 import me.rosuh.filepicker.adapter.FileListAdapter
 import me.rosuh.filepicker.bean.FileItemBeanImpl
-import me.rosuh.filepicker.config.AbstractFileFilter
-import me.rosuh.filepicker.config.FilePickerConfig
-import me.rosuh.filepicker.config.FilePickerManager
-import me.rosuh.filepicker.config.SimpleItemClickListener
+import me.rosuh.filepicker.config.*
+import me.rosuh.filepicker.filetype.FileType
 import me.rosuh.filepicker.filetype.RasterImageFileType
 import me.rosuh.filepicker.utils.ScreenUtils
 
@@ -146,6 +143,26 @@ class SampleActivity : AppCompatActivity() {
                 .setTheme(R.style.FilePickerThemeReply)
                 .forResult(FilePickerManager.REQUEST_CODE)
         }
+        // 自定义文件类型
+        btn_custom_file_type.setOnClickListener {
+            FilePickerManager
+                .from(this@SampleActivity)
+                // 1. 使用自定义文件检测器来检测类型，并赋值给  [FileItemBeanImpl.fileType] 属性
+                // 1. Using detector detect file's type and fill it into [FileItemBeanImpl.fileType]
+                .customDetector(CustomFileDetector())
+                .filter(object : AbstractFileFilter() {
+                    override fun doFilter(listData: ArrayList<FileItemBeanImpl>): ArrayList<FileItemBeanImpl> {
+                        // 2. 接收结果列表，然后过滤出您想要的类型
+                        // 2. Receive result list and filter what you want
+                        listData.removeAll {
+                            (it.fileType !is CustomFileType) && !it.isDir
+                        }
+                        return listData
+                    }
+                })
+                .showHiddenFiles(true)
+                .forResult(FilePickerManager.REQUEST_CODE)
+        }
         findViewById<Button>(R.id.btn_show_in_fragment).setOnClickListener {
             SampleFragment.show(supportFragmentManager, "SampleFragment")
         }
@@ -162,6 +179,39 @@ class SampleActivity : AppCompatActivity() {
             first()
         }
     }
+
+    //<editor-fold desc="Custom File type example">
+    /**
+     * 自定义文件类型。通过路径或文件名来判断是否符合类型
+     * Customize the file type. Determine if it matches the type by path or filename.
+     */
+    class CustomFileType(
+        override val fileType: String = "",
+        override val fileIconResId: Int = R.drawable.ic_unknown_file_picker
+    ) : FileType {
+        override fun verify(fileName: String): Boolean {
+            return fileName.endsWith("123")
+        }
+    }
+
+    /**
+     * 自定义文件检测器。
+     * 检测是否符合您的类型，如果是，那么填充到[FileItemBeanImpl.fileType]中
+     * Custom file detector.
+     * detects if it matches your type, and if so, then fill it into [FileItemBeanImpl.fileType]
+     */
+    internal class CustomFileDetector : AbstractFileDetector() {
+        private val customFileType by lazy { CustomFileType() }
+
+        override fun fillFileType(itemBeanImpl: FileItemBeanImpl): FileItemBeanImpl {
+            // detected file type by yourself and fill your type to [FileItemBeanImpl]
+            if (customFileType.verify(itemBeanImpl.fileName)) {
+                itemBeanImpl.fileType = customFileType
+            }
+            return itemBeanImpl
+        }
+    }
+    //</editor-fold>
 
     class SampleFragment : DialogFragment() {
 

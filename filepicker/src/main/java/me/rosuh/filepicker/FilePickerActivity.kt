@@ -33,6 +33,10 @@ import me.rosuh.filepicker.utils.FileUtils
 import me.rosuh.filepicker.utils.ScreenUtils
 import me.rosuh.filepicker.widget.PosLinearLayoutManager
 import java.io.File
+import java.util.concurrent.BlockingQueue
+import java.util.concurrent.LinkedBlockingQueue
+import java.util.concurrent.ThreadPoolExecutor
+import java.util.concurrent.TimeUnit
 
 @SuppressLint("ShowToast")
 class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
@@ -41,7 +45,28 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
 
     private var mainHandler = Handler(Looper.getMainLooper())
 
-    private var loadFileThread: Thread? = null
+    private val loadingFileWorkerQueue: BlockingQueue<Runnable> = LinkedBlockingQueue()
+
+    // Creates a thread pool manager
+    private var loadingThreadPool: ThreadPoolExecutor = ThreadPoolExecutor(
+        1,       // Initial pool size
+        1,       // Max pool size
+        KEEP_ALIVE_TIME,
+        TimeUnit.MINUTES,
+        loadingFileWorkerQueue
+    )
+        get() {
+            if (field.isShutdown) {
+                field = ThreadPoolExecutor(
+                    1,
+                    1,
+                    KEEP_ALIVE_TIME,
+                    TimeUnit.MINUTES,
+                    loadingFileWorkerQueue
+                )
+            }
+            return field
+        }
 
     private val loadFileRunnable: Runnable by lazy {
         Runnable {
@@ -96,10 +121,11 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
         setTheme(pickerConfig.themeId)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity_for_file_picker)
+        initView()
         // 核验权限
         // checking permission
         if (isPermissionGrated()) {
-            prepareLauncher()
+            loadList()
         } else {
             requestPermission()
         }
@@ -107,8 +133,8 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
 
     override fun onDestroy() {
         super.onDestroy()
-        if (loadFileThread?.isAlive == true) {
-            loadFileThread?.interrupt()
+        if (!loadingThreadPool.isShutdown){
+            loadingThreadPool.shutdown()
         }
     }
 
@@ -141,24 +167,12 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
                         getString(string.file_picker_request_permission_failed),
                         Toast.LENGTH_SHORT
                     ).show()
+                    setLoadingFinish()
                 } else {
-                    prepareLauncher()
+                    loadList()
                 }
             }
         }
-    }
-
-    /**
-     * 在做完权限申请之后开始的真正的工作
-     */
-    private fun prepareLauncher() {
-        if (Environment.getExternalStorageState() != MEDIA_MOUNTED) {
-            throw Throwable(cause = IllegalStateException("External storage is not available ====>>> Environment.getExternalStorageState() != MEDIA_MOUNTED"))
-        }
-        initView()
-        // 加载中布局
-        initLoadingView()
-        loadList()
     }
 
     private fun initView() {
@@ -178,6 +192,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
         btn_confirm_file_picker.apply {
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
                 // 小于 4.4 的样式兼容
+                // compatible with 4.4 api
                 layoutParams = RelativeLayout.LayoutParams(
                     RelativeLayout.LayoutParams.WRAP_CONTENT,
                     RelativeLayout.LayoutParams.WRAP_CONTENT
@@ -198,23 +213,10 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
         } else {
             View.VISIBLE
         }
-    }
 
-    private fun loadList() {
-        if (loadFileThread?.isAlive == true) {
-            loadFileThread?.interrupt()
-        }
-        loadFileThread = Thread(loadFileRunnable)
-        loadFileThread?.start()
-    }
-
-    private fun setLoadingFinish() {
-        swipe_refresh_layout?.isRefreshing = false
-    }
-
-    private fun initLoadingView() {
         swipe_refresh_layout?.apply {
             setOnRefreshListener {
+                resetViewState()
                 loadList()
             }
             isRefreshing = true
@@ -237,6 +239,17 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
                 )
             )
         }
+    }
+
+    private fun loadList() {
+        if (!isPermissionGrated()){
+            requestPermission()
+            return
+        }
+        if (Environment.getExternalStorageState() != MEDIA_MOUNTED) {
+            throw Throwable(cause = IllegalStateException("External storage is not available ====>>> Environment.getExternalStorageState() != MEDIA_MOUNTED"))
+        }
+        loadingThreadPool.submit(loadFileRunnable)
     }
 
     private fun initRv(
@@ -269,6 +282,10 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
             removeOnItemTouchListener(fileListListener)
             addOnItemTouchListener(fileListListener)
         }
+    }
+
+    private fun setLoadingFinish() {
+        swipe_refresh_layout?.isRefreshing = false
     }
 
     /**
@@ -425,7 +442,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
      */
     private fun enterDirAndUpdateUI(fileBean: FileBean) {
         // 清除当前选中状态
-        cleanStatus()
+        resetViewState()
 
         // 获取文件夹文件
         val nextFiles = File(fileBean.filePath)
@@ -474,7 +491,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
         btn_selected_all_file_picker?.isEnabled = isEnable
     }
 
-    private fun cleanStatus() {
+    private fun resetViewState() {
         selectedCount = 1
         updateItemUI(false)
     }
@@ -543,26 +560,17 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
                 finish()
             }
             R.id.btn_go_back_file_picker -> {
-                finish()
+                onBackPressed()
             }
         }
-    }
-
-    private fun getAvailableCount(): Long {
-        var count: Long = 0
-        for (item in listAdapter!!.dataList!!) {
-            val file = File(item.filePath)
-            if (pickerConfig.isSkipDir && file.exists() && file.isDirectory) {
-                continue
-            }
-            count++
-        }
-        return count
     }
 
     private fun isCanSelect() = selectedCount < maxSelectable
 
     companion object {
         private const val FILE_PICKER_PERMISSION_REQUEST_CODE = 10201
+
+        // Sets the amount of time an idle thread waits before terminating
+        private const val KEEP_ALIVE_TIME = 10L
     }
 }

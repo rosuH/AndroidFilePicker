@@ -6,8 +6,6 @@
         <item name="colorAccent">@color/rail_color_accent</item>
         <item name="android:textColor">@color/rail_text_color</item>
         <item name="android:textColorPrimary">@color/rail_textColor_Primary</item>
-        <!--<item name="android:windowTranslucentStatus">true</item>-->
-        <item name="android:fitsSystemWindows">true</item>
         <item name="buttonStyle">@style/FilePickerThemeRailButtonStyle</item>
     </style>
 
@@ -24,9 +22,6 @@
         <item name="android:textColor">@color/reply_text_color</item>
         <item name="android:textColorPrimary">@color/reply_textColor_Primary</item>
         <item name="buttonStyle">@style/FilePickerThemeReplyButtonStyle</item>
-        <!--<item name="android:windowTranslucentStatus">true</item>-->
-        <item name="android:fitsSystemWindows">true</item>
-
     </style>
 
     <style name="FilePickerThemeReplyButtonStyle" parent="Widget.AppCompat.Button.Borderless">
@@ -41,9 +36,6 @@
         <item name="buttonStyle">@style/FilePickerThemeCraneButtonStyle</item>
         <item name="android:textColor">@color/crane_text_color</item>
         <item name="android:textColorPrimary">@color/crane_textColor_Primary</item>
-        <!--<item name="android:windowTranslucentStatus">true</item>-->
-        <item name="android:fitsSystemWindows">true</item>
-
     </style>
 
     <style name="FilePickerThemeCraneButtonStyle" parent="Widget.AppCompat.Button.Borderless">
@@ -58,7 +50,6 @@
         <item name="android:textColor">@color/shrine_text_color</item>
         <item name="android:textColorPrimary">@color/shrine_textColor_Primary</item>
         <!--<item name="android:windowTranslucentStatus">true</item>-->
-        <item name="android:fitsSystemWindows">true</item>
     </style>
 
     <style name="FilePickerThemeShrineButtonStyle" parent="Widget.AppCompat.Button.Borderless">

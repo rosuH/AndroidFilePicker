@@ -12,4 +12,5 @@
     <string name="multi_select">多选文件</string>
     <string name="single_folder">单选文件夹</string>
     <string name="multi_folder">多选文件夹</string>
+    <string name="custom_file_type">自定义文件类型</string>
 </resources>

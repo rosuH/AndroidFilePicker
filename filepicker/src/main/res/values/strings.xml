@@ -10,5 +10,6 @@
     <string name="too_many_files_tips">Too many current files, loading…</string>
     <string name="max_select_count_tips">You can only choose %d items.</string>
     <string name="empty_list_tips_file_picker">Nothing Here~</string>
+    <string name="custom_file_type">Custom file type</string>
 
 </resources>

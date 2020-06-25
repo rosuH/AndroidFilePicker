@@ -8,7 +8,7 @@ import me.rosuh.filepicker.filetype.*
  * @author rosu
  * @date 2018/11/27
  */
-class DefaultFileType : AbstractFileType() {
+class DefaultFileDetector : AbstractFileDetector() {
 
     private val allDefaultFileType: ArrayList<FileType> by lazy {
         val fileTypes = ArrayList<FileType>()
