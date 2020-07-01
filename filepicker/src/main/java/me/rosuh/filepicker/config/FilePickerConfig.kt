@@ -5,6 +5,7 @@ import android.support.annotation.NonNull
 import android.support.annotation.StringRes
 import me.rosuh.filepicker.FilePickerActivity
 import me.rosuh.filepicker.R
+import me.rosuh.filepicker.engine.ImageEngine
 
 /**
  *
@@ -112,6 +113,12 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
     var emptyListTips: String = contextRes.getString(R.string.empty_list_tips_file_picker)
         private set
 
+    /**
+     * 如果您的 Glide 版本低于 4.9, 请使用自定义的 [ImageEngine]
+     */
+    var customImageEngine: ImageEngine? = null
+        private set
+
     fun showHiddenFiles(isShow: Boolean): FilePickerConfig {
         isShowHiddenFiles = isShow
         return this
@@ -213,6 +220,11 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
         this.confirmText = confirmText
         this.maxSelectCountTips = maxSelectCountTipsStrRes
         this.emptyListTips = emptyListTips
+        return this
+    }
+
+    fun imageEngine(ie: ImageEngine): FilePickerConfig {
+        this.customImageEngine = ie
         return this
     }
 

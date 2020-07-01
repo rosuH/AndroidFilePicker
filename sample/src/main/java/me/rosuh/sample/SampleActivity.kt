@@ -1,6 +1,8 @@
 package me.rosuh.sample
 
+//import com.bumptech.glide.Glide
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
@@ -11,11 +13,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.Toast
+import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.demo_activity_main.*
 import me.rosuh.filepicker.adapter.FileListAdapter
 import me.rosuh.filepicker.bean.FileItemBeanImpl
 import me.rosuh.filepicker.config.*
+import me.rosuh.filepicker.engine.ImageEngine
 import me.rosuh.filepicker.filetype.FileType
 import me.rosuh.filepicker.filetype.RasterImageFileType
 import me.rosuh.filepicker.utils.ScreenUtils
@@ -50,6 +55,21 @@ class SampleActivity : AppCompatActivity() {
             FilePickerManager
                 .from(this@SampleActivity)
                 .setTheme(getRandomTheme())
+                .imageEngine(object : ImageEngine {
+                    override fun loadImage(
+                        context: Context?,
+                        imageView: ImageView?,
+                        url: String?,
+                        placeholder: Int
+                    ) {
+                        // 应该使用 loadImage 传递过来的 context，而不是您自己的 context
+                        // You should use the context passed by loadImage(), not your own context
+                        Glide
+                            .with(context!!)
+                            .load(url)
+                            .into(imageView!!)
+                    }
+                })
                 .enableSingleChoice()
                 .forResult(FilePickerManager.REQUEST_CODE)
         }

@@ -1,9 +1,9 @@
 package me.rosuh.filepicker.engine
 
 import android.content.Context
-import android.net.Uri
 import android.widget.ImageView
 import com.squareup.picasso.Picasso
+import java.io.File
 
 /**
  * @author rosu
@@ -11,12 +11,22 @@ import com.squareup.picasso.Picasso
  * An [ImageEngine] implementation by using Picasso
  */
 class PicassoEngine : ImageEngine {
-    override fun loadImage(context: Context?, imageView: ImageView?, uri: Uri?, placeholder: Int) {
-        Picasso.with(context)
-            .load(uri)
-            .fit()
-            .centerCrop()
-            .placeholder(placeholder)
-            .into(imageView)
+    override fun loadImage(
+        context: Context?,
+        imageView: ImageView?,
+        url: String?,
+        placeholder: Int
+    ) {
+        if (url?.startsWith("http") == true) {
+            Picasso.with(context)
+                .load(url)
+                .placeholder(placeholder)
+                .into(imageView)
+        } else {
+            Picasso.with(context)
+                .load(File(url))
+                .placeholder(placeholder)
+                .into(imageView)
+        }
     }
 }

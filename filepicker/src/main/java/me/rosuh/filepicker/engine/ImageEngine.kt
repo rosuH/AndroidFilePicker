@@ -12,9 +12,9 @@ import android.widget.ImageView
  */
 interface ImageEngine {
     /**
-     * 调用此接口加载图片，一般情况下[uri]参数表示图片的本地路径 path，通过[Uri.parse]得到的值。通常是 file:/// 开头
+     * 调用此接口加载图片，一般情况下[url]参数表示图片的本地路径 path，通过[Uri.parse]得到的值。通常是 file:/// 开头
      * 如果加载失败，将使用[placeholder]
-     * Call this interface to load the picture. Generally, the [uri] parameter indicates the local
+     * Call this interface to load the picture. Generally, the [url] parameter indicates the local
      * path of the picture, and the value obtained through [Uri.parse].
      * Usually starts with file:///
      * If loading fails, [placeholder] will be used
@@ -22,7 +22,7 @@ interface ImageEngine {
     fun loadImage(
         context: Context?,
         imageView: ImageView?,
-        uri: Uri?,
+        url: String?,
         placeholder: Int
     )
 }
