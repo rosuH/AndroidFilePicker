@@ -1,6 +1,5 @@
 package me.rosuh.filepicker.adapter
 
-import android.net.Uri
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -246,19 +245,11 @@ class FileListAdapter(
 
             val resId: Int = itemImpl.fileType?.fileIconResId ?: R.drawable.ic_unknown_file_picker
             when (itemImpl.fileType) {
-                is RasterImageFileType -> {
+                is RasterImageFileType, is VideoFileType -> {
                     ImageLoadController.load(
                         context,
                         mIcon,
-                        Uri.fromFile(File(itemImpl.filePath)),
-                        resId
-                    )
-                }
-                is VideoFileType -> {
-                    ImageLoadController.load(
-                        context,
-                        mIcon,
-                        Uri.fromFile(File(itemImpl.filePath)),
+                        itemImpl.filePath,
                         resId
                     )
                 }
@@ -300,19 +291,11 @@ class FileListAdapter(
 
             val resId: Int = itemImpl.fileType?.fileIconResId ?: R.drawable.ic_unknown_file_picker
             when (itemImpl.fileType) {
-                is RasterImageFileType -> {
+                is RasterImageFileType, is VideoFileType -> {
                     ImageLoadController.load(
                         context,
                         mIcon,
-                        Uri.fromFile(File(itemImpl.filePath)),
-                        resId
-                    )
-                }
-                is VideoFileType -> {
-                    ImageLoadController.load(
-                        context,
-                        mIcon,
-                        Uri.fromFile(File(itemImpl.filePath)),
+                        itemImpl.filePath,
                         resId
                     )
                 }

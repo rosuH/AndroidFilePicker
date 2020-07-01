@@ -21,32 +21,6 @@ public class ScreenUtils {
 
 
     /**
-     * px 转 dp
-     * @param context
-     * @param px
-     * @return
-     */
-    public static float pxToDip(Context context, float px) {
-        if (context == null) {
-            return -1;
-        }
-        return px / context.getResources().getDisplayMetrics().density;
-    }
-
-
-    /**
-     * sp 转 px
-     * @param context
-     * @param spValue
-     * @return
-     */
-    public static int spToPx(Context context, float spValue) {
-        final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
-        return (int) (spValue * fontScale + 0.5f);
-    }
-
-
-    /**
      * 获得屏幕宽度像素
      * @param context
      * @return
@@ -75,23 +49,6 @@ public class ScreenUtils {
         int screenH = outMetrics.heightPixels;
         wm = null;
         return screenH;
-    }
-
-    /**
-     * 是否横屏
-     */
-    public static boolean isLandScape(Context context) {
-        return getScreenWidthInPixel(context) > getScreenHeightInPixel(context);
-    }
-
-    /**
-     * 将像素转为 dp
-     * @param context
-     * @param pxValue 像素
-     * @return
-     */
-    public static int px2dp(Context context, float pxValue){
-        return (int)(pxValue / context.getResources().getDisplayMetrics().density);
     }
 
 }
