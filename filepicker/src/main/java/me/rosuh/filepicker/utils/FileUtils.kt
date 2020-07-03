@@ -53,6 +53,10 @@ class FileUtils {
             for (file in rootFile.listFiles()) {
                 //以符号 . 开头的视为隐藏文件或隐藏文件夹，后面进行过滤
                 val isHiddenFile = file.name.startsWith(".")
+                if (!FilePickerManager.config.isShowHiddenFiles && isHiddenFile) {
+                    // skip hidden files
+                    continue
+                }
                 if (file.isDirectory) {
                     listData.add(
                         FileItemBeanImpl(
@@ -81,13 +85,11 @@ class FileUtils {
                     ?: FilePickerManager.config.defaultFileDetector.fillFileType(itemBean)
                 listData.add(itemBean)
             }
-            listData.run {
-                // 隐藏文件处理
-                this.hideFiles<FileItemBeanImpl>(!FilePickerManager.config.isShowHiddenFiles)
-                // 排序
-                this.sortWith(compareBy({ !it.isDir }, { it.fileName.toUpperCase() }))
-            }
+            // 默认字典排序
+            // Default sort by alphabet
+            listData.sortWith(compareBy({ !it.isDir }, { it.fileName.toUpperCase() }))
             // 将当前列表数据暴露，以供调用者自己处理数据
+            // expose data list  to outside caller
             return FilePickerManager.config.selfFilter?.doFilter(listData) ?: listData
         }
 
@@ -151,11 +153,5 @@ class FileUtils {
             )
             return currentDataSource
         }
-    }
-}
-
-private fun <E> java.util.ArrayList<FileItemBeanImpl>?.hideFiles(hide: Boolean) {
-    if (hide) {
-        this?.removeAll { it.isHide }
     }
 }
