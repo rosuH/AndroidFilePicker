@@ -26,6 +26,14 @@ Well, it doesn't have a name like Rocky, Cosmos or Fish. Android File Picker, li
 | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
 | ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/default_theme.png) | ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/reply_theme.png) | ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/crane_theme.png) | ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/shrine_theme.png) |
 
+## Compatibility
+It depends on your targetAPI:
+- `targetAPI <= 28`, you are fine ;)
+- `targetAPI == 29`, please enable `requestLegacyExternalStorage` feature for your project :D
+- `targetAPI >= 30`, don't use this lib. We don't support scope storage for now :(
+    - Unless Google release new external permission or other new feature, we would not consider support scope storage. (or says: "I can't do this")
+    - Or, ofcouse, you are welcome for give us some ideas. Just create a new issues.
+
 ## Download
 
 Gradle:
