@@ -7,16 +7,16 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.*
 import android.os.Environment.MEDIA_MOUNTED
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.*
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import me.rosuh.filepicker.R.string
 import me.rosuh.filepicker.adapter.BaseAdapter
 import me.rosuh.filepicker.adapter.FileListAdapter
@@ -368,7 +368,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
      * 传递 item 点击事件给调用者
      */
     override fun onItemClick(
-        adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
+        adapter: androidx.recyclerview.widget.RecyclerView.Adapter<androidx.recyclerview.widget.RecyclerView.ViewHolder>,
         view: View,
         position: Int
     ) {
@@ -410,7 +410,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
      * 子控件被点击
      */
     override fun onItemChildClick(
-        adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
+        adapter: androidx.recyclerview.widget.RecyclerView.Adapter<androidx.recyclerview.widget.RecyclerView.ViewHolder>,
         view: View,
         position: Int
     ) {
@@ -447,7 +447,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
      * 条目被长按
      */
     override fun onItemLongClick(
-        adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
+        adapter: androidx.recyclerview.widget.RecyclerView.Adapter<androidx.recyclerview.widget.RecyclerView.ViewHolder>,
         view: View,
         position: Int
     ) {

@@ -1,6 +1,6 @@
 package me.rosuh.filepicker.adapter
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,10 +29,10 @@ class FileListAdapter(
 ) : BaseAdapter() {
     val dataList: ArrayList<FileItemBeanImpl> = ArrayList(10)
     private var latestChoicePos = -1
-    private lateinit var recyclerView: RecyclerView
+    private lateinit var recyclerView: androidx.recyclerview.widget.RecyclerView
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        if (parent is RecyclerView) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): androidx.recyclerview.widget.RecyclerView.ViewHolder {
+        if (parent is androidx.recyclerview.widget.RecyclerView) {
             recyclerView = parent
         }
         return when (isSingleChoice) {
@@ -74,7 +74,7 @@ class FileListAdapter(
     }
 
     override fun onBindViewHolder(
-        holder: RecyclerView.ViewHolder,
+        holder: androidx.recyclerview.widget.RecyclerView.ViewHolder,
         position: Int,
         payloads: MutableList<Any>
     ) {
@@ -219,7 +219,7 @@ class FileListAdapter(
 
     /*--------------------------ViewHolder Begin------------------------------*/
 
-    abstract inner class BaseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    abstract inner class BaseViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
         abstract fun bind(itemImpl: FileItemBeanImpl, position: Int)
     }
 
