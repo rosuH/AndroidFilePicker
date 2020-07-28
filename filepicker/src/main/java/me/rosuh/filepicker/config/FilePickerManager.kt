@@ -1,7 +1,7 @@
 package me.rosuh.filepicker.config
 
 import android.app.Activity
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import me.rosuh.filepicker.engine.ImageLoadController
 import java.lang.ref.WeakReference
 
@@ -17,7 +17,7 @@ object FilePickerManager {
     const val REQUEST_CODE = 10401
 
     internal var contextRef: WeakReference<Activity>? = null
-    internal var fragmentRef: WeakReference<Fragment>? = null
+    internal var fragmentRef: WeakReference<androidx.fragment.app.Fragment>? = null
     internal lateinit var config: FilePickerConfig
 
     fun from(activity: Activity): FilePickerConfig {
@@ -30,7 +30,7 @@ object FilePickerManager {
     /**
      * 不能使用 fragmentRef.getContext()，因为无法保证外部的代码环境
      */
-    fun from(fragment: Fragment): FilePickerConfig {
+    fun from(fragment: androidx.fragment.app.Fragment): FilePickerConfig {
         reset()
         this.fragmentRef = WeakReference(fragment)
         this.contextRef = WeakReference(fragment.activity!!)
