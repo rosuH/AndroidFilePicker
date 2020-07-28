@@ -541,6 +541,9 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
             }
             // 确认按钮
             R.id.btn_confirm_file_picker -> {
+                if (listAdapter?.dataList.isNullOrEmpty()) {
+                    return
+                }
                 val list = ArrayList<String>()
                 val intent = Intent()
 
