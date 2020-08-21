@@ -87,12 +87,12 @@ class FileListAdapter(
         when (holder) {
             is FileListItemHolder -> {
                 holder.itemView.findViewById<CheckBox>(R.id.cb_list_file_picker)?.let {
-                    it.isChecked = payloads[0] as Boolean
+                    it.isChecked = getItem(position)?.isChecked() ?: false
                 }
             }
             is FileListItemSingleChoiceHolder -> {
                 holder.itemView.findViewById<RadioButton>(R.id.rb_list_file_picker)?.let {
-                    it.isChecked = payloads[0] as Boolean
+                    it.isChecked = getItem(position)?.isChecked() ?: false
                 }
             }
         }
