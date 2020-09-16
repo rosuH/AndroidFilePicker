@@ -10,19 +10,39 @@ import me.rosuh.filepicker.filetype.*
  */
 class DefaultFileDetector : AbstractFileDetector() {
 
+    var enableCustomTypes: Boolean = false
+        private set
+
     private val allDefaultFileType: ArrayList<FileType> by lazy {
-        val fileTypes = ArrayList<FileType>()
-        fileTypes.add(AudioFileType())
-        fileTypes.add(RasterImageFileType())
-        fileTypes.add(CompressedFileType())
-        fileTypes.add(DataBaseFileType())
-        fileTypes.add(ExecutableFileType())
-        fileTypes.add(FontFileType())
-        fileTypes.add(PageLayoutFileType())
-        fileTypes.add(TextFileType())
-        fileTypes.add(VideoFileType())
-        fileTypes.add(WebFileType())
-        fileTypes
+        ArrayList<FileType>()
+    }
+
+    fun registerDefaultTypes() {
+        with(allDefaultFileType) {
+            clear()
+            add(AudioFileType())
+            add(RasterImageFileType())
+            add(CompressedFileType())
+            add(DataBaseFileType())
+            add(ExecutableFileType())
+            add(FontFileType())
+            add(PageLayoutFileType())
+            add(TextFileType())
+            add(VideoFileType())
+            add(WebFileType())
+        }
+        enableCustomTypes = false
+    }
+
+    /**
+     * @author rosuh@qq.com
+     * @date 2020/9/16
+     * save user's custom file types
+     */
+    fun registerCustomTypes(customFileTypes: ArrayList<FileType>) {
+        allDefaultFileType.clear()
+        allDefaultFileType.addAll(customFileTypes)
+        enableCustomTypes = true
     }
 
     override fun fillFileType(itemBeanImpl: FileItemBeanImpl): FileItemBeanImpl {

@@ -6,6 +6,7 @@ import android.support.annotation.StringRes
 import me.rosuh.filepicker.FilePickerActivity
 import me.rosuh.filepicker.R
 import me.rosuh.filepicker.engine.ImageEngine
+import me.rosuh.filepicker.filetype.FileType
 
 /**
  *
@@ -13,6 +14,12 @@ import me.rosuh.filepicker.engine.ImageEngine
  * @date 2018/11/27
  */
 class FilePickerConfig(private val pickerManager: FilePickerManager) {
+
+    var isAutoFilter: Boolean = false
+
+    private val customFileTypes: ArrayList<FileType> by lazy {
+        ArrayList<FileType>(2)
+    }
 
     private val contextRes = pickerManager.contextRef!!.get()!!.resources
 
@@ -77,9 +84,14 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
     /**
      * 自定文件类型甄别器和默认类型甄别器
      */
+    @Deprecated(
+        "Use 'register' function instead.",
+        ReplaceWith("registerFileType(types)"),
+        level = DeprecationLevel.WARNING
+    )
     var customDetector: AbstractFileDetector? = null
-        private set
-    val defaultFileDetector: DefaultFileDetector by lazy { DefaultFileDetector() }
+
+    val defaultFileDetector: DefaultFileDetector by lazy { DefaultFileDetector().also { it.registerDefaultTypes() } }
 
     /**
      * 点击操作接口，采用默认实现
@@ -140,7 +152,10 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
     }
 
     @JvmOverloads
-    fun storageType(volumeName: String = "", @StorageMediaType storageMediaType: String): FilePickerConfig {
+    fun storageType(
+        volumeName: String = "",
+        @StorageMediaType storageMediaType: String
+    ): FilePickerConfig {
         mediaStorageName = volumeName
         mediaStorageType = storageMediaType
         return this
@@ -157,11 +172,19 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
     }
 
     /**
+     * @author rosuh@qq.com
+     * @date 2020/9/15
+     * custom file type had upgrade to [registerFileType], which can simplify your usage.
      * 实现 [AbstractFileDetector] 以自定义您自己的文件类型检测器
      * Custom your file detector by implementing [AbstractFileDetector]
      */
+    @Deprecated(
+        "Use 'register' function instead.",
+        ReplaceWith("registerFileType(types)"),
+        level = DeprecationLevel.WARNING
+    )
     fun customDetector(detector: AbstractFileDetector): FilePickerConfig {
-        customDetector = detector
+        this.customDetector = detector
         return this
     }
 
@@ -227,6 +250,28 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
         this.customImageEngine = ie
         return this
     }
+    /**
+     * @author rosuh@qq.com
+     * @date 2020/9/15
+     * 用于注册你自定义的文件类型。
+     * 库将自动调用你的自定义类型里的[FileType.verify]来识别文件。如果识别成功，就会自动填充到 [me.rosuh.filepicker.bean.FileItemBeanImpl.fileType] 中
+     * 如果[autoFilter]为 true，那么库将自动过滤掉不符合你自定义类型的文件。不会在结果中显示出来。
+     * 如果为 false，那么就只是检测类型。不会对结果列表做修改
+     * 你不需要再调用[fileType]方法，否则将默认使用[fileType]
+     * ---
+     * Pass your custom [FileType] instances list and all done! This lib would auto detect file type
+     * by using [FileType.verify].
+     * If [autoFilter] is true, this lib will filter result by using your custom file types.
+     * If [autoFilter] is true, the library will automatically filter out files that do not meet your custom type.
+     * Will not show up in the results. * If it is false, then only the detection type. No changes to the result list
+     * You don't need to call [fileType] again !
+     */
+    fun registerFileType(types: List<FileType>, autoFilter: Boolean = true): FilePickerConfig {
+        this.customFileTypes.addAll(types)
+        this.defaultFileDetector.registerCustomTypes(customFileTypes)
+        this.isAutoFilter = autoFilter
+        return this
+    }
 
     fun forResult(requestCode: Int) {
         val activity = pickerManager.contextRef?.get()!!
@@ -246,16 +291,19 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
          */
         @get:StorageMediaType
         const val STORAGE_EXTERNAL_STORAGE = "STORAGE_EXTERNAL_STORAGE"
+
         /**
          * TODO 可拔插的 SD 卡
          */
         @get:StorageMediaType
         const val STORAGE_UUID_SD_CARD = "STORAGE_UUID_SD_CARD"
+
         /**
          * TODO 可拔插 U 盘
          */
         @get:StorageMediaType
         const val STORAGE_UUID_USB_DRIVE = "STORAGE_UUID_USB_DRIVE"
+
         /**
          * 自定义路径
          */
