@@ -8,7 +8,7 @@ import me.rosuh.filepicker.bean.FileItemBeanImpl
 import me.rosuh.filepicker.bean.FileNavBeanImpl
 import me.rosuh.filepicker.config.FilePickerConfig.Companion.STORAGE_CUSTOM_ROOT_PATH
 import me.rosuh.filepicker.config.FilePickerConfig.Companion.STORAGE_EXTERNAL_STORAGE
-import me.rosuh.filepicker.config.FilePickerManager
+import me.rosuh.filepicker.config.FilePickerManager.config
 import java.io.File
 
 /**
@@ -24,16 +24,16 @@ class FileUtils {
          * 根据配置参数获取根目录文件
          * @return File
          */
-        fun getRootFile(): File {
-            return when (FilePickerManager.config.mediaStorageType) {
+        fun getRootFile():File {
+            return when (config.mediaStorageType) {
                 STORAGE_EXTERNAL_STORAGE -> {
                     File(Environment.getExternalStorageDirectory().absoluteFile.toURI())
                 }
                 STORAGE_CUSTOM_ROOT_PATH -> {
-                    if (FilePickerManager.config.customRootPath.isEmpty()) {
+                    if (config.customRootPath.isEmpty()) {
                         File(Environment.getExternalStorageDirectory().absoluteFile.toURI())
                     } else {
-                        File(FilePickerManager.config.customRootPath)
+                        File(config.customRootPath)
                     }
                 }
                 else -> {
@@ -50,10 +50,11 @@ class FileUtils {
             beanSubscriber: BeanSubscriber
         ): ArrayList<FileItemBeanImpl> {
             val listData: ArrayList<FileItemBeanImpl> = ArrayList()
+            var isDetected = false
             for (file in rootFile.listFiles()) {
                 //以符号 . 开头的视为隐藏文件或隐藏文件夹，后面进行过滤
                 val isHiddenFile = file.name.startsWith(".")
-                if (!FilePickerManager.config.isShowHiddenFiles && isHiddenFile) {
+                if (!config.isShowHiddenFiles && isHiddenFile) {
                     // skip hidden files
                     continue
                 }
@@ -81,8 +82,16 @@ class FileUtils {
                     beanSubscriber
                 )
                 // 如果调用者没有实现文件类型甄别器，则使用的默认甄别器
-                FilePickerManager.config.customDetector?.fillFileType(itemBean)
-                    ?: FilePickerManager.config.defaultFileDetector.fillFileType(itemBean)
+                config.customDetector?.fillFileType(itemBean)
+                    ?: config.defaultFileDetector.fillFileType(itemBean)
+                    isDetected = itemBean.fileType != null
+                if (config.defaultFileDetector.enableCustomTypes
+                    && config.isAutoFilter
+                    && !isDetected
+                ) {
+                    // enable auto filter AND using user's custom file type. Filter them.
+                    continue
+                }
                 listData.add(itemBean)
             }
             // 默认字典排序
@@ -90,7 +99,7 @@ class FileUtils {
             listData.sortWith(compareBy({ !it.isDir }, { it.fileName.toUpperCase() }))
             // 将当前列表数据暴露，以供调用者自己处理数据
             // expose data list  to outside caller
-            return FilePickerManager.config.selfFilter?.doFilter(listData) ?: listData
+            return config.selfFilter?.doFilter(listData) ?: listData
         }
 
         /**
@@ -107,10 +116,10 @@ class FileUtils {
                 // 优先级：目标设备名称 --> 自定义路径 --> 默认 SD 卡
                 currentDataSource.add(
                     FileNavBeanImpl(
-                        if (!FilePickerManager.config.mediaStorageName.isNullOrEmpty()) {
-                            FilePickerManager.config.mediaStorageName
-                        } else if (!FilePickerManager.config.customRootPath.isEmpty()) {
-                            FilePickerManager.config.customRootPath
+                        if (!config.mediaStorageName.isNullOrEmpty()) {
+                            config.mediaStorageName
+                        } else if (!config.customRootPath.isEmpty()) {
+                            config.customRootPath
                         } else {
                             context.getString(R.string.file_picker_tv_sd_card)
                         },

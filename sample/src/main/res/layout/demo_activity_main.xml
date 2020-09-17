@@ -104,15 +104,6 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_title_filter" />
 
         <Button
-            android:id="@+id/btn_custom_file_type"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/custom_file_type"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
-            app:layout_constraintTop_toTopOf="@+id/btn_only_image" />
-
-        <Button
             android:id="@+id/btn_only_dir"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -121,6 +112,28 @@
             app:layout_constraintEnd_toStartOf="@+id/guideline2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btn_only_image" />
+
+        <TextView
+            android:id="@+id/tv_title_file_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Custom FileType"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintTop_toBottomOf="@+id/view_divider" />
+
+        <Button
+            android:id="@+id/btn_custom_file_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/custom_file_type"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintTop_toBottomOf="@+id/tv_title_file_type" />
 
 
         <View

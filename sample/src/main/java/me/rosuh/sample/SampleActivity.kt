@@ -22,6 +22,11 @@ import me.rosuh.filepicker.bean.FileItemBeanImpl
 import me.rosuh.filepicker.config.*
 import me.rosuh.filepicker.engine.ImageEngine
 import me.rosuh.filepicker.filetype.FileType
+import me.rosuh.filepicker.config.AbstractFileFilter
+import me.rosuh.filepicker.config.FilePickerConfig
+import me.rosuh.filepicker.config.FilePickerManager
+import me.rosuh.filepicker.config.SimpleItemClickListener
+import me.rosuh.filepicker.filetype.AudioFileType
 import me.rosuh.filepicker.filetype.RasterImageFileType
 import me.rosuh.filepicker.utils.ScreenUtils
 
@@ -125,7 +130,6 @@ class SampleActivity : AppCompatActivity() {
                     }
                 })
                 .skipDirWhenSelect(false)
-                .setTheme(R.style.FilePickerThemeReply)
                 .forResult(FilePickerManager.REQUEST_CODE)
         }
         // 多选文件
@@ -133,7 +137,6 @@ class SampleActivity : AppCompatActivity() {
             FilePickerManager
                 .from(this@SampleActivity)
                 .setTheme(getRandomTheme())
-                .setTheme(R.style.FilePickerThemeCrane)
                 .forResult(FilePickerManager.REQUEST_CODE)
         }
         // 多选文件夹
@@ -149,7 +152,6 @@ class SampleActivity : AppCompatActivity() {
                     }
                 })
                 .skipDirWhenSelect(false)
-                .setTheme(R.style.FilePickerThemeShrine)
                 .forResult(FilePickerManager.REQUEST_CODE)
         }
         // 自定义根目录
@@ -160,29 +162,17 @@ class SampleActivity : AppCompatActivity() {
                 // 不指定名称则为导航栏将显示绝对路径
 //                .storageType(FilePickerConfig.STORAGE_CUSTOM_ROOT_PATH)
                 .setCustomRootPath("/storage/emulated/0/Download")
-                .setTheme(R.style.FilePickerThemeReply)
                 .forResult(FilePickerManager.REQUEST_CODE)
         }
         // 自定义文件类型
+        // the new api for register your custom file type
         btn_custom_file_type.setOnClickListener {
-            FilePickerManager
-                .from(this@SampleActivity)
-                // 1. 使用自定义文件检测器来检测类型，并赋值给  [FileItemBeanImpl.fileType] 属性
-                // 1. Using detector detect file's type and fill it into [FileItemBeanImpl.fileType]
-                .customDetector(CustomFileDetector())
-                .filter(object : AbstractFileFilter() {
-                    override fun doFilter(listData: ArrayList<FileItemBeanImpl>): ArrayList<FileItemBeanImpl> {
-                        // 2. 接收结果列表，然后过滤出您想要的类型
-                        // 2. Receive result list and filter what you want
-                        listData.removeAll {
-                            (it.fileType !is CustomFileType) && !it.isDir
-                        }
-                        return listData
-                    }
-                })
-                .showHiddenFiles(true)
+            FilePickerManager.from(this@SampleActivity)
+                .setTheme(getRandomTheme())
+                .registerFileType(arrayListOf(AudioFileType()))
                 .forResult(FilePickerManager.REQUEST_CODE)
         }
+
         findViewById<Button>(R.id.btn_show_in_fragment).setOnClickListener {
             SampleFragment.show(supportFragmentManager, "SampleFragment")
         }
