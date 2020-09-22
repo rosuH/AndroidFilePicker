@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">AndroidFilePicker</string>
     <string name="default_btn">default</string>
@@ -13,6 +14,4 @@
     <string name="single_folder">single select folder</string>
     <string name="multi_folder">multi select folder</string>
     <string name="demo_test_had_selected" translatable="false">✌ %d</string>
-    <string name="done_button">تم</string>
-
 </resources>

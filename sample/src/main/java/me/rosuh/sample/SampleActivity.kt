@@ -21,13 +21,11 @@ import me.rosuh.filepicker.adapter.FileListAdapter
 import me.rosuh.filepicker.bean.FileItemBeanImpl
 import me.rosuh.filepicker.config.*
 import me.rosuh.filepicker.engine.ImageEngine
-import me.rosuh.filepicker.filetype.FileType
 import me.rosuh.filepicker.config.AbstractFileFilter
 import me.rosuh.filepicker.config.FilePickerConfig
 import me.rosuh.filepicker.config.FilePickerManager
 import me.rosuh.filepicker.config.SimpleItemClickListener
-import me.rosuh.filepicker.filetype.AudioFileType
-import me.rosuh.filepicker.filetype.RasterImageFileType
+import me.rosuh.filepicker.filetype.*
 import me.rosuh.filepicker.utils.ScreenUtils
 
 
@@ -55,6 +53,7 @@ class SampleActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.demo_activity_main)
+        LocalizationHelper.setLocale(this, "ar")
         // 单选
         btn_single.setOnClickListener {
             FilePickerManager
@@ -169,7 +168,8 @@ class SampleActivity : AppCompatActivity() {
         btn_custom_file_type.setOnClickListener {
             FilePickerManager.from(this@SampleActivity)
                 .setTheme(getRandomTheme())
-                .registerFileType(arrayListOf(AudioFileType()))
+                .enableSingleChoice()
+                .registerFileType(arrayListOf(TextFileType(), RasterImageFileType(), VideoFileType()))
                 .forResult(FilePickerManager.REQUEST_CODE)
         }
 
@@ -275,6 +275,7 @@ class SampleActivity : AppCompatActivity() {
             FilePickerManager.REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
                     val list = FilePickerManager.obtainData()
+
                     rv_main.adapter = SampleAdapter(layoutInflater, ArrayList(list))
                     rv_main.layoutManager = LinearLayoutManager(this@SampleActivity)
                     ns_root.scrollTo(0, ScreenUtils.getScreenHeightInPixel(this))
@@ -283,5 +284,9 @@ class SampleActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(LocalizationHelper.onAttach(newBase))
     }
 }

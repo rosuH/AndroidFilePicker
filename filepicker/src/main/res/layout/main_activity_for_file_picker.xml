@@ -36,7 +36,7 @@
         <Button
             android:id="@+id/btn_confirm_file_picker"
             android:layout_width="78dp"
-            android:layout_height="32dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"

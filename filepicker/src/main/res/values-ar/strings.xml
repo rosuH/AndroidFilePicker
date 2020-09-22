@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name_file_picker">filepicker</string>
+    <string name="file_picker_tv_select_done">تم</string>
+    <string name="file_picker_go_back">رجوع</string>
+    <string name="file_picker_selected_count">تم اختياره·%1$d</string>
+    <string name="file_picker_request_permission_failed">لا يوجد صلاحية للوصول الى وحدة التخزين</string>
+    <string name="file_picker_tv_select_all">اختيار الكل</string>
+    <string name="file_picker_tv_deselect_all">الغاء</string>
+    <string name="file_picker_tv_sd_card">بطاقة الذاكرة</string>
+    <string name="empty_list_tips_file_picker">لا شيئ هنا</string>
+</resources>
