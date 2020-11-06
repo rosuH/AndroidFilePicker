@@ -51,6 +51,26 @@ class FileUtils {
         ): ArrayList<FileItemBeanImpl> {
             val listData: ArrayList<FileItemBeanImpl> = ArrayList()
             var isDetected = false
+            // 查看是否在根目录上级
+            val realRoot = getRootFile()
+            val isInRootParent = rootFile.list() == null
+                    && !config.isSkipDir
+                    && rootFile.path == realRoot.parentFile.path
+            if (isInRootParent) {
+                // 如果是文件夹作为可选项时，需要让根目录也作为 item 被点击
+                listData.add(
+                    FileItemBeanImpl(
+                        realRoot.name,
+                        realRoot.path,
+                        false,
+                        null,
+                        isDir = true,
+                        isHide = false,
+                        beanSubscriber = beanSubscriber
+                    )
+                )
+                return config.selfFilter?.doFilter(listData) ?: listData
+            }
             for (file in rootFile.listFiles()) {
                 //以符号 . 开头的视为隐藏文件或隐藏文件夹，后面进行过滤
                 val isHiddenFile = file.name.startsWith(".")
@@ -84,7 +104,7 @@ class FileUtils {
                 // 如果调用者没有实现文件类型甄别器，则使用的默认甄别器
                 config.customDetector?.fillFileType(itemBean)
                     ?: config.defaultFileDetector.fillFileType(itemBean)
-                    isDetected = itemBean.fileType != null
+                isDetected = itemBean.fileType != null
                 if (config.defaultFileDetector.enableCustomTypes
                     && config.isAutoFilter
                     && !isDetected
@@ -94,6 +114,7 @@ class FileUtils {
                 }
                 listData.add(itemBean)
             }
+
             // 默认字典排序
             // Default sort by alphabet
             listData.sortWith(compareBy({ !it.isDir }, { it.fileName.toUpperCase() }))
