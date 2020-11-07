@@ -70,11 +70,19 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
 
     private val loadFileRunnable: Runnable by lazy {
         Runnable {
-            val rootFile = if (navDataSource.isEmpty()) {
-                FileUtils.getRootFile()
-            } else {
-                File(navDataSource.last().dirPath)
+            val rootFile = when{
+                navDataSource.isEmpty() && pickerConfig.isSkipDir -> {
+                    FileUtils.getRootFile()
+                }
+                navDataSource.isEmpty() && !pickerConfig.isSkipDir -> {
+                    // 如果是文件夹作为可选项时，需要让根目录也作为 item 被点击，故而取根目录上级作为 rootFiles
+                    FileUtils.getRootFile().parentFile
+                }
+                else -> {
+                    File(navDataSource.last().dirPath)
+                }
             }
+
             val listData = FileUtils.produceListDataSource(rootFile, this@FilePickerActivity)
             // 导航栏数据集
             navDataSource = FileUtils.produceNavDataSource(
