@@ -5,10 +5,10 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
-import android.support.v4.app.FragmentManager
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -223,7 +223,7 @@ class SampleActivity : AppCompatActivity() {
     }
     //</editor-fold>
 
-    class SampleFragment : DialogFragment() {
+    class SampleFragment : androidx.fragment.app.DialogFragment() {
 
         override fun onCreateView(
             inflater: LayoutInflater,
@@ -263,7 +263,7 @@ class SampleActivity : AppCompatActivity() {
         }
 
         companion object {
-            fun show(supportFragmentManager: FragmentManager?, s: String) {
+            fun show(supportFragmentManager: androidx.fragment.app.FragmentManager?, s: String) {
                 SampleFragment().show(supportFragmentManager, s)
             }
 
@@ -276,7 +276,8 @@ class SampleActivity : AppCompatActivity() {
                 if (resultCode == Activity.RESULT_OK) {
                     val list = FilePickerManager.obtainData()
                     rv_main.adapter = SampleAdapter(layoutInflater, ArrayList(list))
-                    rv_main.layoutManager = LinearLayoutManager(this@SampleActivity)
+                    rv_main.layoutManager =
+                        androidx.recyclerview.widget.LinearLayoutManager(this@SampleActivity)
                     ns_root.scrollTo(0, ScreenUtils.getScreenHeightInPixel(this))
                 } else {
                     Toast.makeText(this@SampleActivity, "没有选择图片", Toast.LENGTH_SHORT).show()
