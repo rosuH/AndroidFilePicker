@@ -5,6 +5,7 @@
     <application>
         <activity
             android:name=".FilePickerActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:configChanges="orientation|screenSize" />
     </application>
 </manifest>
