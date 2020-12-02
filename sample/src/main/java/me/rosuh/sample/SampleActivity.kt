@@ -264,13 +264,14 @@ class SampleActivity : AppCompatActivity() {
 
         companion object {
             fun show(supportFragmentManager: androidx.fragment.app.FragmentManager?, s: String) {
-                SampleFragment().show(supportFragmentManager, s)
+                supportFragmentManager?.let { SampleFragment().show(it, s) }
             }
 
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             FilePickerManager.REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
