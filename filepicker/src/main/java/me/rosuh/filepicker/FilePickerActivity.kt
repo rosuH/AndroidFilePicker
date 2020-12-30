@@ -412,7 +412,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
                     listAdapter?.multipleCheckOrNo(item, position, ::isCanSelect) {
                         Toast.makeText(
                             this@FilePickerActivity.applicationContext,
-                            "最多只能选择 $maxSelectable 项",
+                            getString(pickerConfig.maxSelectCountTips, maxSelectable),
                             Toast.LENGTH_SHORT
                         ).show()
                     }

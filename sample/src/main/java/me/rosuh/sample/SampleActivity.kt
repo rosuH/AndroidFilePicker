@@ -21,12 +21,8 @@ import me.rosuh.filepicker.adapter.FileListAdapter
 import me.rosuh.filepicker.bean.FileItemBeanImpl
 import me.rosuh.filepicker.config.*
 import me.rosuh.filepicker.engine.ImageEngine
-import me.rosuh.filepicker.filetype.FileType
-import me.rosuh.filepicker.config.AbstractFileFilter
-import me.rosuh.filepicker.config.FilePickerConfig
-import me.rosuh.filepicker.config.FilePickerManager
-import me.rosuh.filepicker.config.SimpleItemClickListener
 import me.rosuh.filepicker.filetype.AudioFileType
+import me.rosuh.filepicker.filetype.FileType
 import me.rosuh.filepicker.filetype.RasterImageFileType
 import me.rosuh.filepicker.utils.ScreenUtils
 
@@ -137,6 +133,7 @@ class SampleActivity : AppCompatActivity() {
             FilePickerManager
                 .from(this@SampleActivity)
                 .setTheme(getRandomTheme())
+                .maxSelectable(2)
                 .forResult(FilePickerManager.REQUEST_CODE)
         }
         // 多选文件夹
@@ -144,6 +141,7 @@ class SampleActivity : AppCompatActivity() {
             FilePickerManager
                 .from(this@SampleActivity)
                 .setTheme(getRandomTheme())
+                .maxSelectable(2)
                 .filter(object : AbstractFileFilter() {
                     override fun doFilter(listData: ArrayList<FileItemBeanImpl>): ArrayList<FileItemBeanImpl> {
                         return ArrayList(listData.filter { item ->
