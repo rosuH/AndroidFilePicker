@@ -45,6 +45,11 @@ class DefaultFileDetector : AbstractFileDetector() {
         enableCustomTypes = true
     }
 
+    fun clear(){
+        allDefaultFileType.clear()
+        enableCustomTypes = false
+    }
+
     override fun fillFileType(itemBeanImpl: FileItemBeanImpl): FileItemBeanImpl {
         for (type in allDefaultFileType) {
             if (type.verify(itemBeanImpl.fileName)) {

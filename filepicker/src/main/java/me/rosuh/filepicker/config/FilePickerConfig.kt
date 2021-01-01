@@ -250,6 +250,7 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
         this.customImageEngine = ie
         return this
     }
+
     /**
      * @author rosuh@qq.com
      * @date 2020/9/15
@@ -283,6 +284,15 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
         } else {
             fragment.startActivityForResult(intent, requestCode)
         }
+    }
+
+    fun clear() {
+        this.customFileTypes.clear()
+        this.customImageEngine = null
+        this.fileItemOnClickListener = null
+        this.selfFilter = null
+        this.customDetector = null
+        this.defaultFileDetector.clear()
     }
 
     companion object {

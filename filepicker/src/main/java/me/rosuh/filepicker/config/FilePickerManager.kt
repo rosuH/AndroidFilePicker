@@ -51,7 +51,11 @@ object FilePickerManager {
      * 供调用者获取结果
      * @return List<String>
      */
-    fun obtainData(): List<String> {
+    @JvmOverloads
+    fun obtainData(release: Boolean = false): List<String> {
+        if (release) {
+            release()
+        }
         return dataList
     }
 
@@ -59,5 +63,16 @@ object FilePickerManager {
         contextRef?.clear()
         fragmentRef?.clear()
         ImageLoadController.reset()
+    }
+
+    /**
+     * 释放资源与重置属性
+     * Release resources and reset attributes
+     */
+    fun release() {
+        reset()
+        if (this::config.isInitialized) {
+            config.clear()
+        }
     }
 }
