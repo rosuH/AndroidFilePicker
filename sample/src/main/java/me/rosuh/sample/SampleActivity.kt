@@ -9,6 +9,7 @@ import android.support.v4.app.DialogFragment
 import android.support.v4.app.FragmentManager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -272,7 +273,7 @@ class SampleActivity : AppCompatActivity() {
         when (requestCode) {
             FilePickerManager.REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    val list = FilePickerManager.obtainData()
+                    val list = FilePickerManager.obtainData(release = true)
                     rv_main.adapter = SampleAdapter(layoutInflater, ArrayList(list))
                     rv_main.layoutManager = LinearLayoutManager(this@SampleActivity)
                     ns_root.scrollTo(0, ScreenUtils.getScreenHeightInPixel(this))
