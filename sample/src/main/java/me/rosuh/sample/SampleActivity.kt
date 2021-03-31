@@ -9,7 +9,6 @@ import android.support.v4.app.DialogFragment
 import android.support.v4.app.FragmentManager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,7 +24,6 @@ import me.rosuh.filepicker.engine.ImageEngine
 import me.rosuh.filepicker.filetype.AudioFileType
 import me.rosuh.filepicker.filetype.FileType
 import me.rosuh.filepicker.filetype.RasterImageFileType
-import me.rosuh.filepicker.utils.ScreenUtils
 
 
 class SampleActivity : AppCompatActivity() {
@@ -252,7 +250,7 @@ class SampleActivity : AppCompatActivity() {
                             super.onItemClick(itemAdapter, itemView, position)
                             Toast.makeText(
                                 activity,
-                                "${itemAdapter.dataList!![position].fileName} was clicked",
+                                "${itemAdapter.dataList[position].fileName} was clicked",
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
@@ -276,7 +274,6 @@ class SampleActivity : AppCompatActivity() {
                     val list = FilePickerManager.obtainData(release = true)
                     rv_main.adapter = SampleAdapter(layoutInflater, ArrayList(list))
                     rv_main.layoutManager = LinearLayoutManager(this@SampleActivity)
-                    ns_root.scrollTo(0, ScreenUtils.getScreenHeightInPixel(this))
                 } else {
                     Toast.makeText(this@SampleActivity, "没有选择图片", Toast.LENGTH_SHORT).show()
                 }

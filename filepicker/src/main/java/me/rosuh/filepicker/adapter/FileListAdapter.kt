@@ -25,9 +25,9 @@ import java.io.File
  */
 class FileListAdapter(
     private val context: FilePickerActivity,
-    var dataList: ArrayList<FileItemBeanImpl>?,
-    private var isSingleChoice: Boolean = config.singleChoice
+    var isSingleChoice: Boolean = config.singleChoice
 ) : BaseAdapter() {
+    val dataList: ArrayList<FileItemBeanImpl> = ArrayList(10)
     private var latestChoicePos = -1
     private lateinit var recyclerView: RecyclerView
 
@@ -62,7 +62,7 @@ class FileListAdapter(
     }
 
     override fun getItemCount(): Int {
-        return dataList?.size ?: 10
+        return dataList.size
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -70,7 +70,7 @@ class FileListAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as BaseViewHolder).bind(dataList!![position], position)
+        (holder as BaseViewHolder).bind(dataList[position], position)
     }
 
     override fun onBindViewHolder(
@@ -100,13 +100,22 @@ class FileListAdapter(
 
     override fun getItem(position: Int): FileItemBeanImpl? {
         if (position >= 0 &&
-            position < dataList!!.size &&
+            position < dataList.size &&
             getItemViewType(position) == DEFAULT_FILE_TYPE
-        ) return dataList!![position]
+        ) return dataList[position]
         return null
     }
 
     /*--------------------------OutSide call method begin------------------------------*/
+
+    fun setNewData(list: List<FileItemBeanImpl>?) {
+        list?.let {
+            dataList.clear()
+            dataList.addAll(it)
+            notifyDataSetChanged()
+        }
+    }
+
     inline fun multipleCheckOrNo(
         item: FileItemBeanImpl,
         position: Int,
@@ -182,7 +191,7 @@ class FileListAdapter(
 
     fun disCheckAll() {
         dataList
-            ?.forEachIndexed { index, item ->
+            .forEachIndexed { index, item ->
                 if (!(config.isSkipDir && item.isDir) && item.isChecked()) {
                     item.setCheck(false)
                     notifyItemChanged(index, false)
@@ -193,7 +202,7 @@ class FileListAdapter(
     fun checkAll(hadSelectedCount: Int) {
         var checkCount = hadSelectedCount
         dataList
-            ?.forEachIndexed { index, item ->
+            .forEachIndexed { index, item ->
                 if (checkCount >= config.maxSelectable) {
                     return
                 }

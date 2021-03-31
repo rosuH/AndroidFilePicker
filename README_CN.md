@@ -67,10 +67,9 @@ dependencies {
 
 ### 权限
 
-此库需要两个权限：
+此库需要一个权限：
 
 - `android.permission.READ_EXTERNAL_STORAGE`
-- `android.permission.WRITE_EXTERNAL_STORAGE`
 
 如果您没有提前授予，这个库会自动申请该权限的。
 

@@ -15,11 +15,10 @@ import me.rosuh.filepicker.bean.FileNavBeanImpl
  * @date 2018/11/21
  */
 class FileNavAdapter(
-    private val activity: FilePickerActivity,
-    var data: MutableList<FileNavBeanImpl>
-) :
-    BaseAdapter() {
+    private val activity: FilePickerActivity
+) : BaseAdapter() {
     private lateinit var recyclerView: RecyclerView
+    val dataList: ArrayList<FileNavBeanImpl> = ArrayList(3)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         if (parent is RecyclerView) {
@@ -33,18 +32,26 @@ class FileNavAdapter(
     }
 
     override fun getItemCount(): Int {
-        return data.size
+        return dataList.size
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, postion: Int) {
-        (holder as NavListHolder).bind(data[postion], postion)
+        (holder as NavListHolder).bind(dataList[postion], postion)
     }
 
     override fun getItem(position: Int): FileNavBeanImpl? {
-        return if (position >= 0 && position < data.size) {
-            data[position]
+        return if (position >= 0 && position < dataList.size) {
+            dataList[position]
         } else {
             null
+        }
+    }
+
+    fun setNewData(list: List<FileNavBeanImpl>?) {
+        list?.let {
+            dataList.clear()
+            dataList.addAll(it)
+            notifyDataSetChanged()
         }
     }
 
