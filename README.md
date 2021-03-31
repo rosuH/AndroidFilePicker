@@ -64,10 +64,9 @@ Check out [releases page](https://github.com/rosuH/AndroidFilePicker/releases) t
 
 ### Permission
 
-The library requires two permissions:
+The library requires one permissions:
 
 - `android.permission.READ_EXTERNAL_STORAGE`
-- `android.permission.WRITE_EXTERNAL_STORAGE`
 
 If you do not have permission to apply, this framework will check and apply at startup.
 

@@ -17,13 +17,12 @@ class RecyclerViewFilePicker : RecyclerView {
 
     var emptyView: View? = null
         set(value) {
-            if (field != null) {
-                return
-            }
             field = value
             (this@RecyclerViewFilePicker.rootView as ViewGroup).addView(value)
             field?.visibility = View.GONE
         }
+
+    fun hasEmptyView(): Boolean = emptyView != null
 
     override fun setAdapter(adapter: Adapter<*>?) {
         super.setAdapter(adapter)
@@ -35,10 +34,20 @@ class RecyclerViewFilePicker : RecyclerView {
         object : AdapterDataObserver() {
             override fun onChanged() {
                 if (adapter?.itemCount ?: 0 == 0 && emptyView != null) {
-                    emptyView?.visibility = View.VISIBLE
+                    emptyView?.animate()
+                        ?.alpha(1f)
+                        ?.withEndAction {
+                            emptyView?.visibility = View.VISIBLE
+                        }
+                        ?.start()
                     this@RecyclerViewFilePicker.visibility = View.GONE
                 } else {
-                    emptyView?.visibility = View.GONE
+                    emptyView?.animate()
+                        ?.alpha(0f)
+                        ?.withEndAction {
+                            emptyView?.visibility = View.GONE
+                        }
+                        ?.start()
                     this@RecyclerViewFilePicker.visibility = View.VISIBLE
                 }
             }

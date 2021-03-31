@@ -71,6 +71,9 @@ class FileUtils {
                 )
                 return config.selfFilter?.doFilter(listData) ?: listData
             }
+            if (rootFile.listFiles().isNullOrEmpty()){
+                return listData
+            }
             for (file in rootFile.listFiles()) {
                 //以符号 . 开头的视为隐藏文件或隐藏文件夹，后面进行过滤
                 val isHiddenFile = file.name.startsWith(".")
