@@ -10,7 +10,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import me.rosuh.filepicker.R
-import me.rosuh.filepicker.utils.ScreenUtils
+import me.rosuh.filepicker.utils.dp
 
 /**
  * @author rosu
@@ -52,8 +52,8 @@ class GlideEngine : ImageEngine {
                     val thumbnailBitmap =
                         ThumbnailUtils.extractThumbnail(
                             resource,
-                            imageView.width.coerceAtLeast(ScreenUtils.dipToPx(context, 40f)),
-                            imageView.height.coerceAtLeast(ScreenUtils.dipToPx(context, 40f))
+                            imageView.width.coerceAtLeast(40.dp),
+                            imageView.height.coerceAtLeast(40.dp)
                         )
                     imageView.setImageBitmap(thumbnailBitmap)
                     return true

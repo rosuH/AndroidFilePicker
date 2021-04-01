@@ -1,13 +1,12 @@
 package me.rosuh.filepicker.adapter
 
-import android.app.Activity
+import android.content.res.Resources
 import android.support.v4.view.GestureDetectorCompat
 import android.support.v7.widget.RecyclerView
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import me.rosuh.filepicker.R
-import me.rosuh.filepicker.utils.ScreenUtils
 
 /**
  *
@@ -18,7 +17,6 @@ import me.rosuh.filepicker.utils.ScreenUtils
  *
  */
 class RecyclerViewListener(
-    val activity: Activity,
     val recyclerView: RecyclerView,
     val itemClickListener: OnItemClickListener
 ) :
@@ -70,7 +68,7 @@ class RecyclerViewListener(
 
     override fun onRequestDisallowInterceptTouchEvent(p0: Boolean) {}
 
-    private val screenWidth = ScreenUtils.getScreenWidthInPixel(activity)
+    private val screenWidth by lazy { Resources.getSystem().displayMetrics.widthPixels }
     private val iconRight = screenWidth * 0.1370
     private val checkBoxLeft = screenWidth * (1 - 0.1370)
 

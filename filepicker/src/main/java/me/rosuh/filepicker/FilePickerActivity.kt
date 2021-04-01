@@ -28,7 +28,7 @@ import me.rosuh.filepicker.bean.FileItemBeanImpl
 import me.rosuh.filepicker.bean.FileNavBeanImpl
 import me.rosuh.filepicker.config.FilePickerManager
 import me.rosuh.filepicker.utils.FileUtils
-import me.rosuh.filepicker.utils.ScreenUtils
+import me.rosuh.filepicker.utils.dp
 import me.rosuh.filepicker.widget.PosLinearLayoutManager
 import me.rosuh.filepicker.widget.RecyclerViewFilePicker
 import java.io.File
@@ -234,7 +234,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
                 ).apply {
                     addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
                     addRule(RelativeLayout.CENTER_VERTICAL)
-                    setMargins(0, 0, ScreenUtils.dipToPx(this@FilePickerActivity, 16f), 0)
+                    setMargins(0, 0, 16.dp, 0)
                 }
             }
             setOnClickListener(this@FilePickerActivity)
@@ -340,7 +340,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
         if (recyclerView == null) {
             return null
         }
-        return RecyclerViewListener(this@FilePickerActivity, recyclerView, this@FilePickerActivity)
+        return RecyclerViewListener(recyclerView, this@FilePickerActivity)
     }
 
     private val currPosMap: HashMap<String, Int> by lazy {
