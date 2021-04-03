@@ -1,7 +1,12 @@
 package me.rosuh.filepicker.utils
 
 import android.content.res.Resources
+import android.util.TypedValue
 
 
 val Int.dp: Int
-    get() = (Resources.getSystem().displayMetrics.densityDpi * this + 0.5f).toInt()
+    get() = TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_DIP,
+        this.toFloat(),
+        Resources.getSystem().displayMetrics
+    ).toInt()
