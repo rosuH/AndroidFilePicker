@@ -1,0 +1,24 @@
+version: 2
+updates:
+- package-ecosystem: gradle
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "21:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: com.squareup.picasso:picasso
+    versions:
+    - "> 2.5.2"
+  - dependency-name: junit:junit
+    versions:
+    - "> 4.12"
+  - dependency-name: org.jetbrains.kotlin:kotlin-stdlib-jdk7
+    versions:
+    - 1.4.31
+  - dependency-name: org.jetbrains.kotlin:kotlin-gradle-plugin
+    versions:
+    - 1.4.31
+  - dependency-name: com.android.tools.build:gradle
+    versions:
+    - 4.1.2
