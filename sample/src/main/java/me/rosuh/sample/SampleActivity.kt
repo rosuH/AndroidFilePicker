@@ -9,6 +9,7 @@ import android.support.v4.app.DialogFragment
 import android.support.v4.app.FragmentManager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -98,6 +99,32 @@ class SampleActivity : AppCompatActivity() {
                             ((item.isDir) || (item.fileType is RasterImageFileType))
                         })
                     }
+                })
+                .setItemClickListener(object : FileItemOnClickListener {
+                    override fun onItemClick(
+                        itemAdapter: FileListAdapter,
+                        itemView: View,
+                        position: Int
+                    ) {
+                        Log.i(TAG, "onItemClick: $itemAdapter, $itemView, $position")
+                    }
+
+                    override fun onItemChildClick(
+                        itemAdapter: FileListAdapter,
+                        itemView: View,
+                        position: Int
+                    ) {
+                        Log.i(TAG, "onItemChildClick: $itemAdapter, $itemView, $position")
+                    }
+
+                    override fun onItemLongClick(
+                        itemAdapter: FileListAdapter,
+                        itemView: View,
+                        position: Int
+                    ) {
+                        Log.i(TAG, "onItemLongClick: $itemAdapter, $itemView, $position")
+                    }
+
                 })
                 .forResult(FilePickerManager.REQUEST_CODE)
         }
@@ -279,5 +306,9 @@ class SampleActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    companion object {
+        const val TAG = "SampleActivity"
     }
 }

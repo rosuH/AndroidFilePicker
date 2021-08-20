@@ -8,5 +8,4 @@ package me.rosuh.filepicker.bean
 interface FileBean {
     var fileName: String
     var filePath: String
-    var beanSubscriber: BeanSubscriber
 }

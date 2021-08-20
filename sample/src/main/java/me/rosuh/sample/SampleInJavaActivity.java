@@ -17,7 +17,7 @@ public class SampleInJavaActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.demo_activity_main);
-        FilePickerManager.INSTANCE
+        FilePickerManager
                 .from(this)
                 .setItemClickListener(new FileItemOnClickListener() {
                     @Override

@@ -25,17 +25,17 @@
         android:singleLine="true"
         android:textColor="@color/shrine_text_color"
         android:textSize="16sp"
-        tools:text="SD 存储卡SD 存储卡SD" />
+        tools:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum." />
 
     <ImageView
         android:id="@+id/iv_icon_list_file_picker"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:scaleType="centerCrop"
         android:layout_centerVertical="true"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:contentDescription="File Icon" />
+        android:contentDescription="File Icon"
+        android:scaleType="centerCrop" />
 
     <CheckBox
         android:id="@+id/cb_list_file_picker"
@@ -49,10 +49,24 @@
         android:clickable="false"
         android:focusable="false" />
 
+    <RadioButton
+        android:id="@+id/rb_list_file_picker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:clickable="false"
+        android:focusable="false" />
+
     <View
         android:layout_width="match_parent"
-        android:layout_height="2dp"
+        android:layout_height="0.5dp"
         android:layout_alignParentBottom="true"
         android:background="#EEEEEE"
-        android:orientation="horizontal" />
+        android:orientation="horizontal"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp" />
 </RelativeLayout>

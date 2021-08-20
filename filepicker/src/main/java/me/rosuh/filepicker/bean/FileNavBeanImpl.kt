@@ -12,8 +12,4 @@ class FileNavBeanImpl(val dirName: String, val dirPath: String) : FileBean {
     override var filePath: String
         get() = dirPath
         set(value) {}
-
-    override var beanSubscriber: BeanSubscriber
-        get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
-        set(value) {}
 }

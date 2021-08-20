@@ -20,6 +20,7 @@ object FilePickerManager {
     internal var fragmentRef: WeakReference<Fragment>? = null
     internal lateinit var config: FilePickerConfig
 
+    @JvmStatic
     fun from(activity: Activity): FilePickerConfig {
         reset()
         this.contextRef = WeakReference(activity)
@@ -30,6 +31,7 @@ object FilePickerManager {
     /**
      * 不能使用 fragmentRef.getContext()，因为无法保证外部的代码环境
      */
+    @JvmStatic
     fun from(fragment: Fragment): FilePickerConfig {
         reset()
         this.fragmentRef = WeakReference(fragment)
@@ -52,6 +54,7 @@ object FilePickerManager {
      * @return List<String>
      */
     @JvmOverloads
+    @JvmStatic
     fun obtainData(release: Boolean = false): List<String> {
         if (release) {
             release()
@@ -69,6 +72,7 @@ object FilePickerManager {
      * 释放资源与重置属性
      * Release resources and reset attributes
      */
+    @JvmStatic
     fun release() {
         reset()
         if (this::config.isInitialized) {

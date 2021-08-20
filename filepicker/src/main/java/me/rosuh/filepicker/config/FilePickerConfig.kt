@@ -188,6 +188,7 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
         return this
     }
 
+    // fixme Improve the item click event, which can be intercept by lib users.
     fun setItemClickListener(fileItemOnClickListener: FileItemOnClickListener): FilePickerConfig {
         this.fileItemOnClickListener = fileItemOnClickListener
         return this
@@ -219,12 +220,12 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
      * 中的 id，并且包含一个可传入 Int 类型参数的占位符
      *----------------------------------------------------------------------------------------------
      * Set the string of the interface, including:
-     * Select all [selectAllString]
-     * Uncheck [unSelectAllString]
-     * Selected [hadSelectedStrRes]
-     * Confirm [confirmText]
-     * Multiple selection limit prompt: "You can only select 1 item" [maxSelectCountTipsStrRes]
-     * Empty tries to look at the stereo: "empty as well" [emptyListTips]
+     * Select all [selectAllString]
+     * Uncheck [unSelectAllString]
+     * Selected [hadSelectedStrRes]
+     * Confirm [confirmText]
+     * Multiple selection limit prompt: "You can only select 1 item" [maxSelectCountTipsStrRes]
+     * Empty tries to look at the stereo: "empty as well" [emptyListTips]
      * Note:
      * [hadSelectedStrRes] and [maxSelectCountTipsStrRes] are strings of String format restrictions, you need to pass some string like [R.string.file_picker_selected_count]
      * The id in * and contains a placeholder for passing in an Int type parameter
@@ -275,12 +276,12 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
     }
 
     fun forResult(requestCode: Int) {
-        val activity = pickerManager.contextRef?.get()!!
+        val activity = pickerManager.contextRef?.get()
         val fragment = pickerManager.fragmentRef?.get()
 
         val intent = Intent(activity, FilePickerActivity::class.java)
         if (fragment == null) {
-            activity.startActivityForResult(intent, requestCode)
+            activity?.startActivityForResult(intent, requestCode)
         } else {
             fragment.startActivityForResult(intent, requestCode)
         }
