@@ -9,6 +9,7 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
 import me.rosuh.filepicker.R
 import me.rosuh.filepicker.utils.dp
 
@@ -30,35 +31,8 @@ class GlideEngine : ImageEngine {
         Glide.with(context)
             .asBitmap()
             .load(url)
-            .addListener(object : RequestListener<Bitmap?> {
-                override fun onLoadFailed(
-                    e: GlideException?,
-                    model: Any?,
-                    target: Target<Bitmap?>?,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    imageView.setImageResource(R.drawable.ic_unknown_file_picker)
-                    return true
-                }
-
-                override fun onResourceReady(
-                    resource: Bitmap?,
-                    model: Any?,
-                    target: Target<Bitmap?>?,
-                    dataSource: DataSource?,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    // Create thumbnail for better effect.
-                    val thumbnailBitmap =
-                        ThumbnailUtils.extractThumbnail(
-                            resource,
-                            imageView.width.coerceAtLeast(40.dp),
-                            imageView.height.coerceAtLeast(40.dp)
-                        )
-                    imageView.setImageBitmap(thumbnailBitmap)
-                    return true
-                }
-            })
+            .override(imageView.width.coerceAtLeast(40.dp))
+            .error(R.drawable.ic_unknown_file_picker)
             .into(imageView)
     }
 }
