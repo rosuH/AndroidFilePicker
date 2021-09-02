@@ -382,6 +382,15 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerVi
         }
         when (view.id) {
             R.id.item_list_file_picker -> {
+                // Check the lib users whether if intercept the click event.
+                val hookItemClick = FilePickerManager.config.itemClickListener?.onItemClick(
+                    adapter as FileListAdapter,
+                    view,
+                    position
+                ) == true
+                if (hookItemClick) {
+                    return
+                }
                 if (file.isDirectory) {
                     (rvNav?.adapter as? FileNavAdapter)?.let {
                         saveCurrPos(it.dataList.last(), position)
@@ -424,6 +433,15 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerVi
             }
             else -> {
                 val item = (adapter as FileListAdapter).getItem(position) ?: return
+                // Check the lib users whether if intercept the click event.
+                val hookItemClick = FilePickerManager.config.itemClickListener?.onItemChildClick(
+                    adapter,
+                    view,
+                    position
+                ) == true
+                if (hookItemClick) {
+                    return
+                }
                 // 文件夹直接进入
                 // if it's Dir, enter directly
                 if (item.isDir && pickerConfig.isSkipDir) {
@@ -454,14 +472,36 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerVi
         position: Int
     ) {
         if (view.id != R.id.item_list_file_picker) return
-        val item = (adapter as FileListAdapter).getItem(position)
-        item ?: return
+        val item = (adapter as FileListAdapter).getItem(position)?: return
+        // Check the lib users whether if intercept the click event.
+        val hookItemClick = FilePickerManager.config.itemClickListener?.onItemLongClick(
+            adapter,
+            view,
+            position
+        ) == true
+        if (hookItemClick) {
+            return
+        }
         val file = File(item.filePath)
         val isSkipDir = FilePickerManager.config.isSkipDir
-        // 如果是文件夹并且没有略过文件夹
+        // current item is directory and should skip directory, because long click would make the item been selected.
         if (file.exists() && file.isDirectory && isSkipDir) return
         // same action like child click
-        onItemChildClick(adapter, view, position)
+        if (item.isDir && pickerConfig.isSkipDir) {
+            enterDirAndUpdateUI(item)
+            return
+        }
+        if (pickerConfig.singleChoice) {
+            listAdapter.singleCheck(position)
+        } else {
+            listAdapter.multipleCheckOrNo(item, position, ::isCanSelect) {
+                Toast.makeText(
+                    this@FilePickerActivity.applicationContext,
+                    getString(pickerConfig.maxSelectCountTips, maxSelectable),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
         // notify listener
         FilePickerManager.config.fileItemOnClickListener?.onItemLongClick(adapter, view, position)
     }

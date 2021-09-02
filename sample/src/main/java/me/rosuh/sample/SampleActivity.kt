@@ -151,6 +151,35 @@ class SampleActivity : AppCompatActivity() {
                         })
                     }
                 })
+                .setItemClickListener(object :ItemClickListener {
+                    override fun onItemClick(
+                        itemAdapter: FileListAdapter,
+                        itemView: View,
+                        position: Int
+                    ): Boolean {
+                        Toast.makeText(itemView.context, "OnItemClick#$position", Toast.LENGTH_SHORT).show()
+                        return false
+                    }
+
+                    override fun onItemChildClick(
+                        itemAdapter: FileListAdapter,
+                        itemView: View,
+                        position: Int
+                    ): Boolean {
+                        Toast.makeText(itemView.context, "onItemChildClick#$position", Toast.LENGTH_SHORT).show()
+                        return true
+                    }
+
+                    override fun onItemLongClick(
+                        itemAdapter: FileListAdapter,
+                        itemView: View,
+                        position: Int
+                    ): Boolean {
+                        Toast.makeText(itemView.context, "onItemLongClick#$position", Toast.LENGTH_SHORT).show()
+                        return false
+                    }
+
+                })
                 .skipDirWhenSelect(false)
                 .forResult(FilePickerManager.REQUEST_CODE)
         }
