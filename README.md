@@ -32,7 +32,7 @@ It depends on your targetAPI:
 - `targetAPI == 29`, please enable `requestLegacyExternalStorage` feature for your project :D
 - `targetAPI >= 30`, don't use this lib. We don't support scope storage for now :(
     - Unless Google release new external permission or other new feature, we would not consider support scope storage. (or says: "I can't do this")
-    - Or, ofcouse, you are welcome for give us some ideas. Just create a new issues.
+    - Or, of course, you are welcomed for give us some ideas. Just create a new issues.
 
 ## Download
 
@@ -70,22 +70,12 @@ The library requires one permissions:
 
 If you do not have permission to apply, this framework will check and apply at startup.
 
-### Launch 🚀 (Kotlin)
+### Launch 🚀 
 
-```java
+```kotlin
 FilePickerManager
-        .from(this@SampleActivity)
+        .from(context)
         .forResult(FilePickerManager.REQUEST_CODE)
-```
-
-Now that you have taken off 🛩️ ... ( there are really only two lines )
-
-You only need to add `.INSTANCE` to use it:
-
-```java
-FilePickerManager.INSTANCE
-                .from(this)
-                .forResult(FilePickerManager.REQUEST_CODE);
 ```
 
 
@@ -111,21 +101,6 @@ override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) 
 
 The result is a path list of the selected file (`ArrayList<String>()`).
 
-## proguard-rules(For pre v0.5.1)
-
-```pro
--keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
--keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
--keepnames class kotlinx.coroutines.android.AndroidExceptionPreHandler {}
--keepnames class kotlinx.coroutines.android.AndroidDispatcherFactory {}
-
--keepclassmembernames class kotlinx.** {
-    volatile <fields>;
-}
-
-```
-
-Starting with 0.5.2, we removed the coroutine library and implemented it using native threads, so there is no need to add proguard-rules.
 
 ## Docs
 
