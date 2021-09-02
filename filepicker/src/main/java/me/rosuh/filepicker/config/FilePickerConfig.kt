@@ -86,7 +86,7 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
      */
     @Deprecated(
         "Use 'register' function instead.",
-        ReplaceWith("registerFileType(types)"),
+        replaceWith = ReplaceWith("me.rosuh.filepicker.config.FilePickerConfig.registerFileType()"),
         level = DeprecationLevel.WARNING
     )
     var customDetector: AbstractFileDetector? = null
@@ -96,7 +96,14 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
     /**
      * 点击操作接口，采用默认实现
      */
+    @Deprecated("Check the itemClickListener")
     var fileItemOnClickListener: FileItemOnClickListener? = null
+        private set
+
+    /**
+     * 点击操作接口
+     */
+    var itemClickListener: ItemClickListener? = null
         private set
 
     /**
@@ -188,8 +195,26 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
         return this
     }
 
+    /**
+     * This method would be removed in 0.8.0.
+     * Try to using [ItemClickListener] which the below one.
+     * @author hi@rosuh.me
+    */
+    @Deprecated("It's not flexible enough.", replaceWith = ReplaceWith("me.rosuh.filepicker.config.FilePickerConfig.setItemClickListener"))
     fun setItemClickListener(fileItemOnClickListener: FileItemOnClickListener): FilePickerConfig {
         this.fileItemOnClickListener = fileItemOnClickListener
+        return this
+    }
+
+    /**
+     * Setting item click listener which can intercept click event.
+     * @author hi@rosuh.me
+     * @since 0.7.2
+    */
+    fun setItemClickListener(
+        itemClickListener: ItemClickListener
+    ): FilePickerConfig {
+        this.itemClickListener = itemClickListener
         return this
     }
 
@@ -219,12 +244,12 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
      * 中的 id，并且包含一个可传入 Int 类型参数的占位符
      *----------------------------------------------------------------------------------------------
      * Set the string of the interface, including:
-     * Select all [selectAllString]
-     * Uncheck [unSelectAllString]
-     * Selected [hadSelectedStrRes]
-     * Confirm [confirmText]
-     * Multiple selection limit prompt: "You can only select 1 item" [maxSelectCountTipsStrRes]
-     * Empty tries to look at the stereo: "empty as well" [emptyListTips]
+     * Select all [selectAllString]
+     * Uncheck [unSelectAllString]
+     * Selected [hadSelectedStrRes]
+     * Confirm [confirmText]
+     * Multiple selection limit prompt: "You can only select 1 item" [maxSelectCountTipsStrRes]
+     * Empty tries to look at the stereo: "empty as well" [emptyListTips]
      * Note:
      * [hadSelectedStrRes] and [maxSelectCountTipsStrRes] are strings of String format restrictions, you need to pass some string like [R.string.file_picker_selected_count]
      * The id in * and contains a placeholder for passing in an Int type parameter
@@ -275,12 +300,12 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
     }
 
     fun forResult(requestCode: Int) {
-        val activity = pickerManager.contextRef?.get()!!
+        val activity = pickerManager.contextRef?.get()
         val fragment = pickerManager.fragmentRef?.get()
 
         val intent = Intent(activity, FilePickerActivity::class.java)
         if (fragment == null) {
-            activity.startActivityForResult(intent, requestCode)
+            activity?.startActivityForResult(intent, requestCode)
         } else {
             fragment.startActivityForResult(intent, requestCode)
         }

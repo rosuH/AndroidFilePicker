@@ -36,7 +36,7 @@ class RecyclerViewFilePicker : RecyclerView {
                 if (adapter?.itemCount ?: 0 == 0 && emptyView != null) {
                     emptyView?.animate()
                         ?.alpha(1f)
-                        ?.withEndAction {
+                        ?.withStartAction {
                             emptyView?.visibility = View.VISIBLE
                         }
                         ?.start()

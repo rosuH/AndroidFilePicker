@@ -9,6 +9,7 @@ import android.support.v4.app.DialogFragment
 import android.support.v4.app.FragmentManager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -99,6 +100,32 @@ class SampleActivity : AppCompatActivity() {
                         })
                     }
                 })
+                .setItemClickListener(object : FileItemOnClickListener {
+                    override fun onItemClick(
+                        itemAdapter: FileListAdapter,
+                        itemView: View,
+                        position: Int
+                    ) {
+                        Log.i(TAG, "onItemClick: $itemAdapter, $itemView, $position")
+                    }
+
+                    override fun onItemChildClick(
+                        itemAdapter: FileListAdapter,
+                        itemView: View,
+                        position: Int
+                    ) {
+                        Log.i(TAG, "onItemChildClick: $itemAdapter, $itemView, $position")
+                    }
+
+                    override fun onItemLongClick(
+                        itemAdapter: FileListAdapter,
+                        itemView: View,
+                        position: Int
+                    ) {
+                        Log.i(TAG, "onItemLongClick: $itemAdapter, $itemView, $position")
+                    }
+
+                })
                 .forResult(FilePickerManager.REQUEST_CODE)
         }
 
@@ -123,6 +150,35 @@ class SampleActivity : AppCompatActivity() {
                             item.isDir
                         })
                     }
+                })
+                .setItemClickListener(object :ItemClickListener {
+                    override fun onItemClick(
+                        itemAdapter: FileListAdapter,
+                        itemView: View,
+                        position: Int
+                    ): Boolean {
+                        Toast.makeText(itemView.context, "OnItemClick#$position", Toast.LENGTH_SHORT).show()
+                        return false
+                    }
+
+                    override fun onItemChildClick(
+                        itemAdapter: FileListAdapter,
+                        itemView: View,
+                        position: Int
+                    ): Boolean {
+                        Toast.makeText(itemView.context, "onItemChildClick#$position", Toast.LENGTH_SHORT).show()
+                        return true
+                    }
+
+                    override fun onItemLongClick(
+                        itemAdapter: FileListAdapter,
+                        itemView: View,
+                        position: Int
+                    ): Boolean {
+                        Toast.makeText(itemView.context, "onItemLongClick#$position", Toast.LENGTH_SHORT).show()
+                        return false
+                    }
+
                 })
                 .skipDirWhenSelect(false)
                 .forResult(FilePickerManager.REQUEST_CODE)
@@ -279,5 +335,9 @@ class SampleActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    companion object {
+        const val TAG = "SampleActivity"
     }
 }

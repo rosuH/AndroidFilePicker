@@ -3,13 +3,14 @@ package me.rosuh.filepicker.utils
 import android.content.Context
 import android.os.Environment
 import me.rosuh.filepicker.R
-import me.rosuh.filepicker.bean.BeanSubscriber
 import me.rosuh.filepicker.bean.FileItemBeanImpl
 import me.rosuh.filepicker.bean.FileNavBeanImpl
 import me.rosuh.filepicker.config.FilePickerConfig.Companion.STORAGE_CUSTOM_ROOT_PATH
 import me.rosuh.filepicker.config.FilePickerConfig.Companion.STORAGE_EXTERNAL_STORAGE
 import me.rosuh.filepicker.config.FilePickerManager.config
 import java.io.File
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  *
@@ -46,8 +47,7 @@ class FileUtils {
          * 获取给定文件对象[rootFile]下的所有文件，生成列表项对象
          */
         fun produceListDataSource(
-            rootFile: File,
-            beanSubscriber: BeanSubscriber
+            rootFile: File
         ): ArrayList<FileItemBeanImpl> {
             val listData: ArrayList<FileItemBeanImpl> = ArrayList()
             var isDetected = false
@@ -65,8 +65,7 @@ class FileUtils {
                         false,
                         null,
                         isDir = true,
-                        isHide = false,
-                        beanSubscriber = beanSubscriber
+                        isHide = false
                     )
                 )
                 return config.selfFilter?.doFilter(listData) ?: listData
@@ -89,8 +88,7 @@ class FileUtils {
                             false,
                             null,
                             true,
-                            isHiddenFile,
-                            beanSubscriber
+                            isHiddenFile
                         )
                     )
                     continue
@@ -101,8 +99,7 @@ class FileUtils {
                     false,
                     null,
                     false,
-                    isHiddenFile,
-                    beanSubscriber
+                    isHiddenFile
                 )
                 // 如果调用者没有实现文件类型甄别器，则使用的默认甄别器
                 config.customDetector?.fillFileType(itemBean)
@@ -120,7 +117,7 @@ class FileUtils {
 
             // 默认字典排序
             // Default sort by alphabet
-            listData.sortWith(compareBy({ !it.isDir }, { it.fileName.toUpperCase() }))
+            listData.sortWith(compareBy({ !it.isDir }, { it.fileName.uppercase(Locale.getDefault()) }))
             // 将当前列表数据暴露，以供调用者自己处理数据
             // expose data list  to outside caller
             return config.selfFilter?.doFilter(listData) ?: listData

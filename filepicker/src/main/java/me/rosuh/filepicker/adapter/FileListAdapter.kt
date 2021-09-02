@@ -1,21 +1,21 @@
 package me.rosuh.filepicker.adapter
 
+import android.support.v4.util.ArraySet
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
-import android.widget.ImageView
-import android.widget.RadioButton
-import android.widget.TextView
+import android.widget.*
 import me.rosuh.filepicker.FilePickerActivity
 import me.rosuh.filepicker.R
+import me.rosuh.filepicker.bean.FileBean
 import me.rosuh.filepicker.bean.FileItemBeanImpl
 import me.rosuh.filepicker.config.FilePickerManager.config
 import me.rosuh.filepicker.engine.ImageLoadController
 import me.rosuh.filepicker.filetype.RasterImageFileType
 import me.rosuh.filepicker.filetype.VideoFileType
-import java.io.File
+import me.rosuh.filepicker.utils.FileListAdapterListener
+import me.rosuh.filepicker.utils.FileListAdapterListenerBuilder
 
 /**
  *
@@ -31,30 +31,30 @@ class FileListAdapter(
     private var latestChoicePos = -1
     private lateinit var recyclerView: RecyclerView
 
+    private var listener: FileListAdapterListener? = null
+
+    fun addListener(block: FileListAdapterListenerBuilder.() -> Unit) {
+        this.listener = FileListAdapterListenerBuilder().also(block)
+    }
+
+    private val checkedSet: ArraySet<FileBean> by lazy {
+        ArraySet(20)
+    }
+
+    val checkedCount: Int
+        get() = checkedSet.count()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         if (parent is RecyclerView) {
             recyclerView = parent
         }
-        return when (isSingleChoice) {
-            true -> {
-                FileListItemSingleChoiceHolder(
-                    LayoutInflater.from(context).inflate(
-                        R.layout.item_single_choise_list_file_picker,
-                        parent,
-                        false
-                    )
-                )
-            }
-            else -> {
-                FileListItemHolder(
-                    LayoutInflater.from(context).inflate(
-                        R.layout.item_list_file_picker,
-                        parent,
-                        false
-                    )
-                )
-            }
-        }
+        return FileListItemHolder(
+            LayoutInflater.from(context).inflate(
+                R.layout.item_list_file_picker,
+                parent,
+                false
+            )
+        )
     }
 
     override fun getItemView(position: Int): View? {
@@ -84,18 +84,7 @@ class FileListAdapter(
             onBindViewHolder(holder, position)
             return
         }
-        when (holder) {
-            is FileListItemHolder -> {
-                holder.itemView.findViewById<CheckBox>(R.id.cb_list_file_picker)?.let {
-                    it.isChecked = getItem(position)?.isChecked() ?: false
-                }
-            }
-            is FileListItemSingleChoiceHolder -> {
-                holder.itemView.findViewById<RadioButton>(R.id.rb_list_file_picker)?.let {
-                    it.isChecked = getItem(position)?.isChecked() ?: false
-                }
-            }
-        }
+        (holder as FileListItemHolder).check(getItem(position)?.isChecked() ?: false)
     }
 
     override fun getItem(position: Int): FileItemBeanImpl? {
@@ -105,6 +94,109 @@ class FileListAdapter(
         ) return dataList[position]
         return null
     }
+
+    /*--------------------------ViewHolder Begin------------------------------*/
+
+    abstract inner class BaseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        abstract fun bind(itemImpl: FileItemBeanImpl, position: Int)
+    }
+
+
+    inner class FileListItemHolder(itemView: View) :
+        BaseViewHolder(itemView) {
+
+        private val isSkipDir: Boolean = config.isSkipDir
+        private val tvFileName = itemView.findViewById<TextView>(R.id.tv_list_file_picker)!!
+        private val checkBox = itemView.findViewById<CheckBox>(R.id.cb_list_file_picker)!!
+        private val ivIcon = itemView.findViewById<ImageView>(R.id.iv_icon_list_file_picker)!!
+        private val radioButton = itemView.findViewById<RadioButton>(R.id.rb_list_file_picker)!!
+
+        fun check(isCheck: Boolean) {
+            if (config.singleChoice) {
+                radioButton.isChecked = isCheck
+            } else {
+                checkBox.isChecked = isCheck
+            }
+        }
+
+        private fun onCheck(
+            itemImpl: FileItemBeanImpl,
+            buttonView: CompoundButton,
+            isChecked: Boolean,
+            position: Int
+        ) {
+            if (isChecked) {
+                checkedSet.add(itemImpl)
+            } else {
+                checkedSet.remove(itemImpl)
+            }
+            itemImpl.setCheck(isChecked)
+            listener?.onCheckSizeChanged(checkedCount)
+//            listener?.onCheck(isChecked, buttonView, position)
+        }
+
+        override fun bind(itemImpl: FileItemBeanImpl, position: Int) {
+            tvFileName.text = itemImpl.fileName
+            checkBox.apply {
+                tag = itemImpl
+                visibility = when {
+                    (isSkipDir && itemImpl.isDir) || config.singleChoice -> {
+                        View.GONE
+                    }
+                    else -> {
+                        View.VISIBLE
+                    }
+                }
+                setOnCheckedChangeListener { buttonView, isChecked ->
+                    if (tag != itemImpl) return@setOnCheckedChangeListener
+                    onCheck(itemImpl, buttonView, isChecked, position)
+                }
+                isChecked = itemImpl.isChecked()
+            }
+
+            radioButton.apply {
+                tag = itemImpl
+                visibility = when {
+                    (isSkipDir && itemImpl.isDir) || !config.singleChoice -> {
+                        View.GONE
+                    }
+                    else -> {
+                        View.VISIBLE
+                    }
+                }
+                setOnCheckedChangeListener { buttonView, isChecked ->
+                    if (tag != itemImpl) return@setOnCheckedChangeListener
+                    onCheck(itemImpl, buttonView, isChecked, position)
+                }
+                isChecked = itemImpl.isChecked()
+            }
+
+            when {
+                itemImpl.isDir -> {
+                    ivIcon.setImageResource(R.drawable.ic_folder_file_picker)
+                }
+                else -> {
+                    val resId: Int =
+                        itemImpl.fileType?.fileIconResId ?: R.drawable.ic_unknown_file_picker
+                    when (itemImpl.fileType) {
+                        is RasterImageFileType, is VideoFileType -> {
+                            ImageLoadController.load(
+                                context,
+                                ivIcon,
+                                itemImpl.filePath,
+                                resId
+                            )
+                        }
+                        else -> {
+                            ivIcon.setImageResource(resId)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /*--------------------------ViewHolder End------------------------------*/
 
     /*--------------------------OutSide call method begin------------------------------*/
 
@@ -194,128 +286,34 @@ class FileListAdapter(
             .forEachIndexed { index, item ->
                 if (!(config.isSkipDir && item.isDir) && item.isChecked()) {
                     item.setCheck(false)
+                    checkedSet.remove(item)
+                    listener?.onCheckSizeChanged(checkedCount)
                     notifyItemChanged(index, false)
                 }
             }
     }
 
-    fun checkAll(hadSelectedCount: Int) {
-        var checkCount = hadSelectedCount
+    fun checkAll() {
         dataList
             .forEachIndexed { index, item ->
-                if (checkCount >= config.maxSelectable) {
+                if (checkedSet.size >= config.maxSelectable) {
                     return
                 }
                 if (!(config.isSkipDir && item.isDir) && !item.isChecked()) {
                     item.setCheck(true)
+                    checkedSet.add(item)
+                    listener?.onCheckSizeChanged(checkedCount)
                     notifyItemChanged(index, true)
-                    checkCount++
                 }
             }
+    }
+
+    fun resetCheck() {
+        checkedSet.clear()
     }
 
 
     /*--------------------------OutSide call method end------------------------------*/
-
-    /*--------------------------ViewHolder Begin------------------------------*/
-
-    abstract inner class BaseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        abstract fun bind(itemImpl: FileItemBeanImpl, position: Int)
-    }
-
-    /**
-     * Single choice view holder
-     */
-    inner class FileListItemSingleChoiceHolder(itemView: View) :
-        BaseViewHolder(itemView) {
-
-        private val isSkipDir: Boolean = config.isSkipDir
-        private val mTvFileName = itemView.findViewById<TextView>(R.id.tv_list_file_picker)!!
-        private val mRbItem = itemView.findViewById<RadioButton>(R.id.rb_list_file_picker)!!
-        private val mIcon = itemView.findViewById<ImageView>(R.id.iv_icon_list_file_picker)!!
-        private var mItemBeanImpl: FileItemBeanImpl? = null
-        private var mPosition: Int? = null
-
-        override fun bind(itemImpl: FileItemBeanImpl, position: Int) {
-            mItemBeanImpl = itemImpl
-            mPosition = position
-
-            mTvFileName.text = itemImpl.fileName
-            mRbItem.isChecked = itemImpl.isChecked()
-            mRbItem.visibility = View.VISIBLE
-
-            val isDir = File(itemImpl.filePath).isDirectory
-
-            if (isDir) {
-                mIcon.setImageResource(R.drawable.ic_folder_file_picker)
-                mRbItem.visibility = if (isSkipDir) View.GONE else View.VISIBLE
-                return
-            }
-
-            val resId: Int = itemImpl.fileType?.fileIconResId ?: R.drawable.ic_unknown_file_picker
-            when (itemImpl.fileType) {
-                is RasterImageFileType, is VideoFileType -> {
-                    ImageLoadController.load(
-                        context,
-                        mIcon,
-                        itemImpl.filePath,
-                        resId
-                    )
-                }
-                else -> {
-                    mIcon.setImageResource(resId)
-                }
-            }
-        }
-    }
-
-    /**
-     * Multiple choice view holder
-     */
-    inner class FileListItemHolder(itemView: View) :
-        BaseViewHolder(itemView) {
-
-        private val isSkipDir: Boolean = config.isSkipDir
-        private val mTvFileName = itemView.findViewById<TextView>(R.id.tv_list_file_picker)!!
-        private val mCbItem = itemView.findViewById<CheckBox>(R.id.cb_list_file_picker)!!
-        private val mIcon = itemView.findViewById<ImageView>(R.id.iv_icon_list_file_picker)!!
-        private var mItemBeanImpl: FileItemBeanImpl? = null
-        private var mPosition: Int? = null
-
-
-        override fun bind(itemImpl: FileItemBeanImpl, position: Int) {
-            mItemBeanImpl = itemImpl
-            mPosition = position
-            mTvFileName.text = itemImpl.fileName
-            mCbItem.isChecked = itemImpl.isChecked()
-            mCbItem.visibility = View.VISIBLE
-
-            val isDir = File(itemImpl.filePath).isDirectory
-
-            if (isDir) {
-                mIcon.setImageResource(R.drawable.ic_folder_file_picker)
-                mCbItem.visibility = if (isSkipDir) View.GONE else View.VISIBLE
-                return
-            }
-
-            val resId: Int = itemImpl.fileType?.fileIconResId ?: R.drawable.ic_unknown_file_picker
-            when (itemImpl.fileType) {
-                is RasterImageFileType, is VideoFileType -> {
-                    ImageLoadController.load(
-                        context,
-                        mIcon,
-                        itemImpl.filePath,
-                        resId
-                    )
-                }
-                else -> {
-                    mIcon.setImageResource(resId)
-                }
-            }
-        }
-    }
-
-    /*--------------------------ViewHolder End------------------------------*/
     companion object {
         const val DEFAULT_FILE_TYPE = 10001
     }

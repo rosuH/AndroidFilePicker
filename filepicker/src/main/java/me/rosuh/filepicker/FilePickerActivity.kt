@@ -9,6 +9,7 @@ import android.os.*
 import android.os.Environment.MEDIA_MOUNTED
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.support.v4.util.ArrayMap
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
@@ -22,30 +23,24 @@ import me.rosuh.filepicker.adapter.BaseAdapter
 import me.rosuh.filepicker.adapter.FileListAdapter
 import me.rosuh.filepicker.adapter.FileNavAdapter
 import me.rosuh.filepicker.adapter.RecyclerViewListener
-import me.rosuh.filepicker.bean.BeanSubscriber
 import me.rosuh.filepicker.bean.FileBean
 import me.rosuh.filepicker.bean.FileItemBeanImpl
 import me.rosuh.filepicker.bean.FileNavBeanImpl
 import me.rosuh.filepicker.config.FilePickerManager
 import me.rosuh.filepicker.utils.FileUtils
-import me.rosuh.filepicker.utils.ScreenUtils
+import me.rosuh.filepicker.utils.dp
 import me.rosuh.filepicker.widget.PosLinearLayoutManager
 import me.rosuh.filepicker.widget.RecyclerViewFilePicker
 import java.io.File
-import java.util.concurrent.BlockingQueue
-import java.util.concurrent.LinkedBlockingQueue
-import java.util.concurrent.ThreadPoolExecutor
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.*
 
 @SuppressLint("ShowToast")
-class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
-    RecyclerViewListener.OnItemClickListener,
-    BeanSubscriber {
+class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerViewListener.OnItemClickListener{
 
     private var rvList: RecyclerViewFilePicker? = null
     private var rvNav: RecyclerView? = null
     private var srl: SwipeRefreshLayout? = null
-    private var tvToobarTitle: TextView? = null
+    private var tvToolbarTitle: TextView? = null
     private var btnConfirm: Button? = null
     private var btnSelectedAll: Button? = null
     private var btnGoBack: ImageView? = null
@@ -89,7 +84,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
                 }
             }
 
-            val listData = FileUtils.produceListDataSource(rootFile, this@FilePickerActivity)
+            val listData = FileUtils.produceListDataSource(rootFile)
             // 导航栏数据集
             navDataSource = FileUtils.produceNavDataSource(
                 navDataSource,
@@ -114,7 +109,13 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
         FileListAdapter(
             this@FilePickerActivity,
             FilePickerManager.config.singleChoice
-        )
+        ).apply {
+            addListener {
+                onCheckSizeChanged {
+                    updateItemUI()
+                }
+            }
+        }
     }
 
     /**
@@ -132,7 +133,8 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
     /**
      * 文件夹为空时展示的空视图
      */
-    private var selectedCount: Int = 0
+    private val selectedCount
+        get() = listAdapter.checkedCount
     private val maxSelectable = FilePickerManager.config.maxSelectable
     private val pickerConfig by lazy { FilePickerManager.config }
     private var fileListListener: RecyclerViewListener? = null
@@ -234,7 +236,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
                 ).apply {
                     addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
                     addRule(RelativeLayout.CENTER_VERTICAL)
-                    setMargins(0, 0, ScreenUtils.dipToPx(this@FilePickerActivity, 16f), 0)
+                    setMargins(0, 0, 16.dp, 0)
                 }
             }
             setOnClickListener(this@FilePickerActivity)
@@ -242,8 +244,8 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
                 text = it
             }
         }
-        tvToobarTitle = findViewById<TextView>(R.id.tv_toolbar_title_file_picker)
-        tvToobarTitle?.visibility = if (pickerConfig.singleChoice) {
+        tvToolbarTitle = findViewById<TextView>(R.id.tv_toolbar_title_file_picker)
+        tvToolbarTitle?.visibility = if (pickerConfig.singleChoice) {
             View.GONE
         } else {
             View.VISIBLE
@@ -340,14 +342,14 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
         if (recyclerView == null) {
             return null
         }
-        return RecyclerViewListener(this@FilePickerActivity, recyclerView, this@FilePickerActivity)
+        return RecyclerViewListener(recyclerView, this@FilePickerActivity)
     }
 
-    private val currPosMap: HashMap<String, Int> by lazy {
-        HashMap(4)
+    private val currPosMap: ArrayMap<String, Int> by lazy {
+        ArrayMap(4)
     }
-    private val currOffsetMap: HashMap<String, Int> by lazy {
-        HashMap(4)
+    private val currOffsetMap: ArrayMap<String, Int> by lazy {
+        ArrayMap(4)
     }
 
     /**
@@ -380,6 +382,15 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
         }
         when (view.id) {
             R.id.item_list_file_picker -> {
+                // Check the lib users whether if intercept the click event.
+                val hookItemClick = FilePickerManager.config.itemClickListener?.onItemClick(
+                    adapter as FileListAdapter,
+                    view,
+                    position
+                ) == true
+                if (hookItemClick) {
+                    return
+                }
                 if (file.isDirectory) {
                     (rvNav?.adapter as? FileNavAdapter)?.let {
                         saveCurrPos(it.dataList.last(), position)
@@ -422,6 +433,15 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
             }
             else -> {
                 val item = (adapter as FileListAdapter).getItem(position) ?: return
+                // Check the lib users whether if intercept the click event.
+                val hookItemClick = FilePickerManager.config.itemClickListener?.onItemChildClick(
+                    adapter,
+                    view,
+                    position
+                ) == true
+                if (hookItemClick) {
+                    return
+                }
                 // 文件夹直接进入
                 // if it's Dir, enter directly
                 if (item.isDir && pickerConfig.isSkipDir) {
@@ -452,14 +472,36 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
         position: Int
     ) {
         if (view.id != R.id.item_list_file_picker) return
-        val item = (adapter as FileListAdapter).getItem(position)
-        item ?: return
+        val item = (adapter as FileListAdapter).getItem(position)?: return
+        // Check the lib users whether if intercept the click event.
+        val hookItemClick = FilePickerManager.config.itemClickListener?.onItemLongClick(
+            adapter,
+            view,
+            position
+        ) == true
+        if (hookItemClick) {
+            return
+        }
         val file = File(item.filePath)
         val isSkipDir = FilePickerManager.config.isSkipDir
-        // 如果是文件夹并且没有略过文件夹
+        // current item is directory and should skip directory, because long click would make the item been selected.
         if (file.exists() && file.isDirectory && isSkipDir) return
         // same action like child click
-        onItemChildClick(adapter, view, position)
+        if (item.isDir && pickerConfig.isSkipDir) {
+            enterDirAndUpdateUI(item)
+            return
+        }
+        if (pickerConfig.singleChoice) {
+            listAdapter.singleCheck(position)
+        } else {
+            listAdapter.multipleCheckOrNo(item, position, ::isCanSelect) {
+                Toast.makeText(
+                    this@FilePickerActivity.applicationContext,
+                    getString(pickerConfig.maxSelectCountTips, maxSelectable),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
         // notify listener
         FilePickerManager.config.fileItemOnClickListener?.onItemLongClick(adapter, view, position)
     }
@@ -476,7 +518,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
         // 获取文件夹文件
         val nextFiles = File(fileBean.filePath)
         // 更新列表数据集
-        listAdapter.setNewData(FileUtils.produceListDataSource(nextFiles, this@FilePickerActivity))
+        listAdapter.setNewData(FileUtils.produceListDataSource(nextFiles))
         // 更新导航栏的数据集
         navDataSource = FileUtils.produceNavDataSource(
             ArrayList(navAdapter.dataList),
@@ -512,27 +554,22 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
     }
 
     private fun resetViewState() {
-        selectedCount = 1
-        updateItemUI(false)
+        listAdapter.resetCheck()
+        updateItemUI()
     }
 
-    override fun updateItemUI(isCheck: Boolean) {
-        if (isCheck) {
-            selectedCount++
-        } else {
-            selectedCount--
-        }
+    private fun updateItemUI() {
         if (pickerConfig.singleChoice) {
             return
         }
         // 取消选中，并且选中数为 0
         if (selectedCount == 0) {
             btnSelectedAll?.text = pickerConfig.selectAllText
-            tvToobarTitle?.text = ""
+            tvToolbarTitle?.text = ""
             return
         }
         btnSelectedAll?.text = pickerConfig.deSelectAllText
-        tvToobarTitle?.text =
+        tvToolbarTitle?.text =
             resources.getString(pickerConfig.hadSelectedText, selectedCount)
     }
 
@@ -556,7 +593,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
                     listAdapter.disCheckAll()
                 } else if (isCanSelect()) {
                     // 当前选中数少于最大选中数，则即将执行选中
-                    listAdapter.checkAll(selectedCount)
+                    listAdapter.checkAll()
                 }
             }
             // 确认按钮

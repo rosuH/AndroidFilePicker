@@ -73,26 +73,17 @@ dependencies {
 
 如果您没有提前授予，这个库会自动申请该权限的。
 
-### 开始使用(`Kotlin`)
+### 开始使用
 
 简单的链式调用示意：
 
-```java
+```kotlin
 FilePickerManager
-        .from(this@SampleActivity)
+        .from(context)
         .forResult(FilePickerManager.REQUEST_CODE)
 ```
 
 现在你已经起飞了🛩️...（真的只有两行）
-
-如果使用 Java，那么仅需要加入一个`.INSTANCE` 即可使用：
-
-```java
-FilePickerManager.INSTANCE
-                .from(this)
-                .forResult(FilePickerManager.REQUEST_CODE);
-```
-
 
 
 ### 获取结果
@@ -113,21 +104,6 @@ override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) 
     }
 }
 ```
-
-## 混淆规则（0.5.1 及以前版本）
-
-```
--keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
--keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
--keepnames class kotlinx.coroutines.android.AndroidExceptionPreHandler {}
--keepnames class kotlinx.coroutines.android.AndroidDispatcherFactory {}
-
--keepclassmembernames class kotlinx.** {
-    volatile <fields>;
-}
-
-```
-从 0.5.2 开始，我们移除掉了协程库，并使用原生线程实现，所以无需加入混淆。
 
 ### 更多示例
 

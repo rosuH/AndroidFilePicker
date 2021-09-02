@@ -1,6 +1,7 @@
 package me.rosuh.filepicker.bean
 
 import me.rosuh.filepicker.filetype.FileType
+import java.io.File
 
 /**
  *
@@ -22,9 +23,8 @@ class FileItemBeanImpl(
     override var filePath: String,
     private var isChecked: Boolean,
     var fileType: FileType?,
-    var isDir: Boolean,
+    val isDir: Boolean,
     var isHide: Boolean,
-    override var beanSubscriber: BeanSubscriber
 ) : FileBean {
 
     fun isChecked(): Boolean {
@@ -33,6 +33,5 @@ class FileItemBeanImpl(
 
     fun setCheck(check: Boolean) {
         isChecked = check
-        beanSubscriber.updateItemUI(check)
     }
 }

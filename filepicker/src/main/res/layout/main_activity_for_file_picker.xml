@@ -13,6 +13,7 @@
         android:id="@+id/ll_tool_bar_file_picker"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        android:animateLayoutChanges="true"
         android:background="?attr/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -69,9 +70,9 @@
             android:layout_toEndOf="@id/btn_go_back_file_picker"
             android:layout_toRightOf="@id/btn_go_back_file_picker"
             android:maxLines="1"
-            tools:text="1*"
             android:textColor="?android:attr/textColor"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            tools:text="1*" />
     </RelativeLayout>
 
     <android.support.v4.widget.SwipeRefreshLayout
