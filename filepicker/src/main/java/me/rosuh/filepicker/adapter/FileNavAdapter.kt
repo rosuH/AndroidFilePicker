@@ -1,6 +1,6 @@
 package me.rosuh.filepicker.adapter
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,11 +17,11 @@ import me.rosuh.filepicker.bean.FileNavBeanImpl
 class FileNavAdapter(
     private val activity: FilePickerActivity
 ) : BaseAdapter() {
-    private lateinit var recyclerView: RecyclerView
+    private lateinit var recyclerView: androidx.recyclerview.widget.RecyclerView
     val dataList: ArrayList<FileNavBeanImpl> = ArrayList(3)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        if (parent is RecyclerView) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): androidx.recyclerview.widget.RecyclerView.ViewHolder {
+        if (parent is androidx.recyclerview.widget.RecyclerView) {
             recyclerView = parent
         }
         return NavListHolder(activity.layoutInflater, parent)
@@ -35,7 +35,7 @@ class FileNavAdapter(
         return dataList.size
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, postion: Int) {
+    override fun onBindViewHolder(holder: androidx.recyclerview.widget.RecyclerView.ViewHolder, postion: Int) {
         (holder as NavListHolder).bind(dataList[postion], postion)
     }
 
@@ -56,7 +56,7 @@ class FileNavAdapter(
     }
 
     inner class NavListHolder(inflater: LayoutInflater, val parent: ViewGroup) :
-        RecyclerView.ViewHolder(inflater.inflate(R.layout.item_nav_file_picker, parent, false)) {
+        androidx.recyclerview.widget.RecyclerView.ViewHolder(inflater.inflate(R.layout.item_nav_file_picker, parent, false)) {
 
         private var mBtnDir: TextView? = null
 

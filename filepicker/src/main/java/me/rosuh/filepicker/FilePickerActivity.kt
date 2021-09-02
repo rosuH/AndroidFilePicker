@@ -7,13 +7,13 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.*
 import android.os.Environment.MEDIA_MOUNTED
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
-import android.support.v4.util.ArrayMap
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.collection.ArrayMap
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AnimationUtils
@@ -38,8 +38,8 @@ import java.util.concurrent.*
 class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerViewListener.OnItemClickListener{
 
     private var rvList: RecyclerViewFilePicker? = null
-    private var rvNav: RecyclerView? = null
-    private var srl: SwipeRefreshLayout? = null
+    private var rvNav: androidx.recyclerview.widget.RecyclerView? = null
+    private var srl: androidx.swiperefreshlayout.widget.SwipeRefreshLayout? = null
     private var tvToolbarTitle: TextView? = null
     private var btnConfirm: Button? = null
     private var btnSelectedAll: Button? = null
@@ -250,7 +250,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerVi
         } else {
             View.VISIBLE
         }
-        srl = findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout)
+        srl = findViewById<androidx.swiperefreshlayout.widget.SwipeRefreshLayout>(R.id.swipe_refresh_layout)
         srl?.apply {
             setOnRefreshListener {
                 resetViewState()
@@ -277,9 +277,13 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerVi
             )
         }
 
-        rvNav = findViewById<RecyclerView>(R.id.rv_nav_file_picker).apply {
+        rvNav = findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rv_nav_file_picker).apply {
             layoutManager =
-                LinearLayoutManager(this@FilePickerActivity, LinearLayoutManager.HORIZONTAL, false)
+                androidx.recyclerview.widget.LinearLayoutManager(
+                    this@FilePickerActivity,
+                    androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL,
+                    false
+                )
             adapter = navAdapter
         }
         rvList = findViewById<RecyclerViewFilePicker>(R.id.rv_list_file_picker).apply {
@@ -338,18 +342,18 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerVi
     /**
      * 获取两个列表的监听器
      */
-    private fun getListener(recyclerView: RecyclerView?): RecyclerViewListener? {
+    private fun getListener(recyclerView: androidx.recyclerview.widget.RecyclerView?): RecyclerViewListener? {
         if (recyclerView == null) {
             return null
         }
         return RecyclerViewListener(recyclerView, this@FilePickerActivity)
     }
 
-    private val currPosMap: ArrayMap<String, Int> by lazy {
-        ArrayMap(4)
+    private val currPosMap: androidx.collection.ArrayMap<String, Int> by lazy {
+        androidx.collection.ArrayMap(4)
     }
-    private val currOffsetMap: ArrayMap<String, Int> by lazy {
-        ArrayMap(4)
+    private val currOffsetMap: androidx.collection.ArrayMap<String, Int> by lazy {
+        androidx.collection.ArrayMap(4)
     }
 
     /**
@@ -358,7 +362,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerVi
     private fun saveCurrPos(item: FileNavBeanImpl?, position: Int) {
         item?.run {
             currPosMap[filePath] = position
-            (rvList?.layoutManager as? LinearLayoutManager)?.let {
+            (rvList?.layoutManager as? androidx.recyclerview.widget.LinearLayoutManager)?.let {
                 currOffsetMap.put(filePath, it.findViewByPosition(position)?.top ?: 0)
             }
         }
@@ -370,7 +374,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerVi
      * 传递 item 点击事件给调用者
      */
     override fun onItemClick(
-        adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
+        adapter: androidx.recyclerview.widget.RecyclerView.Adapter<androidx.recyclerview.widget.RecyclerView.ViewHolder>,
         view: View,
         position: Int
     ) {
@@ -421,7 +425,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerVi
      * 子控件被点击
      */
     override fun onItemChildClick(
-        adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
+        adapter: androidx.recyclerview.widget.RecyclerView.Adapter<androidx.recyclerview.widget.RecyclerView.ViewHolder>,
         view: View,
         position: Int
     ) {
@@ -467,7 +471,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerVi
      * 条目被长按
      */
     override fun onItemLongClick(
-        adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
+        adapter: androidx.recyclerview.widget.RecyclerView.Adapter<androidx.recyclerview.widget.RecyclerView.ViewHolder>,
         view: View,
         position: Int
     ) {

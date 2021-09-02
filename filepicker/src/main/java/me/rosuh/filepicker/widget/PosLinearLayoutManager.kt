@@ -2,11 +2,11 @@ package me.rosuh.filepicker.widget
 
 import android.content.Context
 import android.os.Parcelable
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.util.AttributeSet
 
-class PosLinearLayoutManager : LinearLayoutManager {
+class PosLinearLayoutManager : androidx.recyclerview.widget.LinearLayoutManager {
     constructor(context: Context?) : super(context)
     constructor(context: Context?, orientation: Int, reverseLayout: Boolean) : super(
         context,
@@ -30,7 +30,7 @@ class PosLinearLayoutManager : LinearLayoutManager {
 
     private var pendingPosOffset = -1
 
-    override fun onLayoutChildren(recycler: RecyclerView.Recycler?, state: RecyclerView.State?) {
+    override fun onLayoutChildren(recycler: androidx.recyclerview.widget.RecyclerView.Recycler?, state: androidx.recyclerview.widget.RecyclerView.State?) {
         if (pendingTargetPos != -1 && state?.itemCount ?: 0 > 0) {
             scrollToPositionWithOffset(pendingTargetPos, pendingPosOffset)
             pendingPosOffset = -1
