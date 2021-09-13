@@ -31,10 +31,7 @@
 这取决于您的 targetAPI ：
 
 - `targetAPI <= 28`，完全没有问题 ;）
-- `targetAPI == 29`，请为您的项目启用 `requestLegacyExternalStorage` 特性：D
-- `targetAPI> = 30`，请勿使用此库。 我们暂时不支持 Scope Storage :(
-     - 除非 Google 发布新的外部存储权限或其他新 API，否则我们不会考虑支持范围存储。 （换句话说：“我太菜了，我做不到”）
-     - 当然，欢迎您给我们一些建议！
+- `targetAPI >= 29`，请为您的项目启用 `requestLegacyExternalStorage` 特性：D
 
 ## 下载使用
 
