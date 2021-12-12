@@ -1,13 +1,14 @@
 package me.rosuh.filepicker.config
 
 import android.content.Intent
-import android.support.annotation.NonNull
-import android.support.annotation.StringRes
+import androidx.annotation.NonNull
+import androidx.annotation.StringRes
 import me.rosuh.filepicker.FilePickerActivity
 import me.rosuh.filepicker.R
 import me.rosuh.filepicker.engine.ImageEngine
 import me.rosuh.filepicker.filetype.FileType
 import java.io.File
+import java.util.concurrent.*
 
 /**
  *
@@ -135,8 +136,26 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
     @StringRes
     var maxSelectCountTips: Int = R.string.max_select_count_tips
         private set
+
     var emptyListTips: String = contextRes.getString(R.string.empty_list_tips_file_picker)
         private set
+
+    /**
+     * 允许使用你项目中的线程池
+     * Allow the use of thread pools in your project
+     */
+    internal  var threadPool: ExecutorService? = null
+
+    /**
+     * 自定义线程池不会默认关闭，如果你需要在结束文件选择时关闭，请传 true
+     * The custom thread pool will not be closed by default,
+     * if you need to close when the file selection is finished, please pass true
+     */
+    internal var threadPoolAutoShutDown: Boolean = false
+
+    /**
+     * 如果您的 Glide 版本低于 4.9, 请使用自定义的 [ImageEngine]
+     */
 
     /**
      * 如果您的 Glide 版本低于 4.9, 请使用自定义的 [ImageEngine]
@@ -214,8 +233,11 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
      * This method would be removed in 0.8.0.
      * Try to using [ItemClickListener] which the below one.
      * @author hi@rosuh.me
-    */
-    @Deprecated("It's not flexible enough.", replaceWith = ReplaceWith("me.rosuh.filepicker.config.FilePickerConfig.setItemClickListener"))
+     */
+    @Deprecated(
+        "It's not flexible enough.",
+        replaceWith = ReplaceWith("me.rosuh.filepicker.config.FilePickerConfig.setItemClickListener")
+    )
     fun setItemClickListener(fileItemOnClickListener: FileItemOnClickListener): FilePickerConfig {
         this.fileItemOnClickListener = fileItemOnClickListener
         return this
@@ -225,7 +247,7 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
      * Setting item click listener which can intercept click event.
      * @author hi@rosuh.me
      * @since 0.7.2
-    */
+     */
     fun setItemClickListener(
         itemClickListener: ItemClickListener
     ): FilePickerConfig {
@@ -311,6 +333,18 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
         this.customFileTypes.addAll(types)
         this.defaultFileDetector.registerCustomTypes(customFileTypes)
         this.isAutoFilter = autoFilter
+        return this
+    }
+
+    /**
+     * 允许使用你项目中的线程池, 自定义线程池不会默认关闭，如果你需要在结束文件选择时关闭，请传 true
+     * Allow the use of thread pools in your project
+     * The custom thread pool will not be closed by default,
+     * if you need to close when the file selection is finished, please pass true
+     */
+    fun threadPool(threadPool: ExecutorService, autoShutdown: Boolean): FilePickerConfig {
+        this.threadPool = threadPool
+        this.threadPoolAutoShutDown = autoShutdown
         return this
     }
 

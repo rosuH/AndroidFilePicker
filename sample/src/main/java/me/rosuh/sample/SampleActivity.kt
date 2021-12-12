@@ -5,10 +5,10 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
-import android.support.v4.app.FragmentManager
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -25,6 +25,8 @@ import me.rosuh.filepicker.engine.ImageEngine
 import me.rosuh.filepicker.filetype.AudioFileType
 import me.rosuh.filepicker.filetype.FileType
 import me.rosuh.filepicker.filetype.RasterImageFileType
+import java.util.concurrent.Executors
+import java.util.concurrent.ThreadPoolExecutor
 
 
 class SampleActivity : AppCompatActivity() {
@@ -93,6 +95,7 @@ class SampleActivity : AppCompatActivity() {
             FilePickerManager
                 .from(this@SampleActivity)
                 .setTheme(getRandomTheme())
+                .threadPool(Executors.newSingleThreadExecutor(), autoShutdown = false)
                 .filter(object : AbstractFileFilter() {
                     override fun doFilter(listData: ArrayList<FileItemBeanImpl>): ArrayList<FileItemBeanImpl> {
                         return ArrayList(listData.filter { item ->
@@ -317,19 +320,21 @@ class SampleActivity : AppCompatActivity() {
 
         companion object {
             fun show(supportFragmentManager: FragmentManager?, s: String) {
-                SampleFragment().show(supportFragmentManager, s)
+                supportFragmentManager?.let { SampleFragment().show(it, s) }
             }
 
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             FilePickerManager.REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
                     val list = FilePickerManager.obtainData(release = true)
                     rv_main.adapter = SampleAdapter(layoutInflater, ArrayList(list))
-                    rv_main.layoutManager = LinearLayoutManager(this@SampleActivity)
+                    rv_main.layoutManager =
+                        LinearLayoutManager(this@SampleActivity)
                 } else {
                     Toast.makeText(this@SampleActivity, "没有选择图片", Toast.LENGTH_SHORT).show()
                 }

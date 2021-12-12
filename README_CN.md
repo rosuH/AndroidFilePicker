@@ -28,10 +28,7 @@
 | ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/default_theme.png) | ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/reply_theme.png) | ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/crane_theme.png) | ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/shrine_theme.png) |
 
 ## 版本兼容性
-这取决于您的 targetAPI ：
-
-- `targetAPI <= 28`，完全没有问题 ;）
-- `targetAPI >= 29`，请为您的项目启用 `requestLegacyExternalStorage` 特性：D
+支持 Android 11 及其以下所有版本。
 
 ## 下载使用
 

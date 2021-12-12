@@ -27,9 +27,8 @@ Well, it doesn't have a name like Rocky, Cosmos or Fish. Android File Picker, li
 | ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/default_theme.png) | ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/reply_theme.png) | ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/crane_theme.png) | ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/shrine_theme.png) |
 
 ## Version Compatibility
-It depends on your targetAPI:
-- `targetAPI <= 28`, you are fine ;)
-- `targetAPI >= 29`, please enable `requestLegacyExternalStorage` feature for your project :D
+
+Support Android 11 and all versions below.
 
 ## Download
 

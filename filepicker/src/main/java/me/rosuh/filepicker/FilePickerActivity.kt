@@ -7,13 +7,13 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.*
 import android.os.Environment.MEDIA_MOUNTED
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
-import android.support.v4.util.ArrayMap
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.collection.ArrayMap
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -48,28 +48,15 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
     private var btnGoBack: ImageView? = null
     private var mainHandler = Handler(Looper.getMainLooper())
 
-    private val loadingFileWorkerQueue: BlockingQueue<Runnable> = LinkedBlockingQueue()
-
     // Creates a thread pool manager
-    private var loadingThreadPool: ThreadPoolExecutor = ThreadPoolExecutor(
-        1,       // Initial pool size
-        1,       // Max pool size
-        KEEP_ALIVE_TIME,
-        TimeUnit.MINUTES,
-        loadingFileWorkerQueue
-    )
-        get() {
-            if (field.isShutdown) {
-                field = ThreadPoolExecutor(
-                    1,
-                    1,
-                    KEEP_ALIVE_TIME,
-                    TimeUnit.MINUTES,
-                    loadingFileWorkerQueue
-                )
-            }
-            return field
-        }
+    private val loadingThreadPool: ExecutorService =
+        FilePickerManager.config.threadPool ?: ThreadPoolExecutor(
+            1,       // Initial pool size
+            1,       // Max pool size
+            KEEP_ALIVE_TIME,
+            TimeUnit.MINUTES,
+            LinkedBlockingDeque()
+        )
 
     private val loadFileRunnable: Runnable by lazy {
         Runnable {
@@ -190,7 +177,12 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
 
     override fun onDestroy() {
         super.onDestroy()
-        if (!loadingThreadPool.isShutdown) {
+        Log.i(TAG, "onDestroy")
+        val shouldShutDownThreadPool = pickerConfig.threadPool != loadingThreadPool
+                || pickerConfig.threadPoolAutoShutDown
+
+        if (!loadingThreadPool.isShutdown && shouldShutDownThreadPool) {
+            Log.i(TAG, "shutdown thread pool")
             loadingThreadPool.shutdown()
         }
         currOffsetMap.clear()
@@ -218,6 +210,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             FILE_PICKER_PERMISSION_REQUEST_CODE -> {
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
@@ -303,7 +296,11 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
 
         rvNav = findViewById<RecyclerView>(R.id.rv_nav_file_picker).apply {
             layoutManager =
-                LinearLayoutManager(this@FilePickerActivity, LinearLayoutManager.HORIZONTAL, false)
+                LinearLayoutManager(
+                    this@FilePickerActivity,
+                    LinearLayoutManager.HORIZONTAL,
+                    false
+                )
             adapter = navAdapter
         }
         rvList = findViewById<RecyclerViewFilePicker>(R.id.rv_list_file_picker).apply {
@@ -328,9 +325,18 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
             return
         }
         if (Environment.getExternalStorageState() != MEDIA_MOUNTED) {
-            throw Throwable(cause = IllegalStateException("External storage is not available ====>>> Environment.getExternalStorageState() != MEDIA_MOUNTED"))
+            Log.e(
+                TAG, "External storage is not available ====>>> "
+                        + "Environment.getExternalStorageState() != MEDIA_MOUNTED"
+            )
+            return
         }
-        loadingThreadPool.submit(loadFileRunnable)
+        try {
+            Log.i(TAG, "loadList in ${Thread.currentThread()} in $loadingThreadPool")
+            loadingThreadPool.submit(loadFileRunnable)
+        } catch (e: RejectedExecutionException) {
+            Log.e(TAG, "submit job failed")
+        }
     }
 
     private fun initRv(
@@ -652,6 +658,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
     private fun isCanSelect() = selectedCount < maxSelectable
 
     companion object {
+        private const val TAG = "FilePickerActivity"
         private const val FILE_PICKER_PERMISSION_REQUEST_CODE = 10201
 
         // Sets the amount of time an idle thread waits before terminating
