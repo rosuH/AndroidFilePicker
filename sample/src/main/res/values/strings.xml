@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">AndroidFilePicker</string>
+    <string name="app_name_file_picker" translatable="false">filepicker</string>
     <string name="default_btn">default</string>
     <string name="single_choice">single select</string>
     <string name="only_show_folder">only show folders</string>

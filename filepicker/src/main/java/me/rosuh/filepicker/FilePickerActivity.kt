@@ -7,13 +7,13 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.*
 import android.os.Environment.MEDIA_MOUNTED
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
-import android.support.v4.util.ArrayMap
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.collection.ArrayMap
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -218,6 +218,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             FILE_PICKER_PERMISSION_REQUEST_CODE -> {
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
@@ -303,7 +304,11 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
 
         rvNav = findViewById<RecyclerView>(R.id.rv_nav_file_picker).apply {
             layoutManager =
-                LinearLayoutManager(this@FilePickerActivity, LinearLayoutManager.HORIZONTAL, false)
+                LinearLayoutManager(
+                    this@FilePickerActivity,
+                    LinearLayoutManager.HORIZONTAL,
+                    false
+                )
             adapter = navAdapter
         }
         rvList = findViewById<RecyclerViewFilePicker>(R.id.rv_list_file_picker).apply {

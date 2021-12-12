@@ -1,7 +1,7 @@
 package me.rosuh.filepicker.config
 
 import android.app.Activity
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import me.rosuh.filepicker.engine.ImageLoadController
 import java.lang.ref.WeakReference
 
@@ -39,7 +39,7 @@ object FilePickerManager {
     fun from(fragment: Fragment): FilePickerConfig {
         reset()
         this.fragmentRef = WeakReference(fragment)
-        this.contextRef = WeakReference(fragment.activity!!)
+        this.contextRef = WeakReference(fragment.activity)
         config = FilePickerConfig(this)
         return config
     }
