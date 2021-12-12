@@ -17,8 +17,12 @@ object FilePickerManager {
     const val REQUEST_CODE = 10401
 
     internal var contextRef: WeakReference<Activity>? = null
+
     internal var fragmentRef: WeakReference<Fragment>? = null
+
     internal lateinit var config: FilePickerConfig
+
+    private var dataList: MutableList<String> = ArrayList()
 
     @JvmStatic
     fun from(activity: Activity): FilePickerConfig {
@@ -40,12 +44,10 @@ object FilePickerManager {
         return config
     }
 
-    private var dataList: List<String> = ArrayList()
-
     /**
      * 保存数据@param list List<String>到本类中
      */
-    internal fun saveData(list: List<String>) {
+    internal fun saveData(list: MutableList<String>) {
         dataList = list
     }
 
@@ -55,16 +57,18 @@ object FilePickerManager {
      */
     @JvmOverloads
     @JvmStatic
-    fun obtainData(release: Boolean = false): List<String> {
+    fun obtainData(release: Boolean = false): MutableList<String> {
+        val result = ArrayList(dataList)
         if (release) {
             release()
         }
-        return dataList
+        return result
     }
 
     private fun reset() {
         contextRef?.clear()
         fragmentRef?.clear()
+        dataList.clear()
         ImageLoadController.reset()
     }
 
