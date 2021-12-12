@@ -97,7 +97,6 @@
         android:id="@+id/rv_nav_file_picker"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:overScrollMode="never"
         android:elevation="1dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ll_tool_bar_file_picker" />

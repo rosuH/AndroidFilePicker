@@ -7,6 +7,7 @@ import me.rosuh.filepicker.FilePickerActivity
 import me.rosuh.filepicker.R
 import me.rosuh.filepicker.engine.ImageEngine
 import me.rosuh.filepicker.filetype.FileType
+import java.io.File
 
 /**
  *
@@ -55,10 +56,12 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
     var maxSelectable = Int.MAX_VALUE
         private set
 
+    internal val defaultStorageName = contextRes.getString(R.string.file_picker_tv_sd_card)
+
     /**
      * 存储类型
      */
-    var mediaStorageName = contextRes.getString(R.string.file_picker_tv_sd_card)
+    var mediaStorageName = defaultStorageName
         private set
 
     /**
@@ -73,6 +76,9 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
      * 自定义根目录路径，需要先设置 [mediaStorageType] 为 [STORAGE_CUSTOM_ROOT_PATH]
      */
     var customRootPath: String = ""
+        private set
+
+    internal var customRootPathFile: File? = null
         private set
 
     /**
@@ -170,6 +176,15 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
 
     fun setCustomRootPath(path: String): FilePickerConfig {
         customRootPath = path
+        path.takeIf {
+            it.isNotBlank()
+        }?.let {
+            File(it)
+        }?.takeIf {
+            it.exists()
+        }?.let {
+            customRootPathFile = it
+        }
         return this
     }
 
@@ -311,6 +326,10 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
         }
     }
 
+    fun resetCustomFile() {
+        this.customRootPathFile = null
+    }
+
     fun clear() {
         this.customFileTypes.clear()
         this.customImageEngine = null
@@ -318,6 +337,7 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
         this.selfFilter = null
         this.customDetector = null
         this.defaultFileDetector.clear()
+        resetCustomFile()
     }
 
     companion object {

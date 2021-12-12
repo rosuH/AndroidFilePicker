@@ -14,6 +14,7 @@ import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AnimationUtils
@@ -35,7 +36,8 @@ import java.io.File
 import java.util.concurrent.*
 
 @SuppressLint("ShowToast")
-class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerViewListener.OnItemClickListener{
+class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
+    RecyclerViewListener.OnItemClickListener {
 
     private var rvList: RecyclerViewFilePicker? = null
     private var rvNav: RecyclerView? = null
@@ -71,7 +73,26 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerVi
 
     private val loadFileRunnable: Runnable by lazy {
         Runnable {
+            val customRootPathFile = pickerConfig.customRootPathFile
             val rootFile = when {
+                customRootPathFile?.exists() == true -> {
+                    // move to custom root dir
+                    navDataSource.clear()
+                    val root = FileUtils.getRootFile()
+                    var curPath = customRootPathFile.absolutePath
+                    while (curPath != root.parent && !curPath.isNullOrBlank()) {
+                        Log.i("loadFileRunnable", "curPath = $curPath")
+                        val f = File(curPath)
+                        val fileNavBeanImpl = FileNavBeanImpl(
+                            FileUtils.getDirAlias(f),
+                            f.absolutePath
+                        )
+                        navDataSource.add(0, fileNavBeanImpl)
+                        curPath = f.parent
+                    }
+                    pickerConfig.resetCustomFile()
+                    customRootPathFile
+                }
                 navDataSource.isEmpty() && pickerConfig.isSkipDir -> {
                     FileUtils.getRootFile()
                 }
@@ -85,6 +106,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerVi
             }
 
             val listData = FileUtils.produceListDataSource(rootFile)
+
             // 导航栏数据集
             navDataSource = FileUtils.produceNavDataSource(
                 navDataSource,
@@ -171,6 +193,8 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerVi
         if (!loadingThreadPool.isShutdown) {
             loadingThreadPool.shutdown()
         }
+        currOffsetMap.clear()
+        currPosMap.clear()
     }
 
     private fun isPermissionGrated() = ContextCompat.checkSelfPermission(
@@ -472,7 +496,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener, RecyclerVi
         position: Int
     ) {
         if (view.id != R.id.item_list_file_picker) return
-        val item = (adapter as FileListAdapter).getItem(position)?: return
+        val item = (adapter as FileListAdapter).getItem(position) ?: return
         // Check the lib users whether if intercept the click event.
         val hookItemClick = FilePickerManager.config.itemClickListener?.onItemLongClick(
             adapter,
