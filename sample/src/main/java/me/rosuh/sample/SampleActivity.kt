@@ -25,6 +25,8 @@ import me.rosuh.filepicker.engine.ImageEngine
 import me.rosuh.filepicker.filetype.AudioFileType
 import me.rosuh.filepicker.filetype.FileType
 import me.rosuh.filepicker.filetype.RasterImageFileType
+import java.util.concurrent.Executors
+import java.util.concurrent.ThreadPoolExecutor
 
 
 class SampleActivity : AppCompatActivity() {
@@ -93,6 +95,7 @@ class SampleActivity : AppCompatActivity() {
             FilePickerManager
                 .from(this@SampleActivity)
                 .setTheme(getRandomTheme())
+                .threadPool(Executors.newSingleThreadExecutor(), autoShutdown = false)
                 .filter(object : AbstractFileFilter() {
                     override fun doFilter(listData: ArrayList<FileItemBeanImpl>): ArrayList<FileItemBeanImpl> {
                         return ArrayList(listData.filter { item ->
