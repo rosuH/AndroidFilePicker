@@ -2,7 +2,6 @@ package me.rosuh.filepicker.utils
 
 import android.content.Context
 import android.os.Environment
-import me.rosuh.filepicker.R
 import me.rosuh.filepicker.bean.FileItemBeanImpl
 import me.rosuh.filepicker.bean.FileNavBeanImpl
 import me.rosuh.filepicker.config.FilePickerConfig.Companion.STORAGE_CUSTOM_ROOT_PATH
@@ -25,17 +24,10 @@ class FileUtils {
          * 根据配置参数获取根目录文件
          * @return File
          */
-        fun getRootFile():File {
+        fun getRootFile(): File {
             return when (config.mediaStorageType) {
                 STORAGE_EXTERNAL_STORAGE -> {
                     File(Environment.getExternalStorageDirectory().absoluteFile.toURI())
-                }
-                STORAGE_CUSTOM_ROOT_PATH -> {
-                    if (config.customRootPath.isEmpty()) {
-                        File(Environment.getExternalStorageDirectory().absoluteFile.toURI())
-                    } else {
-                        File(config.customRootPath)
-                    }
                 }
                 else -> {
                     File(Environment.getExternalStorageDirectory().absoluteFile.toURI())
@@ -70,7 +62,7 @@ class FileUtils {
                 )
                 return config.selfFilter?.doFilter(listData) ?: listData
             }
-            if (rootFile.listFiles().isNullOrEmpty()){
+            if (rootFile.listFiles().isNullOrEmpty()) {
                 return listData
             }
             for (file in rootFile.listFiles()) {
@@ -117,7 +109,11 @@ class FileUtils {
 
             // 默认字典排序
             // Default sort by alphabet
-            listData.sortWith(compareBy({ !it.isDir }, { it.fileName.uppercase(Locale.getDefault()) }))
+            listData.sortWith(
+                compareBy(
+                    { !it.isDir },
+                    { it.fileName.uppercase(Locale.getDefault()) })
+            )
             // 将当前列表数据暴露，以供调用者自己处理数据
             // expose data list  to outside caller
             return config.selfFilter?.doFilter(listData) ?: listData
@@ -132,18 +128,12 @@ class FileUtils {
             nextPath: String,
             context: Context
         ): ArrayList<FileNavBeanImpl> {
-
+            // 优先级：目标设备名称 --> 自定义路径 --> 默认 SD 卡
             if (currentDataSource.isEmpty()) {
-                // 优先级：目标设备名称 --> 自定义路径 --> 默认 SD 卡
+                val dirName = getDirAlias(getRootFile())
                 currentDataSource.add(
                     FileNavBeanImpl(
-                        if (!config.mediaStorageName.isNullOrEmpty()) {
-                            config.mediaStorageName
-                        } else if (!config.customRootPath.isEmpty()) {
-                            config.customRootPath
-                        } else {
-                            context.getString(R.string.file_picker_tv_sd_card)
-                        },
+                        dirName,
                         nextPath
                     )
                 )
@@ -182,6 +172,25 @@ class FileUtils {
                 )
             )
             return currentDataSource
+        }
+
+        fun getDirAlias(file: File): String {
+            val isCustomRoot = config.mediaStorageType == STORAGE_CUSTOM_ROOT_PATH
+                    && file.absolutePath == config.customRootPath
+            val isPreSetStorageRoot = config.mediaStorageType == STORAGE_EXTERNAL_STORAGE
+                    && file.absolutePath == getRootFile().absolutePath
+            val isDefaultRoot = file.absolutePath == getRootFile().absolutePath
+            return when {
+                isCustomRoot || isPreSetStorageRoot -> {
+                    config.mediaStorageName
+                }
+                isDefaultRoot -> {
+                    config.defaultStorageName
+                }
+                else -> {
+                    file.name
+                }
+            }
         }
     }
 }

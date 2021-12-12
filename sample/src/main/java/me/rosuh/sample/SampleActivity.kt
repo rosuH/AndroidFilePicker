@@ -210,7 +210,7 @@ class SampleActivity : AppCompatActivity() {
         // 自定义根目录
         btn_custom_root_path.setOnClickListener {
             FilePickerManager.from(this@SampleActivity)
-                .storageType("下载", FilePickerConfig.STORAGE_CUSTOM_ROOT_PATH)
+                .storageType("⬇️", FilePickerConfig.STORAGE_CUSTOM_ROOT_PATH)
                 .setTheme(getRandomTheme())
                 // 不指定名称则为导航栏将显示绝对路径
 //                .storageType(FilePickerConfig.STORAGE_CUSTOM_ROOT_PATH)
