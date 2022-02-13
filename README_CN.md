@@ -28,8 +28,14 @@
 | ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/default_theme.png) | ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/reply_theme.png) | ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/crane_theme.png) | ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/shrine_theme.png) |
 
 ## 版本兼容性
-支持 Android 11 及其以下所有版本。
+这取决于您的 targetAPI ：
 
+- `targetAPI <= 28`，完全没有问题 ;）
+- `targetAPI == 29`，请为您的项目启用 `requestLegacyExternalStorage` 特性：D
+- `targetAPI == 29`
+    - 当运行于 Android 11以及以上的平台时，仅可以读取媒体文件（图片、音视频），除此均无法访问（比如PDF文档、apk 二进制文件等）
+
+请参看 issue: [All About Scope Storage. ](https://github.com/rosuH/AndroidFilePicker/issues/146)
 ## 下载使用
 
 1. 在你的项目中添加依赖

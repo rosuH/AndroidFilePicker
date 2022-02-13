@@ -1,11 +1,12 @@
 package me.rosuh.filepicker.adapter
 
-import androidx.collection.ArraySet
-import androidx.recyclerview.widget.RecyclerView
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.collection.ArraySet
+import androidx.recyclerview.widget.RecyclerView
 import me.rosuh.filepicker.FilePickerActivity
 import me.rosuh.filepicker.R
 import me.rosuh.filepicker.bean.FileBean
@@ -110,6 +111,20 @@ class FileListAdapter(
         private val checkBox = itemView.findViewById<CheckBox>(R.id.cb_list_file_picker)!!
         private val ivIcon = itemView.findViewById<ImageView>(R.id.iv_icon_list_file_picker)!!
         private val radioButton = itemView.findViewById<RadioButton>(R.id.rb_list_file_picker)!!
+
+        init {
+            val rightId = if (config.singleChoice) {
+                R.id.rb_list_file_picker
+            } else {
+                R.id.cb_list_file_picker
+            }
+            val params = tvFileName.layoutParams as RelativeLayout.LayoutParams
+            params.addRule(RelativeLayout.LEFT_OF, rightId)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                params.addRule(RelativeLayout.START_OF, rightId)
+            }
+            tvFileName.layoutParams = params
+        }
 
         fun check(isCheck: Boolean) {
             if (config.singleChoice) {

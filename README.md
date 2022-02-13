@@ -27,9 +27,14 @@ Well, it doesn't have a name like Rocky, Cosmos or Fish. Android File Picker, li
 | ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/default_theme.png) | ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/reply_theme.png) | ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/crane_theme.png) | ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/shrine_theme.png) |
 
 ## Version Compatibility
+It depends on your targetAPI.
 
-Support Android 11 and all versions below.
+- `targetAPI <= 28`, no problem at all ;)
+- `targetAPI == 29`, please enable `requestLegacyExternalStorage` feature for your project : D
+- `targetAPI == 29`
+  - When running on Android 11 and above, only media files (images, audio and video) can be read, but nothing else can be accessed (e.g. PDF documents, apk binary files, etc.)
 
+Please check out this issue: [All About Scope Storage. ](https://github.com/rosuH/AndroidFilePicker/issues/146)
 ## Download
 
 Gradle:
