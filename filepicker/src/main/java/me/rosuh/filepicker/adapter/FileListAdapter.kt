@@ -71,7 +71,8 @@ class FileListAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as BaseViewHolder).bind(dataList[position], position)
+        val item = getItem(position) ?: return
+        (holder as BaseViewHolder).bind(item, position)
     }
 
     override fun onBindViewHolder(
@@ -81,7 +82,7 @@ class FileListAdapter(
     ) {
         // Using payload to refresh partly
         // 使用 payload 进行局部刷新
-        if (payloads.isNullOrEmpty()) {
+        if (payloads.isEmpty()) {
             onBindViewHolder(holder, position)
             return
         }

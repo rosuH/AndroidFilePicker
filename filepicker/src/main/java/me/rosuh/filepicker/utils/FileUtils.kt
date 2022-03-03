@@ -47,7 +47,7 @@ class FileUtils {
             val realRoot = getRootFile()
             val isInRootParent = rootFile.list() == null
                     && !config.isSkipDir
-                    && rootFile.path == realRoot.parentFile.path
+                    && rootFile.path == realRoot.parentFile?.path
             if (isInRootParent) {
                 // 如果是文件夹作为可选项时，需要让根目录也作为 item 被点击
                 listData.add(
@@ -62,10 +62,11 @@ class FileUtils {
                 )
                 return config.selfFilter?.doFilter(listData) ?: listData
             }
-            if (rootFile.listFiles().isNullOrEmpty()) {
+            val listFiles = rootFile.listFiles()
+            if (listFiles.isNullOrEmpty()) {
                 return listData
             }
-            for (file in rootFile.listFiles()) {
+            for (file in listFiles) {
                 //以符号 . 开头的视为隐藏文件或隐藏文件夹，后面进行过滤
                 val isHiddenFile = file.name.startsWith(".")
                 if (!config.isShowHiddenFiles && isHiddenFile) {
