@@ -58,6 +58,8 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
             LinkedBlockingDeque()
         )
 
+    private var loadingFuture: Future<*>? = null
+
     private val loadFileRunnable: Runnable by lazy {
         Runnable {
             val customRootPathFile = pickerConfig.customRootPathFile
@@ -144,8 +146,11 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
      */
     private val selectedCount
         get() = listAdapter.checkedCount
+
     private val maxSelectable = FilePickerManager.config.maxSelectable
+
     private val pickerConfig by lazy { FilePickerManager.config }
+
     private var fileListListener: RecyclerViewListener? = null
         get() {
             if (field == null) {
@@ -153,6 +158,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
             }
             return field
         }
+
     private var navListener: RecyclerViewListener? = null
         get() {
             if (field == null) {
@@ -178,6 +184,12 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
     override fun onDestroy() {
         super.onDestroy()
         Log.i(TAG, "onDestroy")
+        try {
+            loadingFuture?.cancel(true)
+            loadingFuture = null
+        } catch (e: Exception) {
+            Log.e(TAG, "onDestroy: ", e)
+        }
         val shouldShutDownThreadPool = pickerConfig.threadPool != loadingThreadPool
                 || pickerConfig.threadPoolAutoShutDown
 
@@ -333,7 +345,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
         }
         try {
             Log.i(TAG, "loadList in ${Thread.currentThread()} in $loadingThreadPool")
-            loadingThreadPool.submit(loadFileRunnable)
+            loadingFuture = loadingThreadPool.submit(loadFileRunnable)
         } catch (e: RejectedExecutionException) {
             Log.e(TAG, "submit job failed")
         }
