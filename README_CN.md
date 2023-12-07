@@ -4,7 +4,7 @@
 
 [![](https://jitpack.io/v/me.rosuh/AndroidFilePicker.svg)](https://jitpack.io/#me.rosuh/AndroidFilePicker)
 
-如果你使用的是 `1.x` 版本，请查看 [README_1.x](./README_CN_1.x.md) 文件。
+如果你使用的是 `1.x` 版本，请查看 [README_0.x](./README_CN_0.x.md) 文件。
 
 它没有像 Rocky、Cosmos 或 Fish 这样的名字。Android File Picker，正如其名，是一个本地文件选择框架。以下是它的一些特点：
 
