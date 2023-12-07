@@ -6,7 +6,7 @@
 
 [中文简体](./README_CN.md)
 
-If you're using `1.x` version, checkout the [README_1.x.md](./README_1.x.md) file.
+If you're using `1.x` version, checkout the [README_1.x](./README_1.x.md) file.
 
 Well, it doesn't have a name like Rocky, Cosmos or Fish. Android File Picker, like its name, is a local file selector framework. Some of his characteristics are described below:
 
