@@ -1,6 +1,7 @@
 package me.rosuh.sample
 
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.Manifest.permission.READ_MEDIA_AUDIO
 import android.Manifest.permission.READ_MEDIA_IMAGES
 import android.Manifest.permission.READ_MEDIA_VIDEO
 import android.app.Activity
@@ -62,6 +63,18 @@ class SampleActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.demo_activity_main)
+        // Register ActivityResult handler
+        val requestPermissions = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { results ->
+            // Handle permission requests results
+            // See the permission example in the Android platform samples: https://github.com/android/platform-samples
+        }
+
+        // Permission request logic
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissions.launch(arrayOf(READ_MEDIA_IMAGES, READ_MEDIA_VIDEO, READ_MEDIA_AUDIO))
+        } else {
+            requestPermissions.launch(arrayOf(READ_EXTERNAL_STORAGE))
+        }
         // 单选
         findViewById<View>(R.id.btn_single).setOnClickListener {
             FilePickerManager

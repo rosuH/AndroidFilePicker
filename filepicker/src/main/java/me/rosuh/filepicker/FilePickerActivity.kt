@@ -2,6 +2,7 @@ package me.rosuh.filepicker
 
 import android.Manifest
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.Manifest.permission.READ_MEDIA_AUDIO
 import android.Manifest.permission.READ_MEDIA_IMAGES
 import android.Manifest.permission.READ_MEDIA_VIDEO
 import android.annotation.SuppressLint
@@ -208,11 +209,11 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
 
     private fun isPermissionGrated(): Boolean {
         val permissionArray = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            arrayOf(READ_MEDIA_IMAGES, READ_MEDIA_VIDEO)
+            arrayOf(READ_MEDIA_IMAGES, READ_MEDIA_VIDEO, READ_MEDIA_AUDIO)
         } else {
             arrayOf(READ_EXTERNAL_STORAGE)
         }
-        return permissionArray.all {
+        return permissionArray.any {
             ContextCompat.checkSelfPermission(
                 this@FilePickerActivity,
                 it
