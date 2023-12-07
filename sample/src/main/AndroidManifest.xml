@@ -1,18 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="me.rosuh.sample">
+        package="me.rosuh.sample">
+
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+    <uses-permission
+            android:name="android.permission.READ_MEDIA_IMAGES"
+            android:minSdkVersion="33" />
+    <uses-permission
+            android:name="android.permission.READ_MEDIA_VIDEO"
+            android:minSdkVersion="33" />
+
+    <uses-permission
+            android:name="android.permission.READ_EXTERNAL_STORAGE"
+            android:maxSdkVersion="32" />
 
     <application
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name_file_picker"
-        android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".SampleInJavaActivity" />
+            android:allowBackup="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name_file_picker"
+            android:roundIcon="@mipmap/ic_launcher_round"
+            android:supportsRtl="true"
+            android:theme="@style/AppTheme">
         <activity
-            android:name=".SampleActivity"
-            android:exported="true">
+                android:name=".SampleInJavaActivity"
+                android:exported="false" />
+        <activity
+                android:name=".SampleActivity"
+                android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

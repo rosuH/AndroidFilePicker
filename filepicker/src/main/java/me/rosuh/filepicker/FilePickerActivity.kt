@@ -1,6 +1,9 @@
 package me.rosuh.filepicker
 
 import android.Manifest
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.Manifest.permission.READ_MEDIA_IMAGES
+import android.Manifest.permission.READ_MEDIA_VIDEO
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -14,7 +17,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AnimationUtils
@@ -70,7 +72,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
                     val root = FileUtils.getRootFile()
                     var curPath = customRootPathFile.absolutePath
                     while (curPath != root.parent && !curPath.isNullOrBlank()) {
-                        Log.i("loadFileRunnable", "curPath = $curPath")
+                        pickerConfig.logger.i("loadFileRunnable", "curPath = $curPath")
                         val f = File(curPath)
                         val fileNavBeanImpl = FileNavBeanImpl(
                             FileUtils.getDirAlias(f),
@@ -82,13 +84,16 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
                     pickerConfig.resetCustomFile()
                     customRootPathFile
                 }
+
                 navDataSource.isEmpty() && pickerConfig.isSkipDir -> {
                     FileUtils.getRootFile()
                 }
+
                 navDataSource.isEmpty() && !pickerConfig.isSkipDir -> {
                     // 如果是文件夹作为可选项时，需要让根目录也作为 item 被点击，故而取根目录上级作为 rootFiles
                     FileUtils.getRootFile().parentFile
                 }
+
                 else -> {
                     File(navDataSource.last().dirPath)
                 }
@@ -183,38 +188,44 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.i(TAG, "onDestroy")
+        pickerConfig.logger.i(TAG, "onDestroy")
         try {
             loadingFuture?.cancel(true)
             loadingFuture = null
         } catch (e: Exception) {
-            Log.e(TAG, "onDestroy: ", e)
+            pickerConfig.logger.e(TAG, "onDestroy: ", e)
         }
         val shouldShutDownThreadPool = pickerConfig.threadPool != loadingThreadPool
                 || pickerConfig.threadPoolAutoShutDown
 
         if (!loadingThreadPool.isShutdown && shouldShutDownThreadPool) {
-            Log.i(TAG, "shutdown thread pool")
+            pickerConfig.logger.i(TAG, "shutdown thread pool")
             loadingThreadPool.shutdown()
         }
         currOffsetMap.clear()
         currPosMap.clear()
     }
 
-    private fun isPermissionGrated() = ContextCompat.checkSelfPermission(
-        this,
-        Manifest.permission.READ_EXTERNAL_STORAGE
-    ) == PackageManager.PERMISSION_GRANTED
+    private fun isPermissionGrated(): Boolean {
+        val permissionArray = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arrayOf(READ_MEDIA_IMAGES, READ_MEDIA_VIDEO)
+        } else {
+            arrayOf(READ_EXTERNAL_STORAGE)
+        }
+        return permissionArray.all {
+            ContextCompat.checkSelfPermission(
+                this@FilePickerActivity,
+                it
+            ) == PackageManager.PERMISSION_GRANTED
+        }
+    }
 
     /**
      * 申请权限
      */
     private fun requestPermission() {
-        ActivityCompat.requestPermissions(
-            this@FilePickerActivity,
-            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-            FILE_PICKER_PERMISSION_REQUEST_CODE
-        )
+        pickerConfig.logger.e(TAG, "You have no permission to read media files.")
+        setLoadingFinish()
     }
 
     override fun onRequestPermissionsResult(
@@ -292,12 +303,15 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
                         R.style.FilePickerThemeCrane -> {
                             R.array.crane_swl_colors
                         }
+
                         R.style.FilePickerThemeReply -> {
                             R.array.reply_swl_colors
                         }
+
                         R.style.FilePickerThemeShrine -> {
                             R.array.shrine_swl_colors
                         }
+
                         else -> {
                             R.array.rail_swl_colors
                         }
@@ -337,17 +351,20 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
             return
         }
         if (Environment.getExternalStorageState() != MEDIA_MOUNTED) {
-            Log.e(
+            pickerConfig.logger.e(
                 TAG, "External storage is not available ====>>> "
                         + "Environment.getExternalStorageState() != MEDIA_MOUNTED"
             )
             return
         }
         try {
-            Log.i(TAG, "loadList in ${Thread.currentThread()} in $loadingThreadPool")
+            pickerConfig.logger.i(
+                TAG,
+                "loadList in ${Thread.currentThread()} in $loadingThreadPool"
+            )
             loadingFuture = loadingThreadPool.submit(loadFileRunnable)
         } catch (e: RejectedExecutionException) {
-            Log.e(TAG, "submit job failed")
+            pickerConfig.logger.e(TAG, "submit job failed")
         }
     }
 
@@ -447,6 +464,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
                     )
                 }
             }
+
             R.id.item_nav_file_picker -> {
                 if (file.isDirectory) {
                     (rvNav?.adapter as? FileNavAdapter)?.let {
@@ -473,6 +491,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
                 item ?: return
                 enterDirAndUpdateUI(item)
             }
+
             else -> {
                 val item = (adapter as FileListAdapter).getItem(position) ?: return
                 // Check the lib users whether if intercept the click event.
@@ -661,6 +680,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
                 this@FilePickerActivity.setResult(Activity.RESULT_OK, intent)
                 finish()
             }
+
             R.id.btn_go_back_file_picker -> {
                 onBackPressed()
             }
