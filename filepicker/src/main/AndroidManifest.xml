@@ -1,11 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="me.rosuh.filepicker" >
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+        package="me.rosuh.filepicker">
 
     <application>
         <activity
-            android:name=".FilePickerActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:configChanges="orientation|screenSize" />
+                android:name=".FilePickerActivity"
+                android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+                android:exported="false"
+                android:configChanges="orientation|screenSize" />
     </application>
 </manifest>

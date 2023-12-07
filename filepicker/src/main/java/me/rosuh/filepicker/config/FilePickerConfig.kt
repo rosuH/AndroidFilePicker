@@ -1,12 +1,14 @@
 package me.rosuh.filepicker.config
 
 import android.content.Intent
+import android.util.Log
 import androidx.annotation.NonNull
 import androidx.annotation.StringRes
 import me.rosuh.filepicker.FilePickerActivity
 import me.rosuh.filepicker.R
 import me.rosuh.filepicker.engine.ImageEngine
 import me.rosuh.filepicker.filetype.FileType
+import me.rosuh.filepicker.utils.DefaultLogger
 import java.io.File
 import java.util.concurrent.*
 
@@ -161,6 +163,9 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
      * 如果您的 Glide 版本低于 4.9, 请使用自定义的 [ImageEngine]
      */
     var customImageEngine: ImageEngine? = null
+        private set
+
+    var logger: ILog = DefaultLogger
         private set
 
     fun showHiddenFiles(isShow: Boolean): FilePickerConfig {
@@ -345,6 +350,15 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
     fun threadPool(threadPool: ExecutorService, autoShutdown: Boolean): FilePickerConfig {
         this.threadPool = threadPool
         this.threadPoolAutoShutDown = autoShutdown
+        return this
+    }
+
+    /**
+     * 允许使用你项目中的 Logger
+     * Allow the use of logger in your project
+     */
+    fun log(logger: ILog): FilePickerConfig {
+        this.logger = logger
         return this
     }
 

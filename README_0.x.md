@@ -4,9 +4,7 @@
 
 [![](https://jitpack.io/v/me.rosuh/AndroidFilePicker.svg)](https://jitpack.io/#me.rosuh/AndroidFilePicker)
 
-[中文简体](./README_CN.md)
-
-If you're using `0.x` version, checkout the [README_0.x](./README_0.x.md) file.
+[中文简体](./README_CN_1.x.md)
 
 Well, it doesn't have a name like Rocky, Cosmos or Fish. Android File Picker, like its name, is a local file selector framework. Some of his characteristics are described below:
 
@@ -24,35 +22,30 @@ Well, it doesn't have a name like Rocky, Cosmos or Fish. Android File Picker, li
 - Apply different themes, including four built-in themes and custom themes
 - More to find out yourself
 
-|                    Rail                     |                         Reply                          |                         Crane                          |                         Shrine                         |
+|                    Rail Style（default）                     |                         Reply Style                          |                         Crane Style                          |                         Shrine Style                         |
 | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
 | ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/default_theme.png) | ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/reply_theme.png) | ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/crane_theme.png) | ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/shrine_theme.png) |
 
 ## Version Compatibility
 It depends on your targetAPI.
 
-- `targetAPI > 33`, may be you are finding [photo picker](https://developer.android.com/about/versions/14/changes/partial-photo-video-access?hl=zh-cn#media-reselection)
-- `targetAPI == 33`
-  - Handle [media permissions](https://developer.android.com/training/data-storage/shared/media#access-other-apps-files) by your onw 
-  - This lib will only show media files which your app has permission to access
-- `targetAPI <= 33`
-  - Set `android:requestLegacyExternalStorage="true"` in your `AndroidManifest.xml` file
-  - Handler `android.permission.READ_EXTERNAL_STORAGE` permission by your own
-  - This lib will show all files in your storage
+- `targetAPI <= 28`, no problem at all ;)
+- `targetAPI == 29`, please enable `requestLegacyExternalStorage` feature for your project : D
+- `targetAPI == 29`
+  - When running on Android 11 and above, only media files (images, audio and video) can be read, but nothing else can be accessed (e.g. PDF documents, apk binary files, etc.)
 
+Please check out this issue: [All About Scope Storage. ](https://github.com/rosuH/AndroidFilePicker/issues/146)
 ## Download
 
-[Gradle](https://docs.jitpack.io/android/#installing):
+Gradle:
 
 In your project `build.gradle`:
 
 ```xml
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+allprojects {
     repositories {
-        google()
-        mavenCentral()
-        maven { url 'https://jitpack.io' }
+	    ...
+    	maven { url 'https://jitpack.io' }
     }
 }
 ```
@@ -72,8 +65,11 @@ Check out [releases page](https://github.com/rosuH/AndroidFilePicker/releases) t
 
 ### Permission
 
-You should request permission by yourself, this lib will not request permission for you.
-See [Version Compatibility](#version-compatibility) for more details.
+The library requires one permissions:
+
+- `android.permission.READ_EXTERNAL_STORAGE`
+
+If you do not have permission to apply, this framework will check and apply at startup.
 
 ### Launch 🚀 
 
