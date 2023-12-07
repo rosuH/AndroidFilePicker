@@ -6,7 +6,7 @@
 
 如果你使用的是 `1.x` 版本，请查看 [README_1.x](./README_CN_1.x.md) 文件。
 
-嗯，它没有像 Rocky、Cosmos 或 Fish 这样的名字。Android File Picker，正如其名，是一个本地文件选择框架。以下是它的一些特点：
+它没有像 Rocky、Cosmos 或 Fish 这样的名字。Android File Picker，正如其名，是一个本地文件选择框架。以下是它的一些特点：
 
 - 在 Activity 或 Fragment 中启动
   - 一行代码启动
@@ -22,7 +22,7 @@
 - 应用不同的主题，包括四个内置主题和自定义主题
 - 更多功能等你发现
 
-|                    Rail Style（默认）                     |                         Reply Style                          |                         Crane Style                          |                         Shrine Style                         |
+|                    Rail                     |                         Reply                          |                         Crane                          |                         Shrine                         |
 | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
 | ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/default_theme.png) | ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/reply_theme.png) | ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/crane_theme.png) | ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/shrine_theme.png) |
 

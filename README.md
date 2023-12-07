@@ -24,7 +24,7 @@ Well, it doesn't have a name like Rocky, Cosmos or Fish. Android File Picker, li
 - Apply different themes, including four built-in themes and custom themes
 - More to find out yourself
 
-|                    Rail Style（default）                     |                         Reply Style                          |                         Crane Style                          |                         Shrine Style                         |
+|                    Rail                     |                         Reply                          |                         Crane                          |                         Shrine                         |
 | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
 | ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/default_theme.png) | ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/reply_theme.png) | ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/crane_theme.png) | ![](https://raw.githubusercontent.com/rosuH/AndroidFilePicker/master/images/shrine_theme.png) |
 
