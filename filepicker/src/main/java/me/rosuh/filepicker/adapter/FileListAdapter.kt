@@ -156,22 +156,24 @@ class FileListAdapter(
                         View.VISIBLE
                     }
                 }
-                setOnTouchListener { v, event ->
-                    if (tag != itemImpl) return@setOnTouchListener false
-                    when(event.actionMasked) {
-                        MotionEvent.ACTION_UP -> {
-                            val canCheck = listener?.canCheck(position, checkedCount) != false
-                            if (isChecked || canCheck && !isChecked) {
-                                v.performClick()
-                                clickListener?.onItemChildClick(this@FileListAdapter, v, position)
-                            } else {
-                                listener?.reachMaxCount()
-                            }
+                isChecked = itemImpl.isChecked()
+                setOnClickListener { v ->
+                    // for accessibility focus
+                    val canCheck = listener?.canCheck(position, checkedCount) != false
+                    Log.d("FileListAdapter", "setOnClickListener canCheck: $canCheck isChecked: $isChecked")
+                    when {
+                        canCheck || isChecked.not() -> {
+                            // check
+                            clickListener?.onItemChildClick(this@FileListAdapter, v, position)
+                        }
+
+                        else -> {
+                            // revert check
+                            isChecked = false
+                            listener?.reachMaxCount()
                         }
                     }
-                    return@setOnTouchListener true
                 }
-                isChecked = itemImpl.isChecked()
             }
 
             radioButton.apply {
@@ -184,10 +186,10 @@ class FileListAdapter(
                         View.VISIBLE
                     }
                 }
+                isChecked = itemImpl.isChecked()
                 setOnClickListener {
                     this@FileListAdapter.clickListener?.onItemChildClick(this@FileListAdapter, it, position)
                 }
-                isChecked = itemImpl.isChecked()
             }
 
             when {
