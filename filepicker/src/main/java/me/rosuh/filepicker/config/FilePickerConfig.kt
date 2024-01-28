@@ -90,16 +90,6 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
     var selfFilter: AbstractFileFilter? = null
         private set
 
-    /**
-     * 自定文件类型甄别器和默认类型甄别器
-     */
-    @Deprecated(
-        "Use 'register' function instead.",
-        replaceWith = ReplaceWith("me.rosuh.filepicker.config.FilePickerConfig.registerFileType()"),
-        level = DeprecationLevel.WARNING
-    )
-    var customDetector: AbstractFileDetector? = null
-
     val defaultFileDetector: DefaultFileDetector by lazy { DefaultFileDetector().also { it.registerDefaultTypes() } }
 
     /**
@@ -207,23 +197,6 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
 
     fun filter(fileFilter: AbstractFileFilter): FilePickerConfig {
         selfFilter = fileFilter
-        return this
-    }
-
-    /**
-     * @author rosuh@qq.com
-     * @date 2020/9/15
-     * custom file type had upgrade to [registerFileType], which can simplify your usage.
-     * 实现 [AbstractFileDetector] 以自定义您自己的文件类型检测器
-     * Custom your file detector by implementing [AbstractFileDetector]
-     */
-    @Deprecated(
-        "Use 'register' function instead.",
-        ReplaceWith("registerFileType(types)"),
-        level = DeprecationLevel.WARNING
-    )
-    fun customDetector(detector: AbstractFileDetector): FilePickerConfig {
-        this.customDetector = detector
         return this
     }
 
@@ -362,7 +335,6 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
         this.customFileTypes.clear()
         this.customImageEngine = null
         this.selfFilter = null
-        this.customDetector = null
         this.defaultFileDetector.clear()
         resetCustomFile()
     }

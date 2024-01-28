@@ -95,8 +95,7 @@ class FileUtils {
                     isHiddenFile
                 )
                 // 如果调用者没有实现文件类型甄别器，则使用的默认甄别器
-                config.customDetector?.fillFileType(itemBean)
-                    ?: config.defaultFileDetector.fillFileType(itemBean)
+                config.defaultFileDetector.fillFileType(itemBean)
                 isDetected = itemBean.fileType != null
                 if (config.defaultFileDetector.enableCustomTypes
                     && config.isAutoFilter
