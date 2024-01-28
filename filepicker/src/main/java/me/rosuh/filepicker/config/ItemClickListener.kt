@@ -9,18 +9,30 @@ import me.rosuh.filepicker.adapter.FileListAdapter
 */
 interface ItemClickListener {
 
+    /**
+     * Item root view click
+     * @return true if the event has been consumed
+     */
     fun onItemClick(
         itemAdapter: FileListAdapter,
         itemView: View,
         position: Int
     ): Boolean
 
+    /**
+     * Item child view click
+     * @return true if the event has been consumed
+     */
     fun onItemChildClick(
         itemAdapter: FileListAdapter,
         itemView: View,
         position: Int
     ): Boolean
 
+    /**
+     * Item root view long click
+     * @return true if the event has been consumed
+     */
     fun onItemLongClick(
         itemAdapter: FileListAdapter,
         itemView: View,

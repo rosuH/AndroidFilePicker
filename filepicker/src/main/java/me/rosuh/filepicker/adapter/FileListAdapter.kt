@@ -1,7 +1,9 @@
 package me.rosuh.filepicker.adapter
 
 import android.os.Build
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
@@ -135,20 +137,6 @@ class FileListAdapter(
             }
         }
 
-        private fun onCheck(
-            itemImpl: FileItemBeanImpl,
-            buttonView: CompoundButton,
-            isChecked: Boolean,
-            position: Int
-        ) {
-            if (isChecked) {
-                checkedSet.add(itemImpl)
-            } else {
-                checkedSet.remove(itemImpl)
-            }
-            listener?.onCheckSizeChanged(checkedCount)
-        }
-
         override fun bind(itemImpl: FileItemBeanImpl, position: Int) {
             ivIcon.apply {
                 setOnClickListener {
@@ -157,9 +145,6 @@ class FileListAdapter(
             }
             tvFileName.apply {
                 text = itemImpl.fileName
-                setOnClickListener {
-                    this@FileListAdapter.clickListener?.onItemChildClick(this@FileListAdapter, it, position)
-                }
             }
             checkBox.apply {
                 tag = itemImpl
@@ -171,12 +156,20 @@ class FileListAdapter(
                         View.VISIBLE
                     }
                 }
-                setOnCheckedChangeListener { buttonView, isChecked ->
-                    if (tag != itemImpl) return@setOnCheckedChangeListener
-                    onCheck(itemImpl, buttonView, isChecked, position)
-                }
-                setOnClickListener {
-                    this@FileListAdapter.clickListener?.onItemChildClick(this@FileListAdapter, it, position)
+                setOnTouchListener { v, event ->
+                    if (tag != itemImpl) return@setOnTouchListener false
+                    when(event.actionMasked) {
+                        MotionEvent.ACTION_UP -> {
+                            val canCheck = listener?.canCheck(position, checkedCount) != false
+                            if (isChecked || canCheck && !isChecked) {
+                                v.performClick()
+                                clickListener?.onItemChildClick(this@FileListAdapter, v, position)
+                            } else {
+                                listener?.reachMaxCount()
+                            }
+                        }
+                    }
+                    return@setOnTouchListener true
                 }
                 isChecked = itemImpl.isChecked()
             }
@@ -190,10 +183,6 @@ class FileListAdapter(
                     else -> {
                         View.VISIBLE
                     }
-                }
-                setOnCheckedChangeListener { buttonView, isChecked ->
-                    if (tag != itemImpl) return@setOnCheckedChangeListener
-                    onCheck(itemImpl, buttonView, isChecked, position)
                 }
                 setOnClickListener {
                     this@FileListAdapter.clickListener?.onItemChildClick(this@FileListAdapter, it, position)
@@ -275,6 +264,7 @@ class FileListAdapter(
         getItem(position)?.let {
             it.setCheck(true)
             notifyItemChanged(position, true)
+            onCheck(it, true)
         }
     }
 
@@ -282,6 +272,7 @@ class FileListAdapter(
         getItem(position)?.let {
             it.setCheck(false)
             notifyItemChanged(position, false)
+            onCheck(it, false)
         }
     }
 
@@ -292,6 +283,7 @@ class FileListAdapter(
                 getItem(position)?.let {
                     it.setCheck(true)
                     notifyItemChanged(position, true)
+                    onCheck(it, true)
                 }
                 latestChoicePos = position
             }
@@ -300,6 +292,7 @@ class FileListAdapter(
                 getItem(latestChoicePos)?.let {
                     it.setCheck(false)
                     notifyItemChanged(latestChoicePos, false)
+                    onCheck(it, false)
                 }
                 latestChoicePos = -1
             }
@@ -308,12 +301,14 @@ class FileListAdapter(
                 getItem(latestChoicePos)?.let {
                     it.setCheck(false)
                     notifyItemChanged(latestChoicePos, false)
+                    onCheck(it, false)
                 }
                 // check the new one
                 latestChoicePos = position
                 getItem(latestChoicePos)?.let {
                     it.setCheck(true)
                     notifyItemChanged(latestChoicePos, true)
+                    onCheck(it, true)
                 }
             }
         }
@@ -348,6 +343,18 @@ class FileListAdapter(
 
     fun resetCheck() {
         checkedSet.clear()
+    }
+
+    private fun onCheck(
+        itemImpl: FileItemBeanImpl,
+        isChecked: Boolean
+    ) {
+        if (isChecked) {
+            checkedSet.add(itemImpl)
+        } else {
+            checkedSet.remove(itemImpl)
+        }
+        listener?.onCheckSizeChanged(checkedCount)
     }
 
 

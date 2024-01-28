@@ -129,6 +129,16 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
                 onCheckSizeChanged {
                     updateItemUI()
                 }
+                canCheck { _, _ ->
+                    return@canCheck isCanSelect()
+                }
+                reachMaxCount {
+                    Toast.makeText(
+                        this@FilePickerActivity.applicationContext,
+                        getString(pickerConfig.maxSelectCountTips, maxSelectable),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
     }
@@ -450,13 +460,22 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
                     }
                     // 如果是文件夹，则进入
                     enterDirAndUpdateUI(item)
+                } else if (pickerConfig.singleChoice) {
+                    listAdapter.singleCheck(position)
                 } else {
-                    return FilePickerManager.config.itemClickListener?.onItemClick(
-                        adapter as FileListAdapter,
-                        view,
-                        position
-                    ) ?: false
+                    listAdapter.multipleCheckOrNo(
+                        item as FileItemBeanImpl,
+                        position,
+                        ::isCanSelect
+                    ) {
+                        Toast.makeText(
+                            this@FilePickerActivity.applicationContext,
+                            getString(pickerConfig.maxSelectCountTips, maxSelectable),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
+                return true
             }
 
             R.id.item_nav_file_picker -> {
@@ -499,9 +518,10 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
                 if (hookItemClick) {
                     return true
                 }
+                val isCheckView = view.id == R.id.cb_list_file_picker || view.id == R.id.rb_list_file_picker
                 // 文件夹直接进入
                 // if it's Dir, enter directly
-                if (item.isDir && pickerConfig.isSkipDir) {
+                if (isCheckView.not() && item.isDir && pickerConfig.isSkipDir) {
                     enterDirAndUpdateUI(item)
                     return true
                 }
@@ -560,8 +580,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
                 ).show()
             }
         }
-        // notify listener
-        return FilePickerManager.config.itemClickListener?.onItemLongClick(adapter, view, position) ?: false
+        return true
     }
 
     /*--------------------------Item click listener end------------------------------*/

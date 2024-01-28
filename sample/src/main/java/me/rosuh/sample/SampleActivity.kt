@@ -164,7 +164,7 @@ class SampleActivity : AppCompatActivity() {
                         position: Int
                     ): Boolean {
                         Toast.makeText(itemView.context, "onItemChildClick#$position", Toast.LENGTH_SHORT).show()
-                        return true
+                        return false
                     }
 
                     override fun onItemLongClick(
