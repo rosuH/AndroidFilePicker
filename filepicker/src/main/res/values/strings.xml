@@ -10,5 +10,6 @@
     <string name="max_select_count_tips">You can only choose %d items.</string>
     <string name="empty_list_tips_file_picker">Nothing Here~</string>
     <string name="custom_file_type">Custom file type</string>
+    <string name="file_icon">File Icon</string>
 
 </resources>

@@ -43,7 +43,7 @@ class RecyclerViewListener(
             adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
             view: View,
             position: Int
-        )
+        ): Boolean
 
         /**
          * Item child click

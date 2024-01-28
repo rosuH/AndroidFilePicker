@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import me.rosuh.filepicker.FilePickerActivity
 import me.rosuh.filepicker.R
+import me.rosuh.filepicker.bean.FileItemBeanImpl
 import me.rosuh.filepicker.bean.FileNavBeanImpl
 
 /**
@@ -14,17 +14,16 @@ import me.rosuh.filepicker.bean.FileNavBeanImpl
  * @author rosu
  * @date 2018/11/21
  */
-class FileNavAdapter(
-    private val activity: FilePickerActivity
-) : BaseAdapter() {
+class FileNavAdapter : BaseAdapter() {
     private lateinit var recyclerView: RecyclerView
-    val dataList: ArrayList<FileNavBeanImpl> = ArrayList(3)
+    val dataList: ArrayList<FileItemBeanImpl> = ArrayList(3)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         if (parent is RecyclerView) {
             recyclerView = parent
         }
-        return NavListHolder(activity.layoutInflater, parent)
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_nav_file_picker, parent, false)
+        return NavListHolder(itemView)
     }
 
     override fun getItemView(position: Int): View? {
@@ -39,15 +38,11 @@ class FileNavAdapter(
         (holder as NavListHolder).bind(dataList[postion], postion)
     }
 
-    override fun getItem(position: Int): FileNavBeanImpl? {
-        return if (position >= 0 && position < dataList.size) {
-            dataList[position]
-        } else {
-            null
-        }
+    override fun getItem(position: Int): FileItemBeanImpl? {
+        return dataList.getOrNull(position)
     }
 
-    fun setNewData(list: List<FileNavBeanImpl>?) {
+    fun setNewData(list: List<FileItemBeanImpl>?) {
         list?.let {
             dataList.clear()
             dataList.addAll(it)
@@ -55,17 +50,23 @@ class FileNavAdapter(
         }
     }
 
-    inner class NavListHolder(inflater: LayoutInflater, val parent: ViewGroup) :
-        RecyclerView.ViewHolder(inflater.inflate(R.layout.item_nav_file_picker, parent, false)) {
+    inner class NavListHolder(itemView: View) : FileListAdapter.BaseViewHolder(itemView) {
 
         private var mBtnDir: TextView? = null
 
         private var pos: Int? = null
 
-        fun bind(item: FileNavBeanImpl?, position: Int) {
+        override fun bind(itemImpl: FileItemBeanImpl, position: Int) {
             pos = position
             mBtnDir = itemView.findViewById(R.id.tv_btn_nav_file_picker)
-            mBtnDir?.text = item!!.dirName
+            mBtnDir?.apply {
+                text = itemImpl.fileName
+            }
+            itemView.apply {
+                setOnClickListener {
+                    this@FileNavAdapter.clickListener?.onItemClick(this@FileNavAdapter, it, position)
+                }
+            }
         }
     }
 }

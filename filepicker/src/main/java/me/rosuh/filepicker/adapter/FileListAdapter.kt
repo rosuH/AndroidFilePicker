@@ -99,7 +99,7 @@ class FileListAdapter(
 
     /*--------------------------ViewHolder Begin------------------------------*/
 
-    abstract inner class BaseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    abstract class BaseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         abstract fun bind(itemImpl: FileItemBeanImpl, position: Int)
     }
 
@@ -146,13 +146,21 @@ class FileListAdapter(
             } else {
                 checkedSet.remove(itemImpl)
             }
-            itemImpl.setCheck(isChecked)
             listener?.onCheckSizeChanged(checkedCount)
-//            listener?.onCheck(isChecked, buttonView, position)
         }
 
         override fun bind(itemImpl: FileItemBeanImpl, position: Int) {
-            tvFileName.text = itemImpl.fileName
+            ivIcon.apply {
+                setOnClickListener {
+                    this@FileListAdapter.clickListener?.onItemChildClick(this@FileListAdapter, it, position)
+                }
+            }
+            tvFileName.apply {
+                text = itemImpl.fileName
+                setOnClickListener {
+                    this@FileListAdapter.clickListener?.onItemChildClick(this@FileListAdapter, it, position)
+                }
+            }
             checkBox.apply {
                 tag = itemImpl
                 visibility = when {
@@ -166,6 +174,9 @@ class FileListAdapter(
                 setOnCheckedChangeListener { buttonView, isChecked ->
                     if (tag != itemImpl) return@setOnCheckedChangeListener
                     onCheck(itemImpl, buttonView, isChecked, position)
+                }
+                setOnClickListener {
+                    this@FileListAdapter.clickListener?.onItemChildClick(this@FileListAdapter, it, position)
                 }
                 isChecked = itemImpl.isChecked()
             }
@@ -183,6 +194,9 @@ class FileListAdapter(
                 setOnCheckedChangeListener { buttonView, isChecked ->
                     if (tag != itemImpl) return@setOnCheckedChangeListener
                     onCheck(itemImpl, buttonView, isChecked, position)
+                }
+                setOnClickListener {
+                    this@FileListAdapter.clickListener?.onItemChildClick(this@FileListAdapter, it, position)
                 }
                 isChecked = itemImpl.isChecked()
             }
@@ -208,6 +222,14 @@ class FileListAdapter(
                         }
                     }
                 }
+            }
+
+            itemView.setOnClickListener {
+                this@FileListAdapter.clickListener?.onItemClick(this@FileListAdapter, it, position)
+            }
+
+            itemView.setOnLongClickListener {
+                return@setOnLongClickListener this@FileListAdapter.clickListener?.onItemLongClick(this@FileListAdapter, it, position) ?: false
             }
         }
     }

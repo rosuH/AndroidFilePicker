@@ -125,15 +125,15 @@ class FileUtils {
          * 如果是退回到上层文件夹，则删除后续子目录元素
          */
         fun produceNavDataSource(
-            currentDataSource: ArrayList<FileNavBeanImpl>,
+            currentDataSource: ArrayList<FileItemBeanImpl>,
             nextPath: String,
             context: Context
-        ): ArrayList<FileNavBeanImpl> {
+        ): ArrayList<FileItemBeanImpl> {
             // 优先级：目标设备名称 --> 自定义路径 --> 默认 SD 卡
             if (currentDataSource.isEmpty()) {
                 val dirName = getDirAlias(getRootFile())
                 currentDataSource.add(
-                    FileNavBeanImpl(
+                    FileItemBeanImpl(
                         dirName,
                         nextPath
                     )
@@ -143,19 +143,19 @@ class FileUtils {
 
             for (data in currentDataSource) {
                 // 如果是回到根目录
-                if (nextPath == currentDataSource.first().dirPath) {
+                if (nextPath == currentDataSource.first().filePath) {
                     return ArrayList(currentDataSource.subList(0, 1))
                 }
                 // 如果是回到当前目录（不包含根目录情况）
                 // 直接返回
-                val isCurrent = nextPath == currentDataSource[currentDataSource.size - 1].dirPath
+                val isCurrent = nextPath == currentDataSource[currentDataSource.size - 1].filePath
                 if (isCurrent) {
                     return currentDataSource
                 }
 
                 // 如果是回到上层的某一目录(即，当前列表中有该路径)
                 // 将列表截取至目标路径元素
-                val isBackToAbove = nextPath == data.dirPath
+                val isBackToAbove = nextPath == data.filePath
                 if (isBackToAbove) {
                     return ArrayList(
                         currentDataSource.subList(
@@ -167,7 +167,7 @@ class FileUtils {
             }
             // 循环到此，意味着将是进入子目录
             currentDataSource.add(
-                FileNavBeanImpl(
+                FileItemBeanImpl(
                     nextPath.substring(nextPath.lastIndexOf("/") + 1),
                     nextPath
                 )

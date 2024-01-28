@@ -1,6 +1,5 @@
 package me.rosuh.filepicker
 
-import android.Manifest
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.Manifest.permission.READ_MEDIA_AUDIO
 import android.Manifest.permission.READ_MEDIA_IMAGES
@@ -11,7 +10,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.*
 import android.os.Environment.MEDIA_MOUNTED
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.collection.ArrayMap
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -75,7 +73,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
                     while (curPath != root.parent && !curPath.isNullOrBlank()) {
                         pickerConfig.logger.i("loadFileRunnable", "curPath = $curPath")
                         val f = File(curPath)
-                        val fileNavBeanImpl = FileNavBeanImpl(
+                        val fileNavBeanImpl = FileItemBeanImpl(
                             FileUtils.getDirAlias(f),
                             f.absolutePath
                         )
@@ -96,7 +94,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
                 }
 
                 else -> {
-                    File(navDataSource.last().dirPath)
+                    File(navDataSource.last().filePath)
                 }
             }
 
@@ -108,7 +106,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
                 if (navDataSource.isEmpty()) {
                     rootFile.path
                 } else {
-                    navDataSource.last().dirPath
+                    navDataSource.last().filePath
                 },
                 this@FilePickerActivity
             )
@@ -139,13 +137,13 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
      * 导航栏列表适配器
      */
     private val navAdapter: FileNavAdapter by lazy {
-        FileNavAdapter(this@FilePickerActivity)
+        FileNavAdapter()
     }
 
     /**
      * 导航栏数据集
      */
-    private var navDataSource = ArrayList<FileNavBeanImpl>()
+    private var navDataSource = ArrayList<FileItemBeanImpl>()
 
     /**
      * 文件夹为空时展示的空视图
@@ -371,23 +369,19 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
 
     private fun initRv(
         listData: ArrayList<FileItemBeanImpl>,
-        navDataList: ArrayList<FileNavBeanImpl>
+        navDataList: ArrayList<FileItemBeanImpl>
     ) {
         switchButton(true)
         // 导航栏适配器
-        navAdapter.setNewData(navDataList)
-        rvNav?.apply {
-            navListener?.let { removeOnItemTouchListener(it) }
-            navListener?.let { addOnItemTouchListener(it) }
+        navAdapter.apply {
+            navListener?.let { setListener(it) }
+            setNewData(navDataList)
         }
         // 列表适配器
         listAdapter.apply {
+            fileListListener?.let { setListener(it) }
             isSingleChoice = FilePickerManager.config.singleChoice
             setNewData(listData)
-        }
-        rvList?.apply {
-            fileListListener?.let { removeOnItemTouchListener(it) }
-            fileListListener?.let { addOnItemTouchListener(it) }
         }
     }
 
@@ -415,7 +409,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
     /**
      * 保存当前文件夹被点击项，下次进入时将滑动到此
      */
-    private fun saveCurrPos(item: FileNavBeanImpl?, position: Int) {
+    private fun saveCurrPos(item: FileItemBeanImpl?, position: Int) {
         item?.run {
             currPosMap[filePath] = position
             (rvList?.layoutManager as? LinearLayoutManager)?.let {
@@ -434,8 +428,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
         view: View,
         position: Int
     ) {
-        val item = (adapter as BaseAdapter).getItem(position)
-        item ?: return
+        val item = (adapter as BaseAdapter).getItem(position) ?: return
         val file = File(item.filePath)
         if (!file.exists()) {
             return
@@ -532,9 +525,9 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
         adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
         view: View,
         position: Int
-    ) {
-        if (view.id != R.id.item_list_file_picker) return
-        val item = (adapter as FileListAdapter).getItem(position) ?: return
+    ): Boolean {
+        if (view.id != R.id.item_list_file_picker) return false
+        val item = (adapter as FileListAdapter).getItem(position) ?: return false
         // Check the lib users whether if intercept the click event.
         val hookItemClick = FilePickerManager.config.itemClickListener?.onItemLongClick(
             adapter,
@@ -542,16 +535,16 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
             position
         ) == true
         if (hookItemClick) {
-            return
+            return true
         }
         val file = File(item.filePath)
         val isSkipDir = FilePickerManager.config.isSkipDir
         // current item is directory and should skip directory, because long click would make the item been selected.
-        if (file.exists() && file.isDirectory && isSkipDir) return
+        if (file.exists() && file.isDirectory && isSkipDir) return false
         // same action like child click
         if (item.isDir && pickerConfig.isSkipDir) {
             enterDirAndUpdateUI(item)
-            return
+            return true
         }
         if (pickerConfig.singleChoice) {
             listAdapter.singleCheck(position)
@@ -566,6 +559,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
         }
         // notify listener
         FilePickerManager.config.fileItemOnClickListener?.onItemLongClick(adapter, view, position)
+        return true
     }
 
     /*--------------------------Item click listener end------------------------------*/

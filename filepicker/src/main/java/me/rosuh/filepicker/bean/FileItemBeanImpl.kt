@@ -21,10 +21,10 @@ import java.io.File
 class FileItemBeanImpl(
     override var fileName: String,
     override var filePath: String,
-    private var isChecked: Boolean,
-    var fileType: FileType?,
-    val isDir: Boolean,
-    var isHide: Boolean,
+    private var isChecked: Boolean = false,
+    var fileType: FileType? = null,
+    val isDir: Boolean = false,
+    var isHide: Boolean = false,
 ) : FileBean {
 
     fun isChecked(): Boolean {
