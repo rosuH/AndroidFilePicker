@@ -427,11 +427,11 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
         adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
         view: View,
         position: Int
-    ) {
-        val item = (adapter as BaseAdapter).getItem(position) ?: return
+    ): Boolean {
+        val item = (adapter as BaseAdapter).getItem(position) ?: return false
         val file = File(item.filePath)
         if (!file.exists()) {
-            return
+            return false
         }
         when (view.id) {
             R.id.item_list_file_picker -> {
@@ -442,7 +442,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
                     position
                 ) == true
                 if (hookItemClick) {
-                    return
+                    return true
                 }
                 if (file.isDirectory) {
                     (rvNav?.adapter as? FileNavAdapter)?.let {
@@ -451,11 +451,11 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
                     // 如果是文件夹，则进入
                     enterDirAndUpdateUI(item)
                 } else {
-                    FilePickerManager.config.fileItemOnClickListener?.onItemClick(
+                    return FilePickerManager.config.itemClickListener?.onItemClick(
                         adapter as FileListAdapter,
                         view,
                         position
-                    )
+                    ) ?: false
                 }
             }
 
@@ -466,9 +466,11 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
                     }
                     // 如果是文件夹，则进入
                     enterDirAndUpdateUI(item)
+                    return true
                 }
             }
         }
+        return false
     }
 
     /**
@@ -478,16 +480,16 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
         adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
         view: View,
         position: Int
-    ) {
+    ): Boolean {
         when (view.id) {
             R.id.tv_btn_nav_file_picker -> {
-                val item = (adapter as FileNavAdapter).getItem(position)
-                item ?: return
+                val item = (adapter as FileNavAdapter).getItem(position) ?: return false
                 enterDirAndUpdateUI(item)
+                return true
             }
 
             else -> {
-                val item = (adapter as FileListAdapter).getItem(position) ?: return
+                val item = (adapter as FileListAdapter).getItem(position) ?: return false
                 // Check the lib users whether if intercept the click event.
                 val hookItemClick = FilePickerManager.config.itemClickListener?.onItemChildClick(
                     adapter,
@@ -495,13 +497,13 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
                     position
                 ) == true
                 if (hookItemClick) {
-                    return
+                    return true
                 }
                 // 文件夹直接进入
                 // if it's Dir, enter directly
                 if (item.isDir && pickerConfig.isSkipDir) {
                     enterDirAndUpdateUI(item)
-                    return
+                    return true
                 }
                 if (pickerConfig.singleChoice) {
                     listAdapter.singleCheck(position)
@@ -514,6 +516,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
                         ).show()
                     }
                 }
+                return true
             }
         }
     }
@@ -558,8 +561,7 @@ class FilePickerActivity : AppCompatActivity(), View.OnClickListener,
             }
         }
         // notify listener
-        FilePickerManager.config.fileItemOnClickListener?.onItemLongClick(adapter, view, position)
-        return true
+        return FilePickerManager.config.itemClickListener?.onItemLongClick(adapter, view, position) ?: false
     }
 
     /*--------------------------Item click listener end------------------------------*/

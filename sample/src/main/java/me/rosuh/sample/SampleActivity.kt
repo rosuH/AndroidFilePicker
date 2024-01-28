@@ -27,11 +27,9 @@ import me.rosuh.filepicker.adapter.FileListAdapter
 import me.rosuh.filepicker.bean.FileItemBeanImpl
 import me.rosuh.filepicker.config.AbstractFileDetector
 import me.rosuh.filepicker.config.AbstractFileFilter
-import me.rosuh.filepicker.config.FileItemOnClickListener
 import me.rosuh.filepicker.config.FilePickerConfig
 import me.rosuh.filepicker.config.FilePickerManager
 import me.rosuh.filepicker.config.ItemClickListener
-import me.rosuh.filepicker.config.SimpleItemClickListener
 import me.rosuh.filepicker.engine.ImageEngine
 import me.rosuh.filepicker.filetype.AudioFileType
 import me.rosuh.filepicker.filetype.FileType
@@ -124,32 +122,6 @@ class SampleActivity : AppCompatActivity() {
                             ((item.isDir) || (item.fileType is RasterImageFileType))
                         })
                     }
-                })
-                .setItemClickListener(object : FileItemOnClickListener {
-                    override fun onItemClick(
-                        itemAdapter: FileListAdapter,
-                        itemView: View,
-                        position: Int
-                    ) {
-                        Log.i(TAG, "onItemClick: $itemAdapter, $itemView, $position")
-                    }
-
-                    override fun onItemChildClick(
-                        itemAdapter: FileListAdapter,
-                        itemView: View,
-                        position: Int
-                    ) {
-                        Log.i(TAG, "onItemChildClick: $itemAdapter, $itemView, $position")
-                    }
-
-                    override fun onItemLongClick(
-                        itemAdapter: FileListAdapter,
-                        itemView: View,
-                        position: Int
-                    ) {
-                        Log.i(TAG, "onItemLongClick: $itemAdapter, $itemView, $position")
-                    }
-
                 })
                 .forResult(FilePickerManager.REQUEST_CODE)
         }
@@ -322,18 +294,44 @@ class SampleActivity : AppCompatActivity() {
                         confirmText = "C",
                         emptyListTips = "E"
                     )
-                    .setItemClickListener(object : SimpleItemClickListener() {
+                    .setItemClickListener(object : ItemClickListener {
                         override fun onItemClick(
                             itemAdapter: FileListAdapter,
                             itemView: View,
                             position: Int
-                        ) {
-                            super.onItemClick(itemAdapter, itemView, position)
+                        ): Boolean {
                             Toast.makeText(
                                 activity,
                                 "${itemAdapter.dataList[position].fileName} was clicked",
                                 Toast.LENGTH_SHORT
                             ).show()
+                            return true
+                        }
+
+                        override fun onItemChildClick(
+                            itemAdapter: FileListAdapter,
+                            itemView: View,
+                            position: Int
+                        ): Boolean {
+                            Toast.makeText(
+                                activity,
+                                "${itemAdapter.dataList[position].fileName} was clicked",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            return true
+                        }
+
+                        override fun onItemLongClick(
+                            itemAdapter: FileListAdapter,
+                            itemView: View,
+                            position: Int
+                        ): Boolean {
+                            Toast.makeText(
+                                activity,
+                                "${itemAdapter.dataList[position].fileName} was long clicked",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            return true
                         }
                     })
                     .forResult(1001)

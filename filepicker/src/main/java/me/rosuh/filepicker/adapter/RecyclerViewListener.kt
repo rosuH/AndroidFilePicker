@@ -34,7 +34,7 @@ class RecyclerViewListener(
             adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
             view: View,
             position: Int
-        )
+        ): Boolean
 
         /**
          * Item long click
@@ -52,7 +52,7 @@ class RecyclerViewListener(
             adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
             view: View,
             position: Int
-        )
+        ): Boolean
     }
 
     private var gestureDetectorCompat: GestureDetectorCompat =
@@ -93,6 +93,7 @@ class RecyclerViewListener(
                         recyclerView.getChildLayoutPosition(childView)
                     )
                 }
+
                 R.id.item_nav_file_picker -> {
                     itemClickListener.onItemClick(
                         recyclerView.adapter!!,

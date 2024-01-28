@@ -103,13 +103,6 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
     val defaultFileDetector: DefaultFileDetector by lazy { DefaultFileDetector().also { it.registerDefaultTypes() } }
 
     /**
-     * 点击操作接口，采用默认实现
-     */
-    @Deprecated("Check the itemClickListener")
-    var fileItemOnClickListener: FileItemOnClickListener? = null
-        private set
-
-    /**
      * 点击操作接口
      */
     var itemClickListener: ItemClickListener? = null
@@ -234,19 +227,6 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
         return this
     }
 
-    /**
-     * This method would be removed in 0.8.0.
-     * Try to using [ItemClickListener] which the below one.
-     * @author hi@rosuh.me
-     */
-    @Deprecated(
-        "It's not flexible enough.",
-        replaceWith = ReplaceWith("me.rosuh.filepicker.config.FilePickerConfig.setItemClickListener")
-    )
-    fun setItemClickListener(fileItemOnClickListener: FileItemOnClickListener): FilePickerConfig {
-        this.fileItemOnClickListener = fileItemOnClickListener
-        return this
-    }
 
     /**
      * Setting item click listener which can intercept click event.
@@ -381,7 +361,6 @@ class FilePickerConfig(private val pickerManager: FilePickerManager) {
     fun clear() {
         this.customFileTypes.clear()
         this.customImageEngine = null
-        this.fileItemOnClickListener = null
         this.selfFilter = null
         this.customDetector = null
         this.defaultFileDetector.clear()
